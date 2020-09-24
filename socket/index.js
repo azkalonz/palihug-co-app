@@ -7,7 +7,9 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  socket.on("test", (args) => {
+    console.log(args);
+  });
 });
 
 http.listen(80, () => {

@@ -7,7 +7,7 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("test", (args) => {
+  socket.on("notification", (args) => {
     console.log(args);
   });
 });

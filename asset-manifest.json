@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/palihug-co-app/static/css/main.97e78cb5.chunk.css",
+    "main.js": "/palihug-co-app/static/js/main.8b5a47ad.chunk.js",
+    "main.js.map": "/palihug-co-app/static/js/main.8b5a47ad.chunk.js.map",
+    "runtime-main.js": "/palihug-co-app/static/js/runtime-main.29c28e80.js",
+    "runtime-main.js.map": "/palihug-co-app/static/js/runtime-main.29c28e80.js.map",
+    "static/js/2.8ffabc76.chunk.js": "/palihug-co-app/static/js/2.8ffabc76.chunk.js",
+    "static/js/2.8ffabc76.chunk.js.map": "/palihug-co-app/static/js/2.8ffabc76.chunk.js.map",
+    "index.html": "/palihug-co-app/index.html",
+    "precache-manifest.9b2575102b1207601d86b7679dd63d04.js": "/palihug-co-app/precache-manifest.9b2575102b1207601d86b7679dd63d04.js",
+    "service-worker.js": "/palihug-co-app/service-worker.js",
+    "static/css/main.97e78cb5.chunk.css.map": "/palihug-co-app/static/css/main.97e78cb5.chunk.css.map",
+    "static/js/2.8ffabc76.chunk.js.LICENSE.txt": "/palihug-co-app/static/js/2.8ffabc76.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.29c28e80.js",
+    "static/js/2.8ffabc76.chunk.js",
+    "static/css/main.97e78cb5.chunk.css",
+    "static/js/main.8b5a47ad.chunk.js"
+  ]
+}

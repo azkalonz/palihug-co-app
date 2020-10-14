@@ -44,7 +44,7 @@ export function Login(props) {
           },
         }),
       onError: (e) => {
-        setErrors(e.response.data.errors);
+        if (e.response) setErrors(e.response.data.errors);
       },
       after: (data) => {
         if (!data?.user_token) {

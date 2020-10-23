@@ -1,24 +1,33 @@
 import { Box, CircularProgress, ThemeProvider } from "@material-ui/core";
+import { AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import BottomNavigation from "./components/BottomNavigation";
 import RegisterForm from "./components/RegisterForm";
 import VerifyOTP from "./components/VerifyOTP";
 import GetStartedContext from "./context/GetStartedContext";
+import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
 import theme from "./misc/theme";
 import { GetStartedScreen } from "./screens/get-started";
 import { Home } from "./screens/home";
-import { Chat } from "./screens/home/Transaction";
+import Chat from "./screens/home/Chat";
+import History from "./screens/home/History";
+import Notifications from "./screens/home/Notifications";
+import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
 import "./style.css";
 import Api from "./utils/api";
+import NotFound from "./screens/404";
 import fetchData from "./utils/fetchData";
 
 function App() {
+  // const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
   });
+  const [servicesContext, setServicesContext] = useState({});
   const [userContext, setUserContext] = useState({});
   const pushHistory = (name) => {
     setLoading(false);
@@ -41,7 +50,7 @@ function App() {
             send: async () => await Api.post("/login", { body }),
             after: (user) => {
               setUserContext(user);
-              if (user.user_status === "Verified") {
+              if (user?.user_status === "Verified") {
                 // pushHistory("/");
                 setLoading(false);
               } else if (user?.user_status === "Unverified") {
@@ -69,31 +78,61 @@ function App() {
       <GetStartedContext.Provider
         value={{ getStartedContext, setGetStartedContext }}
       >
-        <ThemeProvider theme={theme}>
-          {!loading && (
-            <BrowserRouter>
-              <Switch>
-                <Route component={GetStartedScreen} exact path="/get-started" />
-                <Route component={VerifyOTP} exact path="/verify-otp" />
-                <Route component={Home} exact path="/" />
-                <Route component={RegisterForm} exact path="/register" />
-                <Route component={Login} exact path="/login" />
-                <Route component={Chat} exact path="/transaction/:id/chat" />
-              </Switch>
-            </BrowserRouter>
-          )}
-          {loading && (
-            <Box
-              height="100vh"
-              width="100vw"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <CircularProgress />
-            </Box>
-          )}
-        </ThemeProvider>
+        <ServicesContext.Provider
+          value={{ servicesContext, setServicesContext }}
+        >
+          <ThemeProvider theme={theme}>
+            {!loading && (
+              <BrowserRouter>
+                <Route
+                  render={({ location }) => (
+                    <AnimatePresence exitBeforeEnter>
+                      <Switch location={location} key={location.pathname}>
+                        <Route
+                          component={GetStartedScreen}
+                          exact
+                          path="/get-started"
+                        />
+                        <Route component={VerifyOTP} exact path="/verify-otp" />
+                        <Route component={Home} exact path="/" />
+                        <Route
+                          component={RegisterForm}
+                          exact
+                          path="/register"
+                        />
+                        <Route component={Login} exact path="/login" />
+                        <Route component={History} exact path="/history" />
+                        <Route component={Chat} exact path="/chat" />
+                        <Route component={Profile} exact path="/profile" />
+                        <Route
+                          component={Notifications}
+                          exact
+                          path="/notifications"
+                        />
+                        <Route component={NotFound} path="*" />
+                      </Switch>
+                    </AnimatePresence>
+                  )}
+                />
+                {userContext?.user_status === "Verified" && (
+                  <BottomNavigation />
+                )}
+              </BrowserRouter>
+            )}
+
+            {loading && (
+              <Box
+                height="100vh"
+                width="100vw"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <CircularProgress />
+              </Box>
+            )}
+          </ThemeProvider>
+        </ServicesContext.Provider>
       </GetStartedContext.Provider>
     </UserContext.Provider>
   );

@@ -1,10 +1,13 @@
-import { Box, Button, Container, Slide, Typography } from "@material-ui/core";
+import { Box, Button, Container, Typography } from "@material-ui/core";
+import { motion } from "framer-motion";
 import React from "react";
 import { Link } from "react-router-dom";
+import { fadeInOut } from "../misc/transitions";
+import AnimateOnTap from "./AnimateOnTap";
 
 function GetStarted(props) {
   return (
-    <Slide direction="right" in={true}>
+    <motion.div animate="in" exit="out" initial="initial" variants={fadeInOut}>
       <Container>
         <Box
           display="flex"
@@ -21,7 +24,7 @@ function GetStarted(props) {
             alignItems="flex-end"
           >
             <img
-              src="/static/car_phone_bike.png"
+              src="/static/images/car-phone-bike.svg"
               width="100%"
               alt="Get Started"
             />
@@ -35,23 +38,20 @@ function GetStarted(props) {
             flexDirection="column"
           >
             <Box textAlign="center">
-              <Typography variant="h5">
-                Leading company of errands service.
-              </Typography>
-              <Typography>
-                Serving you with the best of our abilities and help fellow
-                online sellers and all other start-up business
-              </Typography>
+              <Typography variant="h5">ESGO</Typography>
+              <Typography>Errand Service On The Go!</Typography>
             </Box>
             <Box width="100%" textAlign="center" paddingBottom={4}>
-              <Button
-                variant="contained"
-                className="themed-button inverted"
-                color="primary"
-                onClick={() => props.history.push("/register")}
-              >
-                Get Started
-              </Button>
+              <AnimateOnTap>
+                <Button
+                  variant="contained"
+                  className="themed-button inverted"
+                  color="primary"
+                  onClick={() => props.history.push("/register")}
+                >
+                  Get Started
+                </Button>
+              </AnimateOnTap>
               <Typography className="have-account">
                 Already have an account? <Link to="/login">Sign in</Link>
               </Typography>
@@ -59,7 +59,7 @@ function GetStarted(props) {
           </Box>
         </Box>
       </Container>
-    </Slide>
+    </motion.div>
   );
 }
 

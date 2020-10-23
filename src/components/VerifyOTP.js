@@ -3,20 +3,22 @@ import {
   Container,
   Icon,
   IconButton,
-  Slide,
   Snackbar,
   TextField,
   Typography,
   useTheme,
 } from "@material-ui/core";
+import { motion } from "framer-motion";
 import moment from "moment";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import PinInput from "react-pin-input";
 import GetStartedContext from "../context/GetStartedContext";
 import UserContext from "../context/UserContext";
+import { slideRight } from "../misc/transitions";
 import { Alert } from "../screens/login/index";
 import Api, { SocketApi } from "../utils/api";
 import fetchData from "../utils/fetchData";
+import AnimateOnTap from "./AnimateOnTap";
 import SavingButton from "./SavingButton";
 
 function VerifyOTP(props) {
@@ -46,32 +48,20 @@ function VerifyOTP(props) {
     resetOTP();
   }, []);
   return (
-    <GetStartedContext.Consumer>
-      {(context) => {
-        const { getStartedContext, setGetStartedContext } = context;
-        if (getStartedContext.isOTPsent && !isOtpSent) {
-          setIsOtpSent(true);
-        } else if (isOtpSent && getStartedContext?.isOTPsent === false) {
-          setGetStartedContext({ ...getStartedContext, isOTPsent: true });
-        } else if (getStartedContext?.isOTPsent === null) {
-          setIsOtpSent(false);
-        }
-        return (
-          <React.Fragment>
-            {isOtpSent ? (
-              <EnterOTP {...props} />
-            ) : (
-              <SendOTP
-                {...props}
-                disabled={loading}
-                setLoading={(e) => setLoading(e)}
-                resetOTP={() => resetOTP()}
-              />
-            )}
-          </React.Fragment>
-        );
-      }}
-    </GetStartedContext.Consumer>
+    <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
+      <React.Fragment>
+        {isOtpSent ? (
+          <EnterOTP {...props} />
+        ) : (
+          <SendOTP
+            {...props}
+            disabled={loading}
+            setLoading={(e) => setLoading(e)}
+            resetOTP={() => resetOTP()}
+          />
+        )}
+      </React.Fragment>
+    </motion.div>
   );
 }
 
@@ -115,7 +105,7 @@ function EnterOTP(props) {
         const { getStartedContext } = context;
         return (
           <ScreenTemplate1
-            image="/static/laptop.png"
+            image="/static/images/laptop.svg"
             title="Verify Email Address"
             subTitle={
               <React.Fragment>
@@ -178,7 +168,7 @@ function SendOTP(props) {
         const { getStartedContext, setGetStartedContext } = context;
         return (
           <ScreenTemplate1
-            image="/static/laptop.png"
+            image="/static/images/laptop.svg"
             title="Continue with Email"
             subTitle="We will send One Time Password on this email address"
             {...props}
@@ -265,94 +255,80 @@ function CountDown(props) {
 
 export function ScreenTemplate1(props) {
   const { userContext } = useContext(UserContext);
+  const { getStartedContext, setGetStartedContext } = useContext(
+    GetStartedContext
+  );
   return (
-    <GetStartedContext.Consumer>
-      {(context) => {
-        const { getStartedContext, setGetStartedContext } = context;
-        return (
-          <Slide
-            in={true}
-            direction={getStartedContext.page <= 2 ? "left" : "right"}
-            onEntered={() => {
-              if (getStartedContext.page > 2) {
-                setGetStartedContext({
-                  ...getStartedContext,
-                  page: getStartedContext.page - 2,
-                });
-              } else {
-                setGetStartedContext({
-                  ...getStartedContext,
-                  page: 2,
-                });
-              }
-            }}
+    <motion.div
+      animate="in"
+      exit="out"
+      initial="initial"
+      variants={slideRight}
+      transition="tween"
+    >
+      <Container
+        style={{
+          paddingTop: 13,
+          display: "flex",
+          justifyContent: "stretch",
+          flexDirection: "column",
+          height: "100vh",
+        }}
+      >
+        <Box>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            <Container
-              style={{
-                paddingTop: 13,
-                display: "flex",
-                justifyContent: "stretch",
-                flexDirection: "column",
-                height: "100vh",
-              }}
-            >
-              <Box>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
+            <AnimateOnTap>
+              <IconButton
+                onClick={() => props.history.push("/register")}
+                className="back-button"
+                disabled={props.backDisabled ? true : false}
+              >
+                <Icon fontSize="large">navigate_before</Icon>
+              </IconButton>
+            </AnimateOnTap>
+            {userContext?.user_id && (
+              <Typography>
+                <a
+                  href="#"
+                  onClick={() => {
+                    window.localStorage.clear();
+                    window.location = "/get-started";
+                  }}
                 >
-                  <IconButton
-                    onClick={() => props.history.push("/register")}
-                    className="back-button"
-                    disabled={props.backDisabled ? true : false}
-                  >
-                    <Icon fontSize="large">navigate_before</Icon>
-                  </IconButton>
-                  {userContext?.user_id && (
-                    <Typography>
-                      <a
-                        href="#"
-                        onClick={() => {
-                          window.localStorage.clear();
-                          window.location = "/get-started";
-                        }}
-                      >
-                        Logout
-                      </a>
-                    </Typography>
-                  )}
-                </Box>
-                <Box textAlign="center" p={2}>
-                  {typeof props.title === "string" ? (
-                    <Typography
-                      variant="h5"
-                      color="primary"
-                      style={{ fontWeight: 700 }}
-                    >
-                      {props.title}
-                    </Typography>
-                  ) : (
-                    props.title
-                  )}
-                  {typeof props.subTitle === "string" ? (
-                    <Typography color="textSecondary">
-                      {props.subTitle}
-                    </Typography>
-                  ) : (
-                    props.subTitle
-                  )}
-                </Box>
-              </Box>
-              <Box textAlign="center">
-                <img src={props.image} width="200" />
-              </Box>
-              {props.children}
-            </Container>
-          </Slide>
-        );
-      }}
-    </GetStartedContext.Consumer>
+                  Logout
+                </a>
+              </Typography>
+            )}
+          </Box>
+          <Box textAlign="center" p={2}>
+            {typeof props.title === "string" ? (
+              <Typography
+                variant="h5"
+                color="primary"
+                style={{ fontWeight: 700 }}
+              >
+                {props.title}
+              </Typography>
+            ) : (
+              props.title
+            )}
+            {typeof props.subTitle === "string" ? (
+              <Typography color="textSecondary">{props.subTitle}</Typography>
+            ) : (
+              props.subTitle
+            )}
+          </Box>
+        </Box>
+        <Box textAlign="center">
+          <img src={props.image} width="200" />
+        </Box>
+        {props.children}
+      </Container>
+    </motion.div>
   );
 }
 export default VerifyOTP;

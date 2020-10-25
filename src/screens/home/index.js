@@ -10,11 +10,13 @@ import { motion } from "framer-motion";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import ServicesSlider from "../../components/ServicesSlider";
 import Spinner from "../../components/Spinner";
+import BottomNavContext from "../../context/BottomNavContext";
 import ServicesContext from "../../context/ServicesContext";
 import UserContext from "../../context/UserContext";
 import { slideLeft } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import logout from "../../utils/logout";
 
 export function Home(props) {
   const scontext = useContext(ServicesContext);
@@ -37,7 +39,6 @@ export function Home(props) {
     <motion.div initial="initial" animate="in" exit="out" variants={slideLeft}>
       <Container disableGutters={true}>
         <Box
-          height="100vh"
           width="100%"
           display="flex"
           alignItems="center"
@@ -56,12 +57,15 @@ export function Home(props) {
 function HomePage(props) {
   const ucontext = useContext(UserContext);
   const scontext = useContext(ServicesContext);
+  const bcontext = useContext(BottomNavContext);
   const theme = useTheme();
   const { userContext } = ucontext;
   const { servicesContext } = scontext;
-  const logout = useCallback(() => {
-    window.localStorage.clear();
-    window.location = "/";
+  useEffect(() => {
+    bcontext.setBottomNavContext({
+      ...bcontext.bottomNavContext,
+      visible: true,
+    });
   }, []);
   return (
     <Box
@@ -100,7 +104,7 @@ function HomePage(props) {
                 padding: theme.spacing(1),
                 marginBottom: theme.spacing(1.5),
               }}
-              onClick={() => props.history.push("test")}
+              onClick={() => props.history.push("/service")}
               className="service"
             >
               <img

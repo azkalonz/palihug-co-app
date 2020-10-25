@@ -31,3 +31,14 @@ export const slideRight = {
     x: "100%",
   },
 };
+export const slideBottom = {
+  initial: {
+    y: "100%",
+  },
+  in: {
+    y: "0%",
+  },
+  out: {
+    y: "100%",
+  },
+};

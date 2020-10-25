@@ -1,10 +1,10 @@
 @font-face {
   font-family: "icomoon";
-  src: url("fonts/icomoon.eot?ld7s65");
-  src: url("fonts/icomoon.eot?ld7s65#iefix") format("embedded-opentype"),
-    url("fonts/icomoon.ttf?ld7s65") format("truetype"),
-    url("fonts/icomoon.woff?ld7s65") format("woff"),
-    url("fonts/icomoon.svg?ld7s65#icomoon") format("svg");
+  src: url("fonts/icomoon.eot?hj6ug9");
+  src: url("fonts/icomoon.eot?hj6ug9#iefix") format("embedded-opentype"),
+    url("fonts/icomoon.ttf?hj6ug9") format("truetype"),
+    url("fonts/icomoon.woff?hj6ug9") format("woff"),
+    url("fonts/icomoon.svg?hj6ug9#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,70 +26,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-voucher-alt:before {
-  content: "\e932";
-}
-.icon-voucher:before {
-  content: "\e933";
-  color: #dc2e45;
-}
-.icon-user-info-alt:before {
-  content: "\e934";
-}
-.icon-user-info:before {
-  content: "\e935";
-  color: #dc2e45;
-}
-.icon-coupon:before {
-  content: "\e936";
-  color: #dc2e45;
-}
-.icon-location:before {
-  content: "\e937";
-  color: #dc2e45;
-}
-.icon-drawer-alt:before {
-  content: "\e938";
-}
-.icon-grid-alt:before {
-  content: "\e939";
-}
-.icon-filter-alt:before {
-  content: "\e93a";
-}
-.icon-pencil-alt:before {
-  content: "\e93b";
-}
-.icon-info-alt:before {
-  content: "\e93c";
-}
-.icon-clock-2 .path1:before {
-  content: "\e93d";
-  color: rgb(220, 46, 69);
-}
-.icon-clock-2 .path2:before {
-  content: "\e93e";
-  margin-left: -1em;
-  color: rgb(216, 48, 74);
-}
-.icon-clock-2 .path3:before {
-  content: "\e93f";
-  margin-left: -1em;
-  color: rgb(216, 48, 74);
-}
-.icon-full-star:before {
-  content: "\e940";
-  color: #ffc833;
-}
-.icon-half-star .path1:before {
-  content: "\e942";
-  color: rgb(255, 200, 51);
-}
-.icon-half-star .path2:before {
-  content: "\e943";
-  margin-left: -1.0419921875em;
-  color: rgb(255, 214, 113);
-}
 .icon-coke-burger:before {
   content: "\e900";
   color: #dc2e45;
@@ -131,7 +67,7 @@
   content: "\e908";
   color: #dc2e45;
 }
-.icon-task:before {
+.icon-task2:before {
   content: "\e909";
   color: #dc2e45;
 }
@@ -171,7 +107,7 @@
   content: "\e911";
   color: #dc2e45;
 }
-.icon-task-2:before {
+.icon-task:before {
   content: "\e912";
   color: #dc2e45;
 }

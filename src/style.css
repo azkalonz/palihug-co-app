@@ -142,4 +142,53 @@ body {
 .lg {
   font-size: 32px;
 }
+
+.profile-screen .name {
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.themed-list {
+  -webkit-padding-start: 0;
+          padding-inline-start: 0;
+}
+
+.themed-list li.Mui-selected,
+.themed-list li.Mui-selected .material-icons {
+  background: none !important;
+  color: #d92e45;
+}
+
+.themed-list li.Mui-selected .list,
+.themed-list li.Mui-selected .material-icons .list {
+  background: #f9dce0;
+}
+
+.themed-list li:active .list button span {
+  color: #d92e45;
+}
+
+.themed-list .list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.themed-list .list button {
+  padding: 5px 20px;
+}
+
+.themed-list .list button span {
+  font-weight: 500;
+}
+
+.themed-list .list button .MuiTouchRipple-child {
+  background: #d92e45;
+}
 /*# sourceMappingURL=style.css.map */

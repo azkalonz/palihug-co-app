@@ -7,6 +7,11 @@ export default createMuiTheme({
     ...config.palette,
   },
   overrides: {
+    MuiDialog: {
+      paper: {
+        borderRadius: 20,
+      },
+    },
     MuiTypography: {
       root: {
         "&.error": {

@@ -8,18 +8,13 @@ import VerifyOTP from "./components/VerifyOTP";
 import GetStartedContext from "./context/GetStartedContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
+import BottomNavContext from "./context/BottomNavContext";
 import theme from "./misc/theme";
-import { GetStartedScreen } from "./screens/get-started";
-import { Home } from "./screens/home";
-import Chat from "./screens/home/Chat";
-import History from "./screens/home/History";
-import Notifications from "./screens/home/Notifications";
-import Profile from "./screens/home/Profile";
-import { Login } from "./screens/login";
 import "./style.css";
 import Api from "./utils/api";
-import NotFound from "./screens/404";
 import fetchData from "./utils/fetchData";
+import Spinner from "./components/Spinner";
+import Routes from "./Routes";
 
 function App() {
   // const location = useLocation();
@@ -27,6 +22,7 @@ function App() {
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
   });
+  const [bottomNavContext, setBottomNavContext] = useState({ visible: false });
   const [servicesContext, setServicesContext] = useState({});
   const [userContext, setUserContext] = useState({});
   const pushHistory = (name) => {
@@ -81,57 +77,32 @@ function App() {
         <ServicesContext.Provider
           value={{ servicesContext, setServicesContext }}
         >
-          <ThemeProvider theme={theme}>
-            {!loading && (
-              <BrowserRouter>
-                <Route
-                  render={({ location }) => (
-                    <AnimatePresence exitBeforeEnter>
-                      <Switch location={location} key={location.pathname}>
-                        <Route
-                          component={GetStartedScreen}
-                          exact
-                          path="/get-started"
-                        />
-                        <Route component={VerifyOTP} exact path="/verify-otp" />
-                        <Route component={Home} exact path="/" />
-                        <Route
-                          component={RegisterForm}
-                          exact
-                          path="/register"
-                        />
-                        <Route component={Login} exact path="/login" />
-                        <Route component={History} exact path="/history" />
-                        <Route component={Chat} exact path="/chat" />
-                        <Route component={Profile} exact path="/profile" />
-                        <Route
-                          component={Notifications}
-                          exact
-                          path="/notifications"
-                        />
-                        <Route component={NotFound} path="*" />
-                      </Switch>
-                    </AnimatePresence>
+          <BottomNavContext.Provider
+            value={{ bottomNavContext, setBottomNavContext }}
+          >
+            <ThemeProvider theme={theme}>
+              {!loading && (
+                <BrowserRouter>
+                  <Route
+                    render={({ location }) => (
+                      <AnimatePresence exitBeforeEnter>
+                        <Switch location={location} key={location.pathname}>
+                          {Routes.map((route, index) => (
+                            <Route key={index} {...route} />
+                          ))}
+                        </Switch>
+                      </AnimatePresence>
+                    )}
+                  />
+                  {userContext?.user_status === "Verified" && (
+                    <BottomNavigation />
                   )}
-                />
-                {userContext?.user_status === "Verified" && (
-                  <BottomNavigation />
-                )}
-              </BrowserRouter>
-            )}
+                </BrowserRouter>
+              )}
 
-            {loading && (
-              <Box
-                height="100vh"
-                width="100vw"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <CircularProgress />
-              </Box>
-            )}
-          </ThemeProvider>
+              {loading && <Spinner image />}
+            </ThemeProvider>
+          </BottomNavContext.Provider>
         </ServicesContext.Provider>
       </GetStartedContext.Provider>
     </UserContext.Provider>

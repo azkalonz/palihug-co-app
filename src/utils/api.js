@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const DOMAIN = "http://192.168.43.56";
-const SOCKET_DOMAIN = "http://192.168.43.56:3001";
+const DOMAIN = "http://192.168.0.106";
+const SOCKET_DOMAIN = "http://192.168.0.106:3001";
 
 const Api = {
   get: (ENDPOINT, params = {}) =>

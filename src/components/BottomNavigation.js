@@ -2,14 +2,15 @@ import {
   BottomNavigation as BottomNav,
   BottomNavigationAction,
 } from "@material-ui/core";
+import { motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import PageContext from "../context/PageContext";
-
+import BottomNavContext from "../context/BottomNavContext";
+import { slideBottom } from "../misc/transitions";
 function BottomNavigation(props) {
   const history = useHistory();
-  const pcontext = useContext(PageContext);
-  const [selected, setSelected] = useState("home");
+  const bcontext = useContext(BottomNavContext);
+  const [selected, setSelected] = useState("");
   const menu = useMemo(
     () =>
       [
@@ -36,6 +37,7 @@ function BottomNavigation(props) {
           icon: "icon-user-alt md",
           value: "profile",
           url: "/profile",
+          relatedUrls: ["/info"],
         },
       ].map((q) =>
         q.value === selected ? { ...q, icon: q.icon.replace("-alt", "") } : q
@@ -44,30 +46,44 @@ function BottomNavigation(props) {
   );
   useEffect(() => {
     menu.forEach((m) => {
-      if (m.url === window.location.pathname) setSelected(m.value);
+      const currentUrl = window.location.pathname;
+      if (m.url === currentUrl) setSelected(m.value);
+      else if (m.relatedUrls) {
+        m.relatedUrls.forEach((mm) => {
+          if (mm === currentUrl) setSelected(m.value);
+        });
+      }
     });
   }, [menu]);
-  return (
-    <BottomNav
-      value={selected}
-      onChange={(evt, val) => setSelected(val)}
+  useEffect(() => {
+    const m = menu.find((q) => q.url === window.location.pathname);
+    if (!m) setSelected("");
+  }, [window.location.pathname, menu]);
+  return bcontext.bottomNavContext?.visible ? (
+    <motion.div
+      initial="initial"
+      exit="out"
+      animate="in"
+      variants={slideBottom}
       className="bottom-navigation"
     >
-      {menu.map((m, index) => {
-        return (
-          <BottomNavigationAction
-            onClick={() => {
-              history.push(m.url);
-            }}
-            icon={<span className={m.icon} />}
-            label={m.label}
-            value={m.value}
-            key={m.value}
-          />
-        );
-      })}
-    </BottomNav>
-  );
+      <BottomNav value={selected} onChange={(evt, val) => setSelected(val)}>
+        {menu.map((m, index) => {
+          return (
+            <BottomNavigationAction
+              onClick={() => {
+                history.push(m.url);
+              }}
+              icon={<span className={m.icon} />}
+              label={m.label}
+              value={m.value}
+              key={m.value}
+            />
+          );
+        })}
+      </BottomNav>
+    </motion.div>
+  ) : null;
 }
 
 export default BottomNavigation;

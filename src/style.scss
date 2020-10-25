@@ -1,3 +1,6 @@
+$pale: #f9dce0;
+$primary: #d92e45;
+
 body {
   margin: 0;
   overflow: hidden;
@@ -77,11 +80,11 @@ body {
 
 .Carousel-indicator-11 {
   transition: all 0.4s ease-out;
-  color: #f9dce0 !important;
+  color: $pale !important;
 }
 
 .Carousel-active-12 {
-  color: #d92e45 !important;
+  color: $primary !important;
 }
 
 .sm {
@@ -92,4 +95,43 @@ body {
 }
 .lg {
   font-size: 32px;
+}
+
+.profile-screen {
+  .name {
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+}
+.themed-list {
+  padding-inline-start: 0;
+  li.Mui-selected,
+  li.Mui-selected .material-icons {
+    background: none !important;
+    color: $primary;
+    .list {
+      background: $pale;
+    }
+  }
+  li:active {
+    .list button span {
+      color: $primary;
+    }
+  }
+  .list {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    button {
+      padding: 5px 20px;
+      span {
+        font-weight: 500;
+      }
+      .MuiTouchRipple-child {
+        background: $primary;
+      }
+    }
+  }
 }

@@ -3,7 +3,10 @@ import React from "react";
 
 function AnimateOnTap(props) {
   return (
-    <motion.div whileTap={{ scale: 0.9 }} {...props}>
+    <motion.div
+      {...props}
+      whileTap={{ scale: 0.9, ...(props.whileTap ? props.whileTap : {}) }}
+    >
       {props.parentComponent ? (
         <props.parentComponent {...props.parentProps}>
           {props.children}

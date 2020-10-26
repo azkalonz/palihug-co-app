@@ -13,9 +13,9 @@ import { Login } from "./screens/login";
 function createRoute(path, exact, component, props = {}) {
   return { path, exact, ...(component ? { component } : {}), ...props };
 }
-function withNavBottom(props, Screen) {
+function withNavBottom(props, Screen, classes = "") {
   return (
-    <Box height="100vh" overflow="auto" paddingBottom={10}>
+    <Box height="100vh" overflow="auto" paddingBottom={10} className={classes}>
       <Screen {...props} />
     </Box>
   );
@@ -28,7 +28,9 @@ export default [
   createRoute("/verify-otp", true, VerifyOTP),
   createRoute("/register", true, RegisterForm),
   createRoute("/login", true, Login),
-  createRoute("/history", true, History),
+  createRoute("/history", true, null, {
+    render: (p) => withNavBottom(p, History, "column-flex-100"),
+  }),
   createRoute("/profile", true, null, {
     render: (p) => withNavBottom(p, Profile),
   }),

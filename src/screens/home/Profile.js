@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   ButtonBase,
   Icon,
   List,
@@ -37,7 +36,16 @@ function Profile(props) {
         url: "/orders",
         title: "My Orders",
       },
-      { icon: "home", callback: () => logout(), title: "Logout" },
+      {
+        icon: <span className="icon-location-alt md"></span>,
+        callback: () => logout(),
+        title: "Addresses",
+      },
+      {
+        icon: <span className="icon-logout-alt md"></span>,
+        callback: () => logout(),
+        title: "Logout",
+      },
     ],
     []
   );
@@ -82,24 +90,25 @@ function Profile(props) {
       className="profile-screen"
       style={{ padding: theme.spacing(3) }}
     >
-      <ScreenHeader title="Profile" />
-      <AnimateOnTap>
-        <Box className="center-align">
-          <Box marginRight={2}>
-            <Avatar
-              src={user_avatar}
-              alt={user_fname}
-              style={{ width: 50, height: 50 }}
-            />
+      <ScreenHeader
+        title={
+          <Box className="center-align">
+            <Box marginRight={2}>
+              <Avatar
+                src={user_avatar}
+                alt={user_fname}
+                style={{ width: 50, height: 50 }}
+              />
+            </Box>
+            <Box>
+              <Typography color="primary" className="name">
+                {user_fname} {user_lname}
+              </Typography>
+              <Typography className="email">{user_email}</Typography>
+            </Box>
           </Box>
-          <Box>
-            <Typography color="primary" className="name">
-              {user_fname} {user_lname}
-            </Typography>
-            <Typography className="email">{user_email}</Typography>
-          </Box>
-        </Box>
-      </AnimateOnTap>
+        }
+      />
       <Box>
         <List className="themed-list">
           {menu.map((m, i) => ListMenu(m, i))}

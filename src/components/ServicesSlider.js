@@ -91,32 +91,32 @@ function ServicesSlider(props) {
           setUserContext(userInfo);
         }}
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          width="100%"
-          justifyContent="space-between"
-          height="80%"
-        >
-          <Carousel
-            animation="slide"
-            interval={3000}
-            className="service-carousel"
+        <Box height="100vh" className="center-all" width="100%">
+          <Box
+            className="center-all"
+            flexDirection="column"
+            width="100%"
+            height="80%"
           >
-            {servicesContext.length
-              ? servicesContext.map((service) => ServiceSlide(service))
-              : null}
-          </Carousel>
-          <Box textAlign="center">
-            <SavingButton
-              className="themed-button auto-width"
-              saving={saving}
-              onClick={() => handleSkip()}
+            <Carousel
+              animation="slide"
+              interval={3000}
+              className="service-carousel"
             >
-              <Icon>navigate_next</Icon>
-            </SavingButton>
-            <Typography style={{ marginTop: 10 }}>Skip</Typography>
+              {servicesContext.length
+                ? servicesContext.map((service) => ServiceSlide(service))
+                : null}
+            </Carousel>
+            <Box textAlign="center">
+              <SavingButton
+                className="themed-button auto-width"
+                saving={saving}
+                onClick={() => handleSkip()}
+              >
+                <Icon>navigate_next</Icon>
+              </SavingButton>
+              <Typography style={{ marginTop: 10 }}>Skip</Typography>
+            </Box>
           </Box>
         </Box>
       </Slide>

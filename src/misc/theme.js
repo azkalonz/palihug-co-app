@@ -12,6 +12,14 @@ export default createMuiTheme({
         borderRadius: 20,
       },
     },
+    MuiTab: {
+      root: {
+        "&.Mui-selected": {
+          fontWeight: 800,
+          color: config.palette.primary.main,
+        },
+      },
+    },
     MuiTypography: {
       root: {
         "&.error": {

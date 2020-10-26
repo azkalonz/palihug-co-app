@@ -1,8 +1,6 @@
 import {
   Box,
   Container,
-  Icon,
-  IconButton,
   Snackbar,
   TextField,
   Typography,
@@ -18,7 +16,6 @@ import { slideRight } from "../misc/transitions";
 import { Alert } from "../screens/login/index";
 import Api, { SocketApi } from "../utils/api";
 import fetchData from "../utils/fetchData";
-import AnimateOnTap from "./AnimateOnTap";
 import SavingButton from "./SavingButton";
 
 function VerifyOTP(props) {
@@ -26,6 +23,9 @@ function VerifyOTP(props) {
   const [loading, setLoading] = useState(true);
   const ucontext = useContext(UserContext);
   const { userContext, setUserContext } = ucontext;
+  const { getStartedContext, setGetStartedContext } = useContext(
+    GetStartedContext
+  );
 
   const resetOTP = useCallback(() => {
     setLoading(true);
@@ -36,17 +36,26 @@ function VerifyOTP(props) {
       after: (data) => {
         if (data?.status) {
           setUserContext({ ...userContext, otpDuration: data.duration });
-          setIsOtpSent(true);
+          setOTPStatus(true);
         } else {
-          setIsOtpSent(false);
+          setOTPStatus(false);
         }
         setLoading(false);
       },
     });
   }, [userContext, isOtpSent, loading]);
+  const setOTPStatus = (status) => {
+    setGetStartedContext({ ...getStartedContext, isOTPsent: status });
+    setIsOtpSent(status);
+  };
   useEffect(() => {
     resetOTP();
   }, []);
+  useEffect(() => {
+    if (!getStartedContext.isOTPsent && isOtpSent) {
+      setOTPStatus(false);
+    }
+  }, [getStartedContext.isOTPsent, isOtpSent]);
   return (
     <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
       <React.Fragment>
@@ -276,20 +285,7 @@ export function ScreenTemplate1(props) {
         }}
       >
         <Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <AnimateOnTap>
-              <IconButton
-                onClick={() => props.history.push("/register")}
-                className="back-button"
-                disabled={props.backDisabled ? true : false}
-              >
-                <Icon fontSize="large">navigate_before</Icon>
-              </IconButton>
-            </AnimateOnTap>
+          <Box display="flex" justifyContent="flex-end" alignItems="center">
             {userContext?.user_id && (
               <Typography>
                 <a

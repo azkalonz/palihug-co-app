@@ -12,15 +12,19 @@ function ScreenHeader(props) {
         <IconButton
           className="back-button"
           onClick={() => {
-            goBackOrPush("/");
+            goBackOrPush(props.path || "/");
           }}
         >
           <Icon fontSize="large">navigate_before</Icon>
         </IconButton>
       </AnimateOnTap>
-      <Typography color="primary" style={{ fontWeight: 700 }} variant="h5">
-        {props.title}
-      </Typography>
+      {typeof props.title === "string" ? (
+        <Typography color="primary" style={{ fontWeight: 700 }} variant="h5">
+          {props.title}
+        </Typography>
+      ) : (
+        props.title
+      )}
     </Box>
   );
 }

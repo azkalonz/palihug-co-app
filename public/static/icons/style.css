@@ -48,6 +48,9 @@
   content: "\e937";
   color: #dc2e45;
 }
+.icon-location-alt:before {
+  content: "\e937";
+}
 .icon-drawer-alt:before {
   content: "\e938";
 }

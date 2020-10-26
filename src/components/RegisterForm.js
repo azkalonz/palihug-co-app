@@ -3,9 +3,6 @@ import {
   Checkbox,
   Container,
   FormControlLabel,
-  Icon,
-  IconButton,
-  Slide,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -21,10 +18,10 @@ import React, {
 import { Link } from "react-router-dom";
 import GetStartedContext from "../context/GetStartedContext";
 import UserContext from "../context/UserContext";
-import { slideLeft, slideRight } from "../misc/transitions";
+import { slideRight } from "../misc/transitions";
 import Api from "../utils/api";
-import AnimateOnTap from "./AnimateOnTap";
 import SavingButton from "./SavingButton";
+import ScreenHeader from "./ScreenHeader";
 
 function RegisterForm(props) {
   const formRef = useRef();
@@ -121,14 +118,7 @@ function RegisterForm(props) {
     >
       <Container style={{ paddingTop: 13 }}>
         <Box>
-          <AnimateOnTap>
-            <IconButton
-              onClick={() => props.history.push("/get-started")}
-              className="back-button"
-            >
-              <Icon fontSize="large">navigate_before</Icon>
-            </IconButton>
-          </AnimateOnTap>
+          <ScreenHeader title="Registration" path="/get-started" />
           <Typography color="textSecondary">Welcome</Typography>
           <Typography variant="h6" color="primary" style={{ fontWeight: 700 }}>
             Hey there, fill up the form to continue.

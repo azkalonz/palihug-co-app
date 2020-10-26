@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@material-ui/core";
 import { motion } from "framer-motion";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ServicesSlider from "../../components/ServicesSlider";
 import Spinner from "../../components/Spinner";
 import BottomNavContext from "../../context/BottomNavContext";
@@ -16,7 +16,6 @@ import UserContext from "../../context/UserContext";
 import { slideLeft } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
-import logout from "../../utils/logout";
 
 export function Home(props) {
   const scontext = useContext(ServicesContext);
@@ -79,14 +78,6 @@ function HomePage(props) {
       <Box>
         <Typography color="primary" variant="h5" style={{ fontWeight: 700 }}>
           Hi, {userContext.user_fname}{" "}
-          <Button
-            onClick={logout}
-            variant="outlined"
-            color="primary"
-            style={{ float: "right" }}
-          >
-            Logout
-          </Button>
         </Typography>
         <Box className="center-all" justifyContent="flex-start">
           <Icon color="primary">room</Icon>

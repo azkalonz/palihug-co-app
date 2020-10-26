@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   ButtonBase,
@@ -13,6 +14,7 @@ import {
 import { motion } from "framer-motion";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import AnimateOnTap from "../../components/AnimateOnTap";
+import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
 import UserContext from "../../context/UserContext";
 import { slideRight } from "../../misc/transitions";
@@ -22,7 +24,12 @@ function Profile(props) {
   const theme = useTheme();
   const bcontext = useContext(BottomNavContext);
   const profile = useContext(UserContext);
-  const { user_fname, user_lname, user_email } = profile.userContext;
+  const {
+    user_fname,
+    user_lname,
+    user_email,
+    user_avatar,
+  } = profile.userContext;
   const menu = useMemo(
     () => [
       {
@@ -75,10 +82,24 @@ function Profile(props) {
       className="profile-screen"
       style={{ padding: theme.spacing(3) }}
     >
-      <Typography color="primary" className="name">
-        {user_fname} {user_lname}
-      </Typography>
-      <Typography className="email">{user_email}</Typography>
+      <ScreenHeader title="Profile" />
+      <AnimateOnTap>
+        <Box className="center-align">
+          <Box marginRight={2}>
+            <Avatar
+              src={user_avatar}
+              alt={user_fname}
+              style={{ width: 50, height: 50 }}
+            />
+          </Box>
+          <Box>
+            <Typography color="primary" className="name">
+              {user_fname} {user_lname}
+            </Typography>
+            <Typography className="email">{user_email}</Typography>
+          </Box>
+        </Box>
+      </AnimateOnTap>
       <Box>
         <List className="themed-list">
           {menu.map((m, i) => ListMenu(m, i))}

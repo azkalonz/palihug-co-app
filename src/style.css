@@ -62,6 +62,15 @@ body {
           justify-content: center;
 }
 
+.center-align {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
 .service-carousel {
   width: 100%;
 }
@@ -115,6 +124,7 @@ body {
   -webkit-box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
           box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
   z-index: 9999;
+  overflow: hidden;
 }
 
 .auto-width {

@@ -58,6 +58,7 @@ function BottomNavigation(props) {
   useEffect(() => {
     const m = menu.find((q) => q.url === window.location.pathname);
     if (!m) setSelected("");
+    else setSelected(m.value);
   }, [window.location.pathname, menu]);
   return bcontext.bottomNavContext?.visible ? (
     <motion.div

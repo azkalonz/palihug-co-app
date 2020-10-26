@@ -1,20 +1,23 @@
-import { Box, CircularProgress, ThemeProvider } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/core";
 import { AnimatePresence } from "framer-motion";
+import { createBrowserHistory } from "history";
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Route, Router, Switch } from "react-router-dom";
 import BottomNavigation from "./components/BottomNavigation";
-import RegisterForm from "./components/RegisterForm";
-import VerifyOTP from "./components/VerifyOTP";
+import Spinner from "./components/Spinner";
+import BottomNavContext from "./context/BottomNavContext";
 import GetStartedContext from "./context/GetStartedContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
-import BottomNavContext from "./context/BottomNavContext";
 import theme from "./misc/theme";
+import Routes from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
-import Spinner from "./components/Spinner";
-import Routes from "./Routes";
+import { updatePastLocations } from "./utils/goBackOrPush.ts";
+
+export const history = createBrowserHistory();
+history.listen(updatePastLocations);
 
 function App() {
   // const location = useLocation();
@@ -82,7 +85,7 @@ function App() {
           >
             <ThemeProvider theme={theme}>
               {!loading && (
-                <BrowserRouter>
+                <Router history={history}>
                   <Route
                     render={({ location }) => (
                       <AnimatePresence exitBeforeEnter>
@@ -97,7 +100,7 @@ function App() {
                   {userContext?.user_status === "Verified" && (
                     <BottomNavigation />
                   )}
-                </BrowserRouter>
+                </Router>
               )}
 
               {loading && <Spinner image />}

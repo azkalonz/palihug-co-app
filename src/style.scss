@@ -38,6 +38,10 @@ body {
   align-items: center;
   justify-content: center;
 }
+.center-align {
+  display: flex;
+  align-items: center;
+}
 .service-carousel {
   width: 100%;
 }
@@ -72,6 +76,7 @@ body {
   border-radius: 30px 30px 0 0;
   box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
   z-index: 9999;
+  overflow: hidden;
 }
 
 .auto-width {

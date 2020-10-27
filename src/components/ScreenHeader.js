@@ -1,7 +1,7 @@
 import { Box, Icon, IconButton, Typography } from "@material-ui/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { goBackOrPush } from "../utils/goBackOrPush.ts";
+import { goBackOrPush } from "../utils/goBackOrPush";
 import AnimateOnTap from "./AnimateOnTap";
 
 function ScreenHeader(props) {

@@ -2,7 +2,7 @@ import { ThemeProvider } from "@material-ui/core";
 import { AnimatePresence } from "framer-motion";
 import { createBrowserHistory } from "history";
 import React, { useEffect, useState } from "react";
-import { Route, Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter, Switch, useLocation } from "react-router-dom";
 import BottomNavigation from "./components/BottomNavigation";
 import Spinner from "./components/Spinner";
 import BottomNavContext from "./context/BottomNavContext";
@@ -14,13 +14,13 @@ import Routes from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
-import { updatePastLocations } from "./utils/goBackOrPush.ts";
+import { updatePastLocations } from "./utils/goBackOrPush";
 
 export const history = createBrowserHistory();
-history.listen(updatePastLocations);
-
+history.listen = (callback) => {
+  callback(window.location.pathname);
+};
 function App() {
-  // const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
@@ -72,6 +72,11 @@ function App() {
       pushHistory("/get-started");
     }
   }, []);
+  useEffect(() => {
+    history.listen(function (location) {
+      updatePastLocations(location);
+    });
+  }, [window.location.pathname]);
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <GetStartedContext.Provider
@@ -85,7 +90,7 @@ function App() {
           >
             <ThemeProvider theme={theme}>
               {!loading && (
-                <Router history={history}>
+                <BrowserRouter history={history}>
                   <Route
                     render={({ location }) => (
                       <AnimatePresence exitBeforeEnter>
@@ -100,7 +105,7 @@ function App() {
                   {userContext?.user_status === "Verified" && (
                     <BottomNavigation />
                   )}
-                </Router>
+                </BrowserRouter>
               )}
 
               {loading && <Spinner image />}

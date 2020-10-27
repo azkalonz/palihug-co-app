@@ -230,4 +230,18 @@ body {
 .themed-list .list button .MuiTouchRipple-child {
   background: #d92e45;
 }
+
+.icon-tabs button {
+  background: #f9dce0;
+  border-radius: 20px;
+  margin: 0 10px;
+}
+
+.icon-tabs button.Mui-selected {
+  border: 2px solid;
+}
+
+.icon-tabs .MuiTabs-indicator {
+  display: none;
+}
 /*# sourceMappingURL=style.css.map */

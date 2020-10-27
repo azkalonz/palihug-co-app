@@ -1,4 +1,9 @@
-export default function logout() {
+import { history } from "../App";
+import { routingRules } from "./route-rules";
+
+export default function logout(callback) {
   window.localStorage.clear();
-  window.location = "/";
+  routingRules["IF_LOGGED_IN"].set(() => false);
+  history.push("/login");
+  if (callback) callback();
 }

@@ -1,5 +1,5 @@
 import { Box, TextField, Typography } from "@material-ui/core";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SavingButton from "../../components/SavingButton";
 import { ScreenTemplate1 } from "../../components/VerifyOTP";
@@ -7,6 +7,9 @@ import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import { notForThisRoute, routingRules } from "../../utils/route-rules";
+import { history } from "../../App";
+import UserContext from "../../context/UserContext";
 
 export function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -14,6 +17,7 @@ export function Alert(props) {
 
 const form = {};
 export function Login(props) {
+  const ucontext = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({});
   const [errors, setErrors] = useState({});
@@ -54,12 +58,24 @@ export function Login(props) {
             window.localStorage["user"] = JSON.stringify({
               user_token: data.user_token,
             });
-            if (data.user_status === "Verified") window.location = "/";
-            else window.location = "/verify-otp";
+            if (data.user) ucontext.setUserContext(data.user);
+            else if (data.user_email) ucontext.setUserContext(data);
+            if (data.user_status === "Verified") {
+              routingRules["IF_LOGGED_IN"].set(() => true);
+              history.push("/");
+            } else {
+              routingRules["IF_LOGGED_IN"].set(() => false);
+              history.push("/verify-otp");
+            }
           }
         }
         setLoading(false);
       },
+    });
+  }, []);
+  useEffect(() => {
+    notForThisRoute("IF_LOGGED_IN", function () {
+      props.history.push("/");
     });
   }, []);
   return (

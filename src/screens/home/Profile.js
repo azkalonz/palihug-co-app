@@ -43,7 +43,10 @@ function Profile(props) {
       },
       {
         icon: <span className="icon-logout-alt md"></span>,
-        callback: () => logout(),
+        callback: () =>
+          logout(() => {
+            profile.setUserContext({});
+          }),
         title: "Logout",
       },
     ],

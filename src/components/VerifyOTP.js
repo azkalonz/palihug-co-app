@@ -10,12 +10,15 @@ import { motion } from "framer-motion";
 import moment from "moment";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import PinInput from "react-pin-input";
+import { history } from "../App";
 import GetStartedContext from "../context/GetStartedContext";
 import UserContext from "../context/UserContext";
 import { slideRight } from "../misc/transitions";
 import { Alert } from "../screens/login/index";
 import Api, { SocketApi } from "../utils/api";
 import fetchData from "../utils/fetchData";
+import logout from "../utils/logout";
+import { routingRules } from "../utils/route-rules";
 import SavingButton from "./SavingButton";
 
 function VerifyOTP(props) {
@@ -99,7 +102,8 @@ function EnterOTP(props) {
         });
         setUserContext(user);
         window.localStorage["user"] = JSON.stringify({ ...body });
-        window.location = "/";
+        routingRules["IF_LOGGED_IN"].set(() => true);
+        history.push("/");
       } else if (res?.status === false) {
         setError(res?.message);
       } else {
@@ -263,7 +267,7 @@ function CountDown(props) {
 }
 
 export function ScreenTemplate1(props) {
-  const { userContext } = useContext(UserContext);
+  const { userContext, setUserContext } = useContext(UserContext);
   const { getStartedContext, setGetStartedContext } = useContext(
     GetStartedContext
   );
@@ -291,8 +295,9 @@ export function ScreenTemplate1(props) {
                 <a
                   href="#"
                   onClick={() => {
-                    window.localStorage.clear();
-                    window.location = "/get-started";
+                    logout(() => {
+                      setUserContext({});
+                    });
                   }}
                 >
                   Logout

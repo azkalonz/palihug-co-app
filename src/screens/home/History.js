@@ -1,18 +1,12 @@
-import { motion } from "framer-motion";
-import React, { useContext, useEffect, useState } from "react";
-import { slideRight } from "../../misc/transitions";
-import BottomNavContext from "../../context/BottomNavContext";
-import ScreenHeader from "../../components/ScreenHeader";
 import { Box, List, ListItem, Tab, Tabs, Typography } from "@material-ui/core";
+import { motion } from "framer-motion";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import AnimateOnTap from "../../components/AnimateOnTap";
+import ScreenHeader from "../../components/ScreenHeader";
+import BottomNavContext from "../../context/BottomNavContext";
+import { slideRight } from "../../misc/transitions";
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 function History(props) {
   const bcontext = useContext(BottomNavContext);
   const [tabValue, setTabValue] = useState(0);
@@ -72,14 +66,79 @@ function Active() {
   );
 }
 function InActive() {
+  const [tabValue, setTabValue] = useState(0);
+  const menu = useMemo(
+    () => [
+      { icon: "icon-coke-burger md" },
+      { icon: "icon-gift md" },
+      { icon: "icon-task md" },
+      {
+        icon: (
+          <span className="icon-laundry md">
+            <span className="path1"></span>
+            <span className="path2"></span>
+            <span className="path3"></span>
+            <span className="path4"></span>
+            <span className="path5"></span>
+            <span className="path6"></span>
+          </span>
+        ),
+      },
+      { icon: "icon-basket md" },
+    ],
+    []
+  );
   return (
-    <Box p={3}>
-      <List>
-        <ListItem divider>
-          <OrderCard />
-        </ListItem>
-      </List>
-    </Box>
+    <React.Fragment>
+      <Tabs
+        value={tabValue}
+        fullWidth
+        onChange={(e, val) => setTabValue(val)}
+        className="icon-tabs"
+      >
+        {menu.map((m, index) => (
+          <Tab
+            key={index}
+            label={
+              <AnimateOnTap>
+                {typeof m.icon === "string" ? (
+                  <span className={m.icon}></span>
+                ) : (
+                  m.icon
+                )}
+              </AnimateOnTap>
+            }
+          />
+        ))}
+      </Tabs>
+      <SwipeableViews
+        resistance
+        index={tabValue}
+        onChangeIndex={(index) => setTabValue(index)}
+        style={{ height: "100%" }}
+      >
+        <Box height="100%" p={3}>
+          <List>
+            <ListItem divider>
+              <OrderCard />
+            </ListItem>
+            <ListItem divider>
+              <OrderCard />
+            </ListItem>
+          </List>
+        </Box>
+        <Box height="100%" p={3}>
+          <List>
+            <ListItem divider>
+              <OrderCard />
+            </ListItem>
+            <ListItem divider>
+              <OrderCard />
+            </ListItem>
+          </List>
+        </Box>
+      </SwipeableViews>
+    </React.Fragment>
   );
 }
 

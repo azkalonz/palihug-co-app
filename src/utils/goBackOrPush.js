@@ -15,9 +15,10 @@ export function updatePastLocations(location) {
   historyManager.findAndPush(location);
 }
 export function goBackOrPush(path) {
-  if (historyManager.locations.length >= 1) {
+  if (historyManager.locations.length > 1) {
     history.back();
   } else {
+    console.log(history);
     history.push(path || "/");
   }
   return;

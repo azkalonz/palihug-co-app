@@ -2,7 +2,7 @@ import { ThemeProvider } from "@material-ui/core";
 import { AnimatePresence } from "framer-motion";
 import { createBrowserHistory } from "history";
 import React, { useEffect, useState } from "react";
-import { Route, BrowserRouter, Switch, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import BottomNavigation from "./components/BottomNavigation";
 import Spinner from "./components/Spinner";
 import BottomNavContext from "./context/BottomNavContext";
@@ -15,11 +15,15 @@ import "./style.css";
 import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
 import { updatePastLocations } from "./utils/goBackOrPush";
+import { createRoutingRule, routingRules } from "./utils/route-rules";
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
   callback(window.location.pathname);
 };
+createRoutingRule("IF_NOT_LOGGED_IN", true);
+createRoutingRule("IF_LOGGED_IN", false);
+
 function App() {
   const [loading, setLoading] = useState(true);
   const [getStartedContext, setGetStartedContext] = useState({
@@ -30,7 +34,7 @@ function App() {
   const [userContext, setUserContext] = useState({});
   const pushHistory = (name) => {
     setLoading(false);
-    if (window.location.pathname !== name) window.location = name;
+    if (window.location.pathname !== name) history.push(name);
   };
   useEffect(() => {
     let user = window.localStorage["user"];
@@ -51,6 +55,7 @@ function App() {
               setUserContext(user);
               if (user?.user_status === "Verified") {
                 // pushHistory("/");
+                routingRules["IF_LOGGED_IN"].set(() => true);
                 setLoading(false);
               } else if (user?.user_status === "Unverified") {
                 pushHistory("/verify-otp");
@@ -59,16 +64,11 @@ function App() {
               }
             },
           });
-        } else {
-          // if user has no session
-          pushHistory("/get-started");
         }
       } catch (e) {
-        // if fetchData fails
         pushHistory("/get-started");
       }
     } else {
-      // if localStorage token is not assigned
       pushHistory("/get-started");
     }
   }, []);
@@ -92,15 +92,20 @@ function App() {
               {!loading && (
                 <BrowserRouter history={history}>
                   <Route
-                    render={({ location }) => (
-                      <AnimatePresence exitBeforeEnter>
-                        <Switch location={location} key={location.pathname}>
-                          {Routes.map((route, index) => (
-                            <Route key={index} {...route} />
-                          ))}
-                        </Switch>
-                      </AnimatePresence>
-                    )}
+                    render={(r) => {
+                      const { location } = r;
+                      const h = r.history;
+                      history.push = h.push;
+                      return (
+                        <AnimatePresence exitBeforeEnter>
+                          <Switch location={location} key={location.pathname}>
+                            {Routes.map((route, index) => (
+                              <Route key={index} {...route} />
+                            ))}
+                          </Switch>
+                        </AnimatePresence>
+                      );
+                    }}
                   />
                   {userContext?.user_status === "Verified" && (
                     <BottomNavigation />

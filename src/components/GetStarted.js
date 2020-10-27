@@ -1,11 +1,17 @@
 import { Box, Button, Container, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { fadeInOut } from "../misc/transitions";
+import { notForThisRoute, routingRules } from "../utils/route-rules";
 import AnimateOnTap from "./AnimateOnTap";
 
 function GetStarted(props) {
+  useEffect(() => {
+    notForThisRoute("IF_NOT_LOGGED_IN", function (rule) {
+      console.log(rule);
+    });
+  }, [routingRules]);
   return (
     <motion.div animate="in" exit="out" initial="initial" variants={fadeInOut}>
       <Container>

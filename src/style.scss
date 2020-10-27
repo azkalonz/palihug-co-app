@@ -152,3 +152,17 @@ body {
     }
   }
 }
+
+.icon-tabs {
+  button {
+    background: $pale;
+    border-radius: 20px;
+    margin: 0 10px;
+  }
+  button.Mui-selected {
+    border: 2px solid;
+  }
+  .MuiTabs-indicator {
+    display: none;
+  }
+}

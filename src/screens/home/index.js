@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
+import { history } from "../../App";
 import ServicesSlider from "../../components/ServicesSlider";
 import Spinner from "../../components/Spinner";
 import BottomNavContext from "../../context/BottomNavContext";
@@ -16,6 +17,8 @@ import UserContext from "../../context/UserContext";
 import { slideLeft } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import { goBackOrPush } from "../../utils/goBackOrPush";
+import { notForThisRoute } from "../../utils/route-rules";
 
 export function Home(props) {
   const scontext = useContext(ServicesContext);

@@ -12,6 +12,14 @@ export default createMuiTheme({
         borderRadius: 20,
       },
     },
+    MuiTabs: {
+      root: {
+        overflow: "auto!important",
+      },
+      scroller: {
+        overflow: "auto!important",
+      },
+    },
     MuiTab: {
       root: {
         "&.Mui-selected": {

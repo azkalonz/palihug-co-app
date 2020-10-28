@@ -1,11 +1,12 @@
 import { ThemeProvider } from "@material-ui/core";
 import { AnimatePresence } from "framer-motion";
 import { createBrowserHistory } from "history";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import BottomNavigation from "./components/BottomNavigation";
 import Spinner from "./components/Spinner";
 import BottomNavContext from "./context/BottomNavContext";
+import LoadingScreenContext from "./context/LoadingScreenContext";
 import GetStartedContext from "./context/GetStartedContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
@@ -29,6 +30,7 @@ function App() {
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
   });
+  const [loadingScreen, setLoadingScreen] = useState(false);
   const [bottomNavContext, setBottomNavContext] = useState({ visible: false });
   const [servicesContext, setServicesContext] = useState({});
   const [userContext, setUserContext] = useState({});
@@ -89,30 +91,35 @@ function App() {
             value={{ bottomNavContext, setBottomNavContext }}
           >
             <ThemeProvider theme={theme}>
-              {!loading && (
-                <BrowserRouter history={history}>
-                  <Route
-                    render={(r) => {
-                      const { location } = r;
-                      const h = r.history;
-                      history.push = h.push;
-                      return (
-                        <AnimatePresence exitBeforeEnter>
-                          <Switch location={location} key={location.pathname}>
-                            {Routes.map((route, index) => (
-                              <Route key={index} {...route} />
-                            ))}
-                          </Switch>
-                        </AnimatePresence>
-                      );
-                    }}
-                  />
-                  {userContext?.user_status === "Verified" && (
-                    <BottomNavigation />
-                  )}
-                </BrowserRouter>
-              )}
-
+              <LoadingScreenContext.Provider
+                value={{ loadingScreen, setLoadingScreen }}
+              >
+                {!loading && (
+                  <BrowserRouter history={history}>
+                    {loadingScreen && <Spinner />}
+                    <Route
+                      render={(r) => {
+                        const { location } = r;
+                        const h = r.history;
+                        history.push = h.push;
+                        history.goBack = h.goBack;
+                        return (
+                          <AnimatePresence exitBeforeEnter>
+                            <Switch location={location} key={location.pathname}>
+                              {Routes.map((route, index) => (
+                                <Route key={index} {...route} />
+                              ))}
+                            </Switch>
+                          </AnimatePresence>
+                        );
+                      }}
+                    />
+                    {userContext?.user_status === "Verified" && (
+                      <BottomNavigation />
+                    )}
+                  </BrowserRouter>
+                )}
+              </LoadingScreenContext.Provider>
               {loading && <Spinner image />}
             </ThemeProvider>
           </BottomNavContext.Provider>

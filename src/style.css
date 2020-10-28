@@ -244,4 +244,72 @@ body {
 .icon-tabs .MuiTabs-indicator {
   display: none;
 }
+
+.inherit-all {
+  width: inherit;
+  height: inherit;
+}
+
+.menu-item-wrapper {
+  outline: none;
+}
+
+.menu-item-wrapper:first-of-type > div {
+  margin-left: 50px;
+}
+
+.merchant-banner {
+  height: 200px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.merchant-banner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: #000;
+  z-index: -1;
+}
+
+.merchant-content {
+  margin-top: 175px;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  background: #fff;
+}
+
+.fixed {
+  position: fixed;
+  z-index: 3;
+}
+
+.fixed.left {
+  left: 14px;
+  top: 14px;
+}
+
+.fixed.right {
+  right: 14px;
+  top: 14px;
+}
+
+.logo-container {
+  background: linear-gradient(30deg, #d92e45, #f9dce0);
+}
 /*# sourceMappingURL=style.css.map */

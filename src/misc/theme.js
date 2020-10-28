@@ -7,6 +7,16 @@ export default createMuiTheme({
     ...config.palette,
   },
   overrides: {
+    MuiPaper: {
+      elevation1: {
+        boxShadow: "0 8px 11px rgba(121,121,121,0.14)",
+      },
+    },
+    MuiTouchRipple: {
+      child: {
+        backgroundColor: config.palette.primary.main,
+      },
+    },
     MuiDialog: {
       paper: {
         borderRadius: 20,

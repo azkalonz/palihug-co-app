@@ -31,6 +31,27 @@ export const slideRight = {
     x: "100%",
   },
 };
+export const slideRightFade = {
+  initial: {
+    x: "100%",
+  },
+  in: {
+    x: "0%",
+  },
+  out: {
+    opacity: 0,
+  },
+};
+export const slideRightStill = {
+  initial: {
+    x: "100%",
+  },
+  in: {
+    x: "0%",
+  },
+  out: {},
+};
+
 export const slideBottom = {
   initial: {
     y: "100%",

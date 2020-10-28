@@ -9,13 +9,20 @@ import History from "./screens/home/History";
 import Notifications from "./screens/home/Notifications";
 import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
+import Services from "./screens/services";
+import Merchant from "./screens/services/Merchant";
 
 function createRoute(path, exact, component, props = {}) {
   return { path, exact, ...(component ? { component } : {}), ...props };
 }
-function withNavBottom(props, Screen, classes = "") {
+function withNavBottom(props, Screen, classes = "", padding = 10) {
   return (
-    <Box height="100vh" overflow="auto" paddingBottom={10} className={classes}>
+    <Box
+      height="100vh"
+      overflow="auto"
+      paddingBottom={padding}
+      className={classes}
+    >
       <Screen {...props} />
     </Box>
   );
@@ -36,7 +43,12 @@ export default [
   }),
   createRoute("/profile/info", true, History),
   createRoute("/orders", true, History),
-  createRoute("/service/:service_id?", true, History),
+  createRoute("/service/:service_id", true, null, {
+    render: (p) => withNavBottom(p, Services),
+  }),
+  createRoute("/merchant/:merchant_id", true, null, {
+    render: (p) => withNavBottom(p, Merchant, "", 0),
+  }),
   createRoute("/notifications", true, Notifications),
   createRoute("*", false, NotFound),
 ];

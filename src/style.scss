@@ -166,3 +166,59 @@ body {
     display: none;
   }
 }
+
+.inherit-all {
+  width: inherit;
+  height: inherit;
+}
+.menu-item-wrapper {
+  outline: none;
+  &:first-of-type > div {
+    margin-left: 50px;
+  }
+}
+
+.merchant-banner {
+  height: 200px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background: #000;
+    z-index: -1;
+  }
+}
+.merchant-content {
+  margin-top: 175px;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.fixed {
+  position: fixed;
+  z-index: 3;
+  &.left {
+    left: 14px;
+    top: 14px;
+  }
+  &.right {
+    right: 14px;
+    top: 14px;
+  }
+}
+
+.logo-container {
+  background: linear-gradient(30deg, $primary, $pale);
+}

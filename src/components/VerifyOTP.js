@@ -18,7 +18,6 @@ import { Alert } from "../screens/login/index";
 import Api, { SocketApi } from "../utils/api";
 import fetchData from "../utils/fetchData";
 import logout from "../utils/logout";
-import { routingRules } from "../utils/route-rules";
 import SavingButton from "./SavingButton";
 
 function VerifyOTP(props) {
@@ -102,7 +101,6 @@ function EnterOTP(props) {
         });
         setUserContext(user);
         window.localStorage["user"] = JSON.stringify({ ...body });
-        routingRules["IF_LOGGED_IN"].set(() => true);
         history.push("/");
       } else if (res?.status === false) {
         setError(res?.message);

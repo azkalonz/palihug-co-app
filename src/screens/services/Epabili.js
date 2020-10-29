@@ -12,7 +12,7 @@ import AnimateOnTap from "../../components/AnimateOnTap";
 import HorizontalScroll from "../../components/HorizontalScroll";
 import ScreenHeader from "../../components/ScreenHeader";
 
-function Epagakain(props) {
+function Epabili(props) {
   const { merchants } = props.service;
   return (
     <Box width="100vw" height={200}>
@@ -74,4 +74,4 @@ function MerchantCard(props) {
   );
 }
 
-export default Epagakain;
+export default Epabili;

@@ -274,13 +274,45 @@ body {
   right: 0;
   bottom: 0;
   top: 0;
-  background: #000;
   z-index: -1;
 }
 
-.merchant-content {
-  margin-top: 175px;
+.merchant-banner:not(.no-image)::after {
+  -webkit-transform: scaleY(2);
+          transform: scaleY(2);
+  background: #000;
+}
+
+.merchant-banner.no-image::after {
+  background: #f9dce0 url("/static/images/logo/horizontal.png") no-repeat center;
+  background-size: 200px;
+  -webkit-animation: height 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) 1 normal forwards;
+          animation: height 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) 1 normal forwards;
   height: 100vh;
+  -webkit-animation-delay: 300ms;
+          animation-delay: 300ms;
+}
+
+@-webkit-keyframes height {
+  from {
+    height: 100vh;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+@keyframes height {
+  from {
+    height: 100vh;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+.merchant-content-header {
+  margin-top: 175px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -291,7 +323,39 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+}
+
+.merchant-content-view,
+.merchant-content-header {
   background: #fff;
+}
+
+.merchant-content-view {
+  margin-top: -50px;
+  padding-top: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+}
+
+.merchant-content-view > div:nth-of-type(4) {
+  overflow-x: hidden;
+  height: 100%;
+  overflow: auto;
+}
+
+.merchant-logo {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  -webkit-transform: translateX(-60px);
+          transform: translateX(-60px);
+  width: 135px;
 }
 
 .fixed {
@@ -311,5 +375,32 @@ body {
 
 .logo-container {
   background: linear-gradient(30deg, #d92e45, #f9dce0);
+}
+
+.MuiSkeleton-text {
+  -webkit-transform: scale(1) !important;
+          transform: scale(1) !important;
+}
+
+.floating-cart-icon {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 70px;
+  height: 70px;
+}
+
+.floating-cart-icon,
+.floating-cart-icon button {
+  border-radius: 50% !important;
+  background: #f9dce0 !important;
+  color: #d92e45 !important;
+}
+
+.floating-cart-icon button {
+  width: inherit;
+  height: inherit;
+  -webkit-box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+          box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
 }
 /*# sourceMappingURL=style.css.map */

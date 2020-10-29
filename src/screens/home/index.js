@@ -9,6 +9,7 @@ import {
 import { motion } from "framer-motion";
 import React, { useContext, useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
+import { autoPlay } from "react-swipeable-views-utils";
 import ServicesSlider from "../../components/ServicesSlider";
 import BottomNavContext from "../../context/BottomNavContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
@@ -17,7 +18,6 @@ import UserContext from "../../context/UserContext";
 import { slideLeft } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
-import { autoPlay } from "react-swipeable-views-utils";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 

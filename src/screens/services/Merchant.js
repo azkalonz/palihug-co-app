@@ -7,7 +7,8 @@ import {
   Tabs,
   Typography,
 } from "@material-ui/core";
-import { motion, useElementScroll, useTransform } from "framer-motion";
+import { Skeleton } from "@material-ui/lab";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import React, {
   useCallback,
   useContext,
@@ -17,34 +18,48 @@ import React, {
 } from "react";
 import SwipeableViews from "react-swipeable-views";
 import AnimateOnTap from "../../components/AnimateOnTap";
+import CartIcon from "../../components/CartIcon";
 import BottomNavContext from "../../context/BottomNavContext";
+import CartContext from "../../context/CartContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
-import { slideBottom } from "../../misc/transitions";
+import {
+  fadeInOut,
+  fadeInOutFunc,
+  slideBottom,
+  slideRightFunc,
+} from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
 import { goBackOrPush } from "../../utils/goBackOrPush";
 
 function Merchant(props) {
+  return (
+    <React.Fragment>
+      <MerchantView {...props}>
+        <CartIcon />
+      </MerchantView>
+    </React.Fragment>
+  );
+}
+
+function MerchantView(props) {
   const ref = useRef();
   const { merchant_id } = props.match.params;
   const { setLoadingScreen } = useContext(LoadingScreenContext);
   const bcontext = useContext(BottomNavContext);
-  const { scrollYProgress } = useElementScroll(ref);
-  const [progress, setProgress] = useState(0);
   const [merchant, setMerchant] = useState({});
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const translateX = useTransform(scrollYProgress, [0, 0.3, 0.5], [0, 0, 60]);
-  const translateY = useTransform(scrollYProgress, [0, 0.3, 0.5], [0, 0, -100]);
-  const imgOpacity = useTransform(scrollYProgress, [0, 0.5], [0.7, 0.2]);
-  const nameOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const imgScale = useTransform(scrollYProgress, [0, 0.5], [1.5, 1]);
-  const iconColor = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["#ffffff", "#757575"]
-  );
-  const borderRadius = useTransform(scrollYProgress, [0, 1], [30, 0]);
+  const [categories, setCategories] = useState();
+  const [contentYState, setContentY] = useState(0);
+  const contentY = useMotionValue(0);
+  const translateX = useTransform(contentY, [-175, 0], [60, 0]);
+  const translateY = useTransform(contentY, [-175, 0], [-100, 0]);
+  const imgOpacity = useTransform(contentY, [-175, 0], [0.2, 0.7]);
+  const logoOpacity = useTransform(contentY, [-175, 0], [1, 0]);
+  const nameOpacity = useTransform(contentY, [-175, 0], [0, 1]);
+  const imgScale = useTransform(contentY, [-175, 0], [1, 1.5]);
+  const iconColor = useTransform(contentY, [-175, 0], ["#757575", "#ffffff"]);
+  const borderRadius = useTransform(contentY, [-175, 0], [0, 30]);
   useEffect(() => {
     bcontext.setBottomNavContext({
       ...bcontext.bottomNavContext,
@@ -54,26 +69,35 @@ function Merchant(props) {
   useEffect(() => {
     if (merchant_id) {
       fetchData({
-        before: () => setLoadingScreen(true),
+        before: () => setLoadingScreen(false),
         send: async () => await Api.get("/merchants/" + merchant_id + "/data"),
         after: (data) => {
-          console.log(data);
-          const { categories, products, merchant } = data;
-          setMerchant(merchant);
-          setProducts(products);
-          setCategories(categories);
-          setLoadingScreen(false);
+          if (data) {
+            const { categories, products, merchant } = data;
+            setMerchant(merchant);
+            setProducts(products);
+            setCategories(categories);
+            setLoadingScreen(false);
+          }
         },
       });
     }
   }, [merchant_id]);
-  scrollYProgress.onChange(setProgress);
+  contentY.onChange((t) => {
+    setContentY(t);
+  });
   return (
     <motion.div
       animate="in"
       exit="out"
       initial="initial"
-      variants={slideBottom}
+      variants={fadeInOutFunc({
+        out: {
+          transition: {
+            delay: 0.2,
+          },
+        },
+      })}
       style={{ height: "100%", overflow: "hidden" }}
     >
       <AnimateOnTap className="fixed left">
@@ -106,44 +130,94 @@ function Merchant(props) {
           </motion.span>
         </IconButton>
       </AnimateOnTap>
-      <Box style={{ height: "100%", overflow: "auto" }} ref={ref}>
+      <Box style={{ height: "100%" }} ref={ref}>
         <Box style={{ height: "100%" }}>
-          <Box className="merchant-banner">
-            <motion.img
-              src={
-                "http://192.168.0.106/storage/merchants/" +
-                merchant.merch_banner
-              }
-              alt={merchant.merch_name}
-              width="100%"
-              style={{ opacity: imgOpacity, scale: imgScale }}
-            />
+          <Box
+            className={
+              "merchant-banner" + (merchant.merch_banner ? "" : " no-image")
+            }
+          >
+            {merchant.merch_banner && (
+              <motion.img
+                src={
+                  "http://192.168.0.106/storage/merchants/" +
+                  merchant.merch_banner
+                }
+                alt={merchant.merch_name}
+                width="100%"
+                style={{ opacity: imgOpacity, scale: imgScale }}
+              />
+            )}
           </Box>
-          <motion.div className="merchant-content" style={{ borderRadius }}>
+          <motion.div
+            animate="in"
+            exit="out"
+            initial="initial"
+            variants={slideBottom}
+            transition={{ delay: 0.2 }}
+          >
             <motion.div
-              style={{
-                translateX,
-                translateY,
-                opacity: nameOpacity,
-                padding: 24,
+              className="merchant-content-header"
+              style={{ borderRadius }}
+              drag="y"
+              dragConstraints={{
+                top: -175,
+                bottom: 0,
               }}
+              dragElastic={0.1}
+              dragTransition={{ bounceStiffness: 1000, bounceDamping: 20 }}
+              y={contentY}
             >
-              <Typography
-                color="primary"
+              <Icon
                 style={{
-                  fontWeight: 700,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  position: "absolute",
+                  top: 0,
+                  left: "50%",
+                  opacity: 0.7,
                 }}
-                variant="h4"
               >
-                {merchant.vendor?.vendor_shop_name}
-              </Typography>
+                drag_handle
+              </Icon>
+              <motion.div
+                style={{
+                  translateX,
+                  translateY,
+                  opacity: nameOpacity,
+                  padding: 24,
+                }}
+              >
+                <Typography
+                  color="primary"
+                  style={{
+                    fontWeight: 700,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                  variant="h4"
+                >
+                  {merchant.vendor?.vendor_shop_name}
+                </Typography>
+                {!merchant.vendor?.vendor_shop_name && (
+                  <Skeleton animation="wave" width="40%" height={55} />
+                )}
+              </motion.div>
+              <motion.img
+                src={"/static/images/logo/horizontal.png"}
+                alt={merchant.merch_name}
+                className="merchant-logo"
+                style={{ opacity: logoOpacity }}
+              />
             </motion.div>
-            <Products categories={categories} products={products} />
+
+            <Products
+              categories={categories}
+              products={products}
+              y={contentYState}
+            />
           </motion.div>
         </Box>
       </Box>
+      {props.children}
     </motion.div>
   );
 }
@@ -151,6 +225,7 @@ function Merchant(props) {
 function Products(props) {
   const { categories, products } = props;
   const [tabValue, setTabValue] = useState(0);
+  const { cartContext, setCartContext } = useContext(CartContext);
   const ListProducts = useCallback(
     (category) => {
       const p = products?.filter((q) => {
@@ -170,6 +245,11 @@ function Products(props) {
                 display="flex"
                 justifyContent="flex-start"
                 component={ButtonBase}
+                onClick={() =>
+                  setCartContext({
+                    products: [...cartContext.products, product],
+                  })
+                }
               >
                 <Box
                   minWidth={100}
@@ -198,10 +278,34 @@ function Products(props) {
         </React.Fragment>
       );
     },
-    [products]
+    [products, cartContext.products]
   );
   return (
-    <Box className="column-flex-100">
+    <Box
+      className="column-flex-100"
+      style={{ transform: `translateY(${props.y}px)` }}
+      className="merchant-content-view"
+    >
+      {categories && products?.length === 0 ? (
+        <Box p={2} height="100vh" textAlign="center" width="100%">
+          <Typography variant="h5">No available products</Typography>
+        </Box>
+      ) : null}
+      {!categories && (
+        <Box className="center-all">
+          {new Array(3).fill(1).map((q, i) => (
+            <Box
+              key={i}
+              p={2}
+              width="33%"
+              height={30}
+              paddingRight={i === 2 ? 2 : 0}
+            >
+              <Skeleton animation="wave" width="inherit%" height="inherit" />
+            </Box>
+          ))}
+        </Box>
+      )}
       <Tabs
         centered
         value={tabValue}
@@ -215,6 +319,29 @@ function Products(props) {
           ></Tab>
         ))}
       </Tabs>
+      {!categories && (
+        <Box>
+          {new Array(2).fill(1).map((q, i) => (
+            <Box
+              key={i}
+              p={2}
+              marginBottom={2}
+              width="100%"
+              className="center-all"
+              style={{ opacity: 1 - i / 2 }}
+            >
+              <Skeleton
+                animation="wave"
+                variant="circle"
+                width={100}
+                style={{ minWidth: 100, marginRight: 10 }}
+                height={100}
+              />
+              <Skeleton animation="wave" width="100%" height={100} />
+            </Box>
+          ))}
+        </Box>
+      )}
       <SwipeableViews
         resistance
         index={tabValue}

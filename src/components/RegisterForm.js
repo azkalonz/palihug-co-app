@@ -20,7 +20,6 @@ import GetStartedContext from "../context/GetStartedContext";
 import UserContext from "../context/UserContext";
 import { slideRight } from "../misc/transitions";
 import Api from "../utils/api";
-import { notForThisRoute } from "../utils/route-rules";
 import SavingButton from "./SavingButton";
 import ScreenHeader from "./ScreenHeader";
 
@@ -104,9 +103,6 @@ function RegisterForm(props) {
   );
 
   useEffect(() => {
-    notForThisRoute("IF_LOGGED_IN", function () {
-      props.history.push("/");
-    });
     if (userContext?.user_id) {
       props.history.push("verify-otp");
     }

@@ -1,15 +1,15 @@
 import { Box, TextField, Typography } from "@material-ui/core";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import React, { useCallback, useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { history } from "../../App";
 import SavingButton from "../../components/SavingButton";
+import ScreenHeader from "../../components/ScreenHeader";
 import { ScreenTemplate1 } from "../../components/VerifyOTP";
+import UserContext from "../../context/UserContext";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
-import MuiAlert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
-import { notForThisRoute, routingRules } from "../../utils/route-rules";
-import { history } from "../../App";
-import UserContext from "../../context/UserContext";
 
 export function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -61,10 +61,8 @@ export function Login(props) {
             if (data.user) ucontext.setUserContext(data.user);
             else if (data.user_email) ucontext.setUserContext(data);
             if (data.user_status === "Verified") {
-              routingRules["IF_LOGGED_IN"].set(() => true);
               history.push("/");
             } else {
-              routingRules["IF_LOGGED_IN"].set(() => false);
               history.push("/verify-otp");
             }
           }
@@ -73,14 +71,9 @@ export function Login(props) {
       },
     });
   }, []);
-  useEffect(() => {
-    notForThisRoute("IF_LOGGED_IN", function () {
-      props.history.push("/");
-    });
-  }, []);
   return (
     <ScreenTemplate1
-      title="Welcome Back"
+      title={<ScreenHeader path="/get-started" title="Welcome Back" />}
       subTitle="Good day! Sign in to continue."
       {...props}
     >

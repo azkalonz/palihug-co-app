@@ -63,3 +63,25 @@ export const slideBottom = {
     y: "100%",
   },
 };
+
+export const fadeInOutFunc = (config = {}) => {
+  const trans = { ...fadeInOut };
+  Object.keys(config).map((k) => {
+    trans[k] = { ...trans[k], ...config[k] };
+  });
+  return trans;
+};
+export const slideRightFunc = (config = {}) => {
+  const trans = { ...slideRight };
+  Object.keys(config).map((k) => {
+    trans[k] = { ...trans[k], ...config[k] };
+  });
+  return trans;
+};
+export const slideLeftFunc = (config = {}) => {
+  const trans = { ...slideLeft };
+  Object.keys(config).map((k) => {
+    trans[k] = { ...trans[k], ...config[k] };
+  });
+  return trans;
+};

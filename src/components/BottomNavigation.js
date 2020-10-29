@@ -27,6 +27,15 @@ function BottomNavigation(props) {
           url: "/history",
         },
         {
+          label: "Cart",
+          icon: "icon-cart-alt md",
+          iconStyle: {
+            color: "#b9b8b8",
+          },
+          value: "cart",
+          url: "/cart",
+        },
+        {
           label: "Notifications",
           icon: "icon-bell-alt md",
           value: "notifications",
@@ -75,7 +84,12 @@ function BottomNavigation(props) {
               onClick={() => {
                 history.push(m.url);
               }}
-              icon={<span className={m.icon} />}
+              icon={
+                <span
+                  className={m.icon}
+                  {...(m.iconStyle ? { style: m.iconStyle } : {})}
+                />
+              }
               label={m.label}
               value={m.value}
               key={m.value}

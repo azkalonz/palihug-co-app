@@ -192,19 +192,58 @@ body {
     right: 0;
     bottom: 0;
     top: 0;
-    background: #000;
     z-index: -1;
   }
+  &:not(.no-image)::after {
+    transform: scaleY(2);
+    background: #000;
+  }
+  &.no-image::after {
+    background: $pale url("/static/images/logo/horizontal.png") no-repeat center;
+    background-size: 200px;
+    animation: height 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) 1 normal forwards;
+    height: 100vh;
+    animation-delay: 300ms;
+  }
 }
-.merchant-content {
+@keyframes height {
+  from {
+    height: 100vh;
+  }
+  to {
+    height: 100%;
+  }
+}
+.merchant-content-header {
   margin-top: 175px;
-  height: 100vh;
   overflow: hidden;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
+}
+.merchant-content-view,
+.merchant-content-header {
   background: #fff;
+}
+.merchant-content-view {
+  margin-top: -50px;
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  & > div:nth-of-type(4) {
+    overflow-x: hidden;
+    height: 100%;
+    overflow: auto;
+  }
+}
+.merchant-logo {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-60px);
+  width: 135px;
 }
 .fixed {
   position: fixed;
@@ -221,4 +260,27 @@ body {
 
 .logo-container {
   background: linear-gradient(30deg, $primary, $pale);
+}
+
+.MuiSkeleton-text {
+  transform: scale(1) !important;
+}
+
+.floating-cart-icon {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 70px;
+  height: 70px;
+  &,
+  button {
+    border-radius: 50% !important;
+    background: $pale !important;
+    color: $primary !important;
+  }
+  button {
+    width: inherit;
+    height: inherit;
+    box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+  }
 }

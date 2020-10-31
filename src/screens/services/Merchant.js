@@ -197,9 +197,10 @@ function MerchantView(props) {
                 >
                   {merchant.vendor?.vendor_shop_name}
                 </Typography>
-                {!merchant.vendor?.vendor_shop_name && (
-                  <Skeleton animation="wave" width="40%" height={55} />
-                )}
+                {!merchant.vendor?.errors &&
+                  !merchant.vendor?.vendor_shop_name && (
+                    <Skeleton animation="wave" width="40%" height={55} />
+                  )}
               </motion.div>
               <motion.img
                 src={"/static/images/logo/horizontal.png"}
@@ -292,19 +293,43 @@ function Products(props) {
         </Box>
       ) : null}
       {!categories && (
-        <Box className="center-all">
-          {new Array(3).fill(1).map((q, i) => (
-            <Box
-              key={i}
-              p={2}
-              width="33%"
-              height={30}
-              paddingRight={i === 2 ? 2 : 0}
-            >
-              <Skeleton animation="wave" width="inherit%" height="inherit" />
-            </Box>
-          ))}
-        </Box>
+        <React.Fragment>
+          <Box className="center-all">
+            {new Array(3).fill(1).map((q, i) => (
+              <Box
+                key={i}
+                p={2}
+                width="33%"
+                height={30}
+                paddingRight={i === 2 ? 2 : 0}
+              >
+                <Skeleton animation="wave" width="inherit%" height="inherit" />
+              </Box>
+            ))}
+          </Box>
+          <Box marginTop={4}>
+            {new Array(2).fill(1).map((q, i) => (
+              <Box
+                key={i}
+                p={2}
+                marginBottom={1}
+                paddingTop={0}
+                width="100%"
+                className="center-all"
+                style={{ opacity: 1 - i / 2 }}
+              >
+                <Skeleton
+                  animation="wave"
+                  variant="circle"
+                  width={100}
+                  style={{ minWidth: 100, marginRight: 10 }}
+                  height={100}
+                />
+                <Skeleton animation="wave" width="100%" height={100} />
+              </Box>
+            ))}
+          </Box>
+        </React.Fragment>
       )}
       <Tabs
         centered
@@ -319,29 +344,6 @@ function Products(props) {
           ></Tab>
         ))}
       </Tabs>
-      {!categories && (
-        <Box>
-          {new Array(2).fill(1).map((q, i) => (
-            <Box
-              key={i}
-              p={2}
-              marginBottom={2}
-              width="100%"
-              className="center-all"
-              style={{ opacity: 1 - i / 2 }}
-            >
-              <Skeleton
-                animation="wave"
-                variant="circle"
-                width={100}
-                style={{ minWidth: 100, marginRight: 10 }}
-                height={100}
-              />
-              <Skeleton animation="wave" width="100%" height={100} />
-            </Box>
-          ))}
-        </Box>
-      )}
       <SwipeableViews
         resistance
         index={tabValue}

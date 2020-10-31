@@ -7,6 +7,12 @@ export default createMuiTheme({
     ...config.palette,
   },
   overrides: {
+    MuiBottomNavigationAction: {
+      root: {
+        minWidth: 70,
+        maxWidth: 70,
+      },
+    },
     MuiPaper: {
       elevation1: {
         boxShadow: "0 8px 11px rgba(121,121,121,0.14)",

@@ -22,3 +22,7 @@ export function goBackOrPush(path) {
   }
   return;
 }
+
+export function goAddressPage() {
+  history.push("/address");
+}

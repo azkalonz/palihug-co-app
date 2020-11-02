@@ -284,3 +284,36 @@ body {
     box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
   }
 }
+.swipeable-products > div > div {
+  padding-bottom: 40px;
+}
+
+.address-detail {
+  padding: 14px;
+  border: 2px dashed transparent;
+  background: rgba(0, 0, 0, 0.048);
+  border-radius: 10px;
+  margin-top: 13px;
+  &.default {
+    background: $primary;
+    p,
+    button,
+    span {
+      color: #fff;
+    }
+    div > span {
+      margin-right: 14px;
+    }
+  }
+  &.Mui-selected {
+    background: $pale !important;
+    border-color: $primary;
+    p {
+      font-weight: 600;
+    }
+  }
+  &,
+  & > div {
+    width: 100%;
+  }
+}

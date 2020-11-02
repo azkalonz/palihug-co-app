@@ -61,6 +61,7 @@ export const slideBottom = {
   },
   out: {
     y: "100%",
+    opacity: 0,
   },
 };
 

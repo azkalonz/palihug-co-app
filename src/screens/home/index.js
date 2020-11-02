@@ -1,15 +1,9 @@
-import {
-  Box,
-  Button,
-  Container,
-  Icon,
-  Typography,
-  useTheme,
-} from "@material-ui/core";
+import { Box, Container, Typography, useTheme } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
+import Address from "../../components/Address";
 import ServicesSlider from "../../components/ServicesSlider";
 import BottomNavContext from "../../context/BottomNavContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
@@ -82,10 +76,7 @@ function HomePage(props) {
         <Typography color="primary" variant="h5" style={{ fontWeight: 700 }}>
           Hi, {userContext.user_fname}{" "}
         </Typography>
-        <Box className="center-all" justifyContent="flex-start">
-          <Icon color="primary">room</Icon>
-          <Button>Enter your address</Button>
-        </Box>
+        <Address />
       </Box>
       <AutoPlaySwipeableViews resistance>
         <Box p={3} display="flex" borderRadius={20} className="logo-container">

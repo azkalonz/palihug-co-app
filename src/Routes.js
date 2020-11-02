@@ -5,6 +5,7 @@ import VerifyOTP from "./components/VerifyOTP";
 import NotFound from "./screens/404";
 import { GetStartedScreen } from "./screens/get-started";
 import { Home } from "./screens/home";
+import Address from "./screens/home/Address";
 import History from "./screens/home/History";
 import Notifications from "./screens/home/Notifications";
 import Profile from "./screens/home/Profile";
@@ -42,6 +43,9 @@ export default [
     render: (p) => withNavBottom(p, Profile),
   }),
   createRoute("/profile/info", true, History),
+  createRoute("/address", true, null, {
+    render: (p) => withNavBottom(p, Address, "column-flex-100"),
+  }),
   createRoute("/orders", true, History),
   createRoute("/service/:service_id", true, null, {
     render: (p) => withNavBottom(p, Services),

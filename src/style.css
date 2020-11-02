@@ -403,4 +403,44 @@ body {
   -webkit-box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
           box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
 }
+
+.swipeable-products > div > div {
+  padding-bottom: 40px;
+}
+
+.address-detail {
+  padding: 14px;
+  border: 2px dashed transparent;
+  background: rgba(0, 0, 0, 0.048);
+  border-radius: 10px;
+  margin-top: 13px;
+}
+
+.address-detail.default {
+  background: #d92e45;
+}
+
+.address-detail.default p,
+.address-detail.default button,
+.address-detail.default span {
+  color: #fff;
+}
+
+.address-detail.default div > span {
+  margin-right: 14px;
+}
+
+.address-detail.Mui-selected {
+  background: #f9dce0 !important;
+  border-color: #d92e45;
+}
+
+.address-detail.Mui-selected p {
+  font-weight: 600;
+}
+
+.address-detail,
+.address-detail > div {
+  width: 100%;
+}
 /*# sourceMappingURL=style.css.map */

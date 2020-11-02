@@ -155,6 +155,7 @@ function MerchantView(props) {
             initial="initial"
             variants={slideBottom}
             transition={{ delay: 0.2 }}
+            style={{ height: "100%" }}
           >
             <motion.div
               className="merchant-content-header"
@@ -237,7 +238,7 @@ function Products(props) {
       });
       return (
         <React.Fragment>
-          {p?.map((product, index) => {
+          {[...p, ...p, ...p, ...p, ...p, ...p]?.map((product, index) => {
             const image = product?.images[0] ? product.images[0].src : "";
             return (
               <Box
@@ -347,8 +348,15 @@ function Products(props) {
       <SwipeableViews
         resistance
         index={tabValue}
-        onChangeIndex={(index) => setTabValue(index)}
+        onChangeIndex={(index) => {
+          setTabValue(index);
+        }}
         style={{ height: "100%" }}
+        className="swipeable-products"
+        onSwitching={(t) => {
+          if (!(t % 1))
+            document.querySelector(".swipeable-products").scrollTop = 0;
+        }}
       >
         {categories?.map((category, index) => ListProducts(category))}
       </SwipeableViews>

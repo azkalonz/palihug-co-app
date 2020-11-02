@@ -38,7 +38,7 @@ function Profile(props) {
       },
       {
         icon: <span className="icon-location-alt md"></span>,
-        callback: () => logout(),
+        url: "/address",
         title: "Addresses",
       },
       {

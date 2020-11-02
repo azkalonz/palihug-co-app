@@ -1,11 +1,11 @@
-import { Box, Button, Icon } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { motion } from "framer-motion";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import Address from "../../components/Address";
 import HorizontalScroll from "../../components/HorizontalScroll";
 import ScreenHeader from "../../components/ScreenHeader";
-import Spinner from "../../components/Spinner";
 import BottomNavContext from "../../context/BottomNavContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
 import { slideRightStill } from "../../misc/transitions";
@@ -54,14 +54,7 @@ function Services(props) {
       variants={slideRightStill}
     >
       <Box p={3}>
-        <ScreenHeader
-          title={
-            <Box className="center-all" justifyContent="flex-start">
-              <Icon color="primary">room</Icon>
-              <Button>Enter your address</Button>
-            </Box>
-          }
-        />
+        <ScreenHeader title={<Address />} />
       </Box>
       {typeof Service === "function" && (
         <Service {...props} service={service} />

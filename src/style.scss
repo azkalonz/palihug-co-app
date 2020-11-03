@@ -317,3 +317,54 @@ body {
     width: 100%;
   }
 }
+
+.price {
+  position: relative;
+  padding-left: 30px;
+  & h6 {
+    position: relative;
+    z-index: 2;
+    background: $primary;
+    display: inline-block;
+    color: #fff;
+    padding-right: 15px;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: url("/static/images/price-bg.svg") no-repeat;
+    width: 30px;
+    background-size: auto 100%;
+  }
+}
+
+.product {
+  &.small {
+    display: flex;
+    align-items: center;
+    & img {
+      width: 40%;
+    }
+    & > div {
+      width: 60%;
+    }
+    & h5 {
+      font-size: 1em;
+    }
+  }
+}
+
+.cart-counter {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  padding: 10px;
+  border-radius: 10px;
+  background: $primary;
+  color: #fff;
+}

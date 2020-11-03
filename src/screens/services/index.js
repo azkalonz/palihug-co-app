@@ -15,7 +15,7 @@ import Epabili from "./Epabili";
 import Epagakain from "./Epagakain";
 
 function Services(props) {
-  const { service_id } = props.match.params;
+  const { service_id } = props.match?.params || { service_id: props.service };
   const { setLoadingScreen } = useContext(LoadingScreenContext);
   const [service, setService] = useState();
   const bcontext = useContext(BottomNavContext);
@@ -53,9 +53,11 @@ function Services(props) {
       exit="out"
       variants={slideRightStill}
     >
-      <Box p={3}>
-        <ScreenHeader title={<Address />} />
-      </Box>
+      {!props.service && (
+        <Box p={3}>
+          <ScreenHeader title={<Address />} />
+        </Box>
+      )}
       {typeof Service === "function" && (
         <Service {...props} service={service} />
       )}

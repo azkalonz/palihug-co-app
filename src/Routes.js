@@ -6,11 +6,13 @@ import NotFound from "./screens/404";
 import { GetStartedScreen } from "./screens/get-started";
 import { Home } from "./screens/home";
 import Address from "./screens/home/Address";
+import AddressForm from "./screens/home/AddressForm";
 import History from "./screens/home/History";
 import Notifications from "./screens/home/Notifications";
 import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
 import Services from "./screens/services";
+import Cart, { AddToCart } from "./screens/services/Cart";
 import Merchant from "./screens/services/Merchant";
 
 function createRoute(path, exact, component, props = {}) {
@@ -46,9 +48,18 @@ export default [
   createRoute("/address", true, null, {
     render: (p) => withNavBottom(p, Address, "column-flex-100"),
   }),
+  createRoute("/new-address", true, null, {
+    render: (p) => withNavBottom(p, AddressForm, "column-flex-100"),
+  }),
   createRoute("/orders", true, History),
   createRoute("/service/:service_id", true, null, {
     render: (p) => withNavBottom(p, Services),
+  }),
+  createRoute("/add-to-cart", true, null, {
+    render: (p) => withNavBottom(p, AddToCart),
+  }),
+  createRoute("/cart", true, null, {
+    render: (p) => withNavBottom(p, Cart),
   }),
   createRoute("/merchant/:merchant_id", true, null, {
     render: (p) => withNavBottom(p, Merchant, "", 0),

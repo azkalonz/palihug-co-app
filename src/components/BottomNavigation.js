@@ -1,4 +1,5 @@
 import {
+  Badge,
   BottomNavigation as BottomNav,
   BottomNavigationAction,
 } from "@material-ui/core";
@@ -10,6 +11,7 @@ import { slideBottom } from "../misc/transitions";
 function BottomNavigation(props) {
   const history = useHistory();
   const bcontext = useContext(BottomNavContext);
+  const { bottomNavContext } = bcontext;
   const [selected, setSelected] = useState("");
   const menu = useMemo(
     () =>
@@ -85,10 +87,22 @@ function BottomNavigation(props) {
                 history.push(m.url);
               }}
               icon={
-                <span
-                  className={m.icon}
-                  {...(m.iconStyle ? { style: m.iconStyle } : {})}
-                />
+                bottomNavContext.notifications[m.value] ? (
+                  <Badge
+                    badgeContent={bottomNavContext.notifications[m.value]}
+                    color="error"
+                  >
+                    <span
+                      className={m.icon}
+                      {...(m.iconStyle ? { style: m.iconStyle } : {})}
+                    />
+                  </Badge>
+                ) : (
+                  <span
+                    className={m.icon}
+                    {...(m.iconStyle ? { style: m.iconStyle } : {})}
+                  />
+                )
               }
               label={m.label}
               value={m.value}

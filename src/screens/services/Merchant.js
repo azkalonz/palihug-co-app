@@ -17,8 +17,10 @@ import React, {
   useState,
 } from "react";
 import SwipeableViews from "react-swipeable-views";
+import { history } from "../../App";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import CartIcon from "../../components/CartIcon";
+import EmptyListMessage from "../../components/EmptyListMessage";
 import BottomNavContext from "../../context/BottomNavContext";
 import CartContext from "../../context/CartContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
@@ -248,8 +250,9 @@ function Products(props) {
                 justifyContent="flex-start"
                 component={ButtonBase}
                 onClick={() =>
-                  setCartContext({
-                    products: [...cartContext.products, product],
+                  history.push({
+                    pathname: "/add-to-cart",
+                    state: product,
                   })
                 }
               >
@@ -289,9 +292,7 @@ function Products(props) {
       className="merchant-content-view"
     >
       {categories && products?.length === 0 ? (
-        <Box p={2} height="100vh" textAlign="center" width="100%">
-          <Typography variant="h5">No available products</Typography>
-        </Box>
+        <EmptyListMessage>No available products</EmptyListMessage>
       ) : null}
       {!categories && (
         <React.Fragment>

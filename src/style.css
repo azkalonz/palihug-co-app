@@ -443,4 +443,62 @@ body {
 .address-detail > div {
   width: 100%;
 }
+
+.price {
+  position: relative;
+  padding-left: 30px;
+}
+
+.price h6 {
+  position: relative;
+  z-index: 2;
+  background: #d92e45;
+  display: inline-block;
+  color: #fff;
+  padding-right: 15px;
+}
+
+.price::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: url("/static/images/price-bg.svg") no-repeat;
+  width: 30px;
+  background-size: auto 100%;
+}
+
+.product.small {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.product.small img {
+  width: 40%;
+}
+
+.product.small > div {
+  width: 60%;
+}
+
+.product.small h5 {
+  font-size: 1em;
+}
+
+.cart-counter {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #d92e45;
+  color: #fff;
+}
 /*# sourceMappingURL=style.css.map */

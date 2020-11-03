@@ -29,8 +29,11 @@ function App() {
     page: 1,
   });
   const [loadingScreen, setLoadingScreen] = useState(false);
-  const [cartContext, setCartContext] = useState({ products: [] });
-  const [bottomNavContext, setBottomNavContext] = useState({ visible: false });
+  const [cartContext, setCartContext] = useState({ products: [], total: 0 });
+  const [bottomNavContext, setBottomNavContext] = useState({
+    visible: false,
+    notifications: {},
+  });
   const [servicesContext, setServicesContext] = useState({});
   const [userContext, setUserContext] = useState({});
   const pushHistory = (name) => {

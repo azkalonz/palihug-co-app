@@ -1,21 +1,13 @@
-import {
-  Box,
-  Button,
-  ButtonBase,
-  Icon,
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import { Box, ButtonBase, Paper, Typography } from "@material-ui/core";
 import React from "react";
 import { history } from "../../App";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import HorizontalScroll from "../../components/HorizontalScroll";
-import ScreenHeader from "../../components/ScreenHeader";
 
 function Epagakain(props) {
   const { merchants } = props.service;
   return (
-    <Box width="100vw" height={200}>
+    <Box width="100vw" height="100%">
       <HorizontalScroll>
         {merchants?.map((m, i) => (
           <Box key={i} width={150} height={200} m={1}>

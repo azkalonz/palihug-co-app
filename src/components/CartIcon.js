@@ -1,9 +1,12 @@
 import { ButtonBase, Icon } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
+import { history } from "../App";
+import CartContext from "../context/CartContext";
 import { slideRightFunc } from "../misc/transitions";
 import AnimateOnTap from "./AnimateOnTap";
 
 function CartIcon(props) {
+  const { cartContext } = useContext(CartContext);
   return (
     <AnimateOnTap
       className="floating-cart-icon center-all"
@@ -17,9 +20,14 @@ function CartIcon(props) {
         },
       })}
     >
-      <ButtonBase>
+      <ButtonBase onClick={() => history.push("/cart")}>
         <Icon>shopping_cart</Icon>
       </ButtonBase>
+      {cartContext.products.length ? (
+        <div className="cart-counter">
+          {cartContext.products.length > 99 ? 99 : cartContext.products.length}
+        </div>
+      ) : null}
     </AnimateOnTap>
   );
 }

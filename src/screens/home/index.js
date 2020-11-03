@@ -12,6 +12,7 @@ import UserContext from "../../context/UserContext";
 import { slideLeft } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import Services from "../services";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -70,37 +71,41 @@ function HomePage(props) {
       alignSelf="flex-start"
       justifySelf="flex-start"
       width="100%"
-      p={3}
     >
-      <Box>
+      <Block>
         <Typography color="primary" variant="h5" style={{ fontWeight: 700 }}>
           Hi, {userContext.user_fname}{" "}
         </Typography>
         <Address />
-      </Box>
-      <AutoPlaySwipeableViews resistance>
-        <Box p={3} display="flex" borderRadius={20} className="logo-container">
-          <img
-            src="/static/images/logo/horizontal.png"
-            width="50%"
-            alt="ESGO"
-            style={{ filter: "grayscale(1) invert(1) brightness(2)" }}
-          />
-        </Box>
-        <Box
-          p={3}
-          display="flex"
-          borderRadius={20}
-          className="logo-container"
-          style={{ background: "#fff" }}
-        >
-          <img
-            src="/static/images/logo/horizontal.png"
-            width="50%"
-            alt="ESGO"
-          />
-        </Box>
-      </AutoPlaySwipeableViews>
+        <AutoPlaySwipeableViews resistance>
+          <Box
+            p={3}
+            display="flex"
+            borderRadius={20}
+            className="logo-container"
+          >
+            <img
+              src="/static/images/logo/horizontal.png"
+              width="50%"
+              alt="ESGO"
+              style={{ filter: "grayscale(1) invert(1) brightness(2)" }}
+            />
+          </Box>
+          <Box
+            p={3}
+            display="flex"
+            borderRadius={20}
+            className="logo-container"
+            style={{ background: "#fff" }}
+          >
+            <img
+              src="/static/images/logo/horizontal.png"
+              width="50%"
+              alt="ESGO"
+            />
+          </Box>
+        </AutoPlaySwipeableViews>
+      </Block>
       <Block title="Services">
         <Box className="services">
           {servicesContext?.map &&
@@ -140,20 +145,42 @@ function HomePage(props) {
             ))}
         </Box>
       </Block>
+      <Block title="Restaurants" p={0}>
+        <Services service={1} />
+      </Block>
     </Box>
   );
 }
 
 function Block(props) {
+  const theme = useTheme();
   return (
-    <Box>
-      <Typography
-        color="primary"
-        variant="h6"
-        style={{ fontWeight: 700, marginBottom: 13 }}
-      >
-        {props.title}
-      </Typography>
+    <Box
+      overflow="hidden"
+      p={props.p !== undefined ? props.p : 3}
+      paddingBottom={0}
+    >
+      {props.p !== undefined ? (
+        <Typography
+          color="primary"
+          variant="h6"
+          style={{
+            fontWeight: 700,
+            marginBottom: 13,
+            padding: theme.spacing(3),
+          }}
+        >
+          {props.title}
+        </Typography>
+      ) : (
+        <Typography
+          color="primary"
+          variant="h6"
+          style={{ fontWeight: 700, marginBottom: 13 }}
+        >
+          {props.title}
+        </Typography>
+      )}
       {props.children}
     </Box>
   );

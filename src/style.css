@@ -501,4 +501,84 @@ body {
   background: #d92e45;
   color: #fff;
 }
+
+.product-archive {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+}
+
+.product-archive .product {
+  margin-bottom: 24px;
+  width: 170px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  padding-bottom: 13px;
+  border-radius: 20px;
+  -webkit-box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+          box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+}
+
+.product-archive .image {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.product-archive .image img, .product-archive .image {
+  width: 100%;
+}
+
+.product-archive .image img {
+  padding: 13px;
+}
+
+.sale-price {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.sale-price p {
+  display: block;
+  height: 20px;
+  background: red;
+  margin-right: -10px;
+  padding-left: 10px;
+  color: #fff;
+  z-index: 2;
+}
+
+.sale-price::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -20px;
+  top: 0;
+  width: 20px;
+  height: 40px;
+  background: url("/static/images/sale-bg.svg");
+  background-size: cover;
+}
 /*# sourceMappingURL=style.css.map */

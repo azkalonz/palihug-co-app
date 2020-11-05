@@ -23,6 +23,7 @@ import UserContext from "../../context/UserContext";
 import { slideBottom } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import { goBackOrPush } from "../../utils/goBackOrPush";
 
 function Address(props) {
   const bcontext = useContext(BottomNavContext);
@@ -57,6 +58,7 @@ function Address(props) {
           setUserContext({ ...userContext, ...address });
         }
         setSaving(false);
+        goBackOrPush("/");
       },
     });
   }, [saving, selected]);
@@ -79,7 +81,7 @@ function Address(props) {
       <Box p={3}>
         <ScreenHeader title="Address" />
         <List>
-          {Object.keys(default_address).length ? (
+          {Object.keys(default_address || {}).length ? (
             <ListItem className="address-detail default">
               {(() => {
                 const {

@@ -10,11 +10,15 @@ import { goBackOrPush } from "../../utils/goBackOrPush";
 import CartContext from "../../context/CartContext";
 import SavingButton from "../../components/SavingButton";
 import EmptyListMessage from "../../components/EmptyListMessage";
+import { Block } from "../home";
+import Address from "../../components/Address";
+import UserContext from "../../context/UserContext";
 
 function Cart(props) {
   const bcontext = useContext(BottomNavContext);
   const { add, remove } = props.location?.state || {};
   const { cartContext, setCartContext } = useContext(CartContext);
+  const { userContext } = useContext(UserContext);
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: true });
@@ -46,21 +50,37 @@ function Cart(props) {
         <ScreenHeader title="Cart" />
         {cartContext.products.length ? (
           <React.Fragment>
-            {cartContext.products.map((item) => (
-              <ProductCard
-                product={item.product}
-                key={item.product.id}
-                variant="small"
-              >
-                <Typography>Quantity {item.quantity}</Typography>
-              </ProductCard>
-            ))}
-            <Box
-              marginTop={3}
-              className="center-all"
-              justifyContent="space-between"
-            >
-              <Typography style={{ marginRight: 10 }}>Total</Typography>
+            <Block title="Delivery Info">
+              {Object.keys(userContext.default_address || {}).length ? (
+                <React.Fragment>
+                  <CartColumn title="Name">
+                    <Typography style={{ fontWeight: 700 }} color="primary">
+                      {userContext?.default_address?.name}
+                    </Typography>
+                  </CartColumn>
+                  <CartColumn title="Number">
+                    <Typography style={{ fontWeight: 700 }} color="primary">
+                      {userContext?.default_address?.contact}
+                    </Typography>
+                  </CartColumn>
+                </React.Fragment>
+              ) : null}
+              <CartColumn title="Address">
+                <Address />
+              </CartColumn>
+            </Block>
+            <Block title="Your Order">
+              {cartContext.products.map((item) => (
+                <ProductCard
+                  product={item.product}
+                  key={item.product.id}
+                  variant="small"
+                >
+                  <Typography>Quantity {item.quantity}</Typography>
+                </ProductCard>
+              ))}
+            </Block>
+            <Block title="Total">
               <Price>
                 <CurrencyFormat
                   value={cartContext.total}
@@ -68,15 +88,15 @@ function Cart(props) {
                   thousandSeparator={true}
                 />
               </Price>
-            </Box>
-            <br />
-            <br />
-            <SavingButton
-              className="themed-button"
-              startIcon={<Icon>https</Icon>}
-            >
-              <Typography variant="h6">Checkout</Typography>
-            </SavingButton>
+              <br />
+              <br />
+              <SavingButton
+                className="themed-button"
+                startIcon={<Icon>https</Icon>}
+              >
+                <Typography>Checkout</Typography>
+              </SavingButton>
+            </Block>
           </React.Fragment>
         ) : (
           <EmptyListMessage>Cart is empty</EmptyListMessage>
@@ -100,20 +120,10 @@ export function AddToCart(props) {
         <ScreenHeader title={!product.edit ? "Add To Cart" : "Edit Order"} />
         <Container>
           <ProductCard product={product}>
-            <Box
-              marginTop={3}
-              className="center-all"
-              justifyContent="space-between"
-            >
-              <Typography style={{ marginRight: 10 }}>Quantity</Typography>
+            <CartRow title="Quantity">
               <InputQuantity onChange={(qty) => setQuantity(qty)} />
-            </Box>
-            <Box
-              marginTop={3}
-              className="center-all"
-              justifyContent="space-between"
-            >
-              <Typography style={{ marginRight: 10 }}>Total</Typography>
+            </CartRow>
+            <CartRow title="Total">
               <Typography
                 variant="h5"
                 color="primary"
@@ -126,7 +136,7 @@ export function AddToCart(props) {
                   prefix="PHP "
                 />
               </Typography>
-            </Box>
+            </CartRow>
           </ProductCard>
           <br />
           <Button
@@ -159,4 +169,20 @@ export function AddToCart(props) {
   ) : null;
 }
 
+function CartRow(props) {
+  return (
+    <Box marginTop={3} className="center-all" justifyContent="space-between">
+      <Typography style={{ marginRight: 10 }}>{props.title}</Typography>
+      {props.children}
+    </Box>
+  );
+}
+function CartColumn(props) {
+  return (
+    <Box marginBottom={3}>
+      <Typography style={{ marginRight: 10 }}>{props.title}</Typography>
+      {props.children}
+    </Box>
+  );
+}
 export default Cart;

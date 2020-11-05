@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Block } from ".";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import SavingButton from "../../components/SavingButton";
 import ScreenHeader from "../../components/ScreenHeader";
@@ -58,7 +59,7 @@ function AddressForm(props) {
       after: (data) => {
         if (data && !data.success) {
           setErrors(data);
-        } else if (data.success && data.address) {
+        } else if (data?.success && data?.address) {
           clearForm();
           const address = {};
           address["address"] = [...userContext.address];
@@ -79,63 +80,79 @@ function AddressForm(props) {
   return (
     <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
       <Box p={3}>
-        <ScreenHeader title="New Address" />
-        <TextField
-          label="House/Building No."
-          {...textFieldProps("house_number")}
-          onChange={(e) => onChange(e, "house_number")}
-        />
-        <TextField
-          label="Street"
-          {...textFieldProps("street")}
-          onChange={(e) => onChange(e, "street")}
-        />
-        <TextField
-          label="Barangay"
-          {...textFieldProps("barangay")}
-          onChange={(e) => onChange(e, "barangay")}
-        />
-        <TextField
-          label="City/Municipality"
-          {...textFieldProps("city")}
-          onChange={(e) => onChange(e, "city")}
-        />
-        <TextField
-          label="Province"
-          {...textFieldProps("province")}
-          onChange={(e) => onChange(e, "province")}
-        />
-        <TextField
-          label="Zip code"
-          {...textFieldProps("zip")}
-          onChange={(e) => onChange(e, "zip")}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              defaultChecked={form["is_default"]}
-              onChange={(e) => {
-                form["is_default"] = e.target.checked ? 1 : 0;
-              }}
-            />
-          }
-          {...textFieldProps("type")}
-          label={
-            <React.Fragment>
-              <Typography>Set as default address</Typography>
-              {errors["is_default"] && (
-                <Typography
-                  className="error"
-                  style={{
-                    fontSize: "0.75rem",
-                  }}
-                >
-                  {errors["is_default"]}
-                </Typography>
-              )}
-            </React.Fragment>
-          }
-        />
+        <ScreenHeader title="New Address" path="/address" />
+        <Block title="Contact Info">
+          <TextField
+            label="Full Name"
+            {...textFieldProps("name")}
+            onChange={(e) => onChange(e, "name")}
+          />
+          <TextField
+            label="Number"
+            {...textFieldProps("contact")}
+            onChange={(e) => onChange(e, "contact")}
+          />
+        </Block>
+        <Block title="Address">
+          <TextField
+            label="House/Building No."
+            {...textFieldProps("house_number")}
+            onChange={(e) => onChange(e, "house_number")}
+          />
+          <TextField
+            label="Street"
+            {...textFieldProps("street")}
+            onChange={(e) => onChange(e, "street")}
+          />
+          <TextField
+            label="Barangay"
+            {...textFieldProps("barangay")}
+            onChange={(e) => onChange(e, "barangay")}
+          />
+          <TextField
+            label="City/Municipality"
+            {...textFieldProps("city")}
+            onChange={(e) => onChange(e, "city")}
+          />
+          <TextField
+            label="Province"
+            {...textFieldProps("province")}
+            onChange={(e) => onChange(e, "province")}
+          />
+          <TextField
+            label="Zip code"
+            {...textFieldProps("zip")}
+            onChange={(e) => onChange(e, "zip")}
+          />
+          <br />
+          <br />
+          <FormControlLabel
+            control={
+              <Checkbox
+                defaultChecked={form["is_default"]}
+                onChange={(e) => {
+                  form["is_default"] = e.target.checked ? 1 : 0;
+                }}
+              />
+            }
+            {...textFieldProps("type")}
+            label={
+              <React.Fragment>
+                <Typography>Set as default address</Typography>
+                {errors["is_default"] && (
+                  <Typography
+                    className="error"
+                    style={{
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    {errors["is_default"]}
+                  </Typography>
+                )}
+              </React.Fragment>
+            }
+          />
+        </Block>
         <SavingButton
           saving={saving}
           className="themed-button "

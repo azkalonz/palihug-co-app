@@ -145,14 +145,35 @@ function HomePage(props) {
             ))}
         </Box>
       </Block>
-      <Block title="Restaurants" p={0}>
-        <Services service={1} />
-      </Block>
+      <Services
+        service={1}
+        hidden={{ blocks: { restaurants: true } }}
+        blocks={{
+          params: {
+            products: {
+              order: "asc",
+            },
+          },
+        }}
+      />
+      <br />
+      <br />
+      <Services
+        service={1}
+        hidden={{ blocks: { products: true } }}
+        blocks={{
+          params: {
+            products: {
+              order: "asc",
+            },
+          },
+        }}
+      />
     </Box>
   );
 }
 
-function Block(props) {
+export function Block(props) {
   const theme = useTheme();
   return (
     <Box
@@ -168,6 +189,7 @@ function Block(props) {
             fontWeight: 700,
             marginBottom: 13,
             padding: theme.spacing(3),
+            ...(props.titleStyle ? props.titleStyle : {}),
           }}
         >
           {props.title}

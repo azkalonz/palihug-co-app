@@ -12,8 +12,16 @@ function Address(props) {
         {!Object.keys(userContext?.default_address || {}).length
           ? "Enter your address"
           : (() => {
-              const { street, barangay, city } = userContext.default_address;
-              return `${street}, ${barangay}, ${city}`;
+              const {
+                street,
+                barangay,
+                city,
+                house_number,
+                zip,
+              } = userContext.default_address;
+              return `${
+                street ? street + ", " : ""
+              }${barangay}, ${city}, ${zip}`;
             })()}
       </Button>
     </Box>

@@ -21,6 +21,7 @@ import { history } from "../../App";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import CartIcon from "../../components/CartIcon";
 import EmptyListMessage from "../../components/EmptyListMessage";
+import { SalePrice } from "../../components/Product";
 import BottomNavContext from "../../context/BottomNavContext";
 import CartContext from "../../context/CartContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
@@ -54,8 +55,6 @@ function MerchantView(props) {
   const [categories, setCategories] = useState();
   const [contentYState, setContentY] = useState(0);
   const contentY = useMotionValue(0);
-  const translateX = useTransform(contentY, [-175, 0], [60, 0]);
-  const translateY = useTransform(contentY, [-175, 0], [-100, 0]);
   const imgOpacity = useTransform(contentY, [-175, 0], [0.2, 0.7]);
   const logoOpacity = useTransform(contentY, [-175, 0], [1, 0]);
   const nameOpacity = useTransform(contentY, [-175, 0], [0, 1]);
@@ -183,8 +182,6 @@ function MerchantView(props) {
               </Icon>
               <motion.div
                 style={{
-                  translateX,
-                  translateY,
                   opacity: nameOpacity,
                   padding: 24,
                 }}
@@ -240,7 +237,7 @@ function Products(props) {
       });
       return (
         <React.Fragment>
-          {[...p, ...p, ...p, ...p, ...p, ...p]?.map((product, index) => {
+          {p?.map((product, index) => {
             const image = product?.images[0] ? product.images[0].src : "";
             return (
               <Box
@@ -260,14 +257,24 @@ function Products(props) {
                   minWidth={100}
                   minHeight={100}
                   width={100}
-                  overflow="hidden"
                   borderRadius={20}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
                   m={2}
+                  position="relative"
                 >
                   <img src={image} alt={product.name} width="100%" />
+                  {product.sale_price && (
+                    <SalePrice>
+                      {parseInt(
+                        (parseFloat(product.sale_price) /
+                          parseFloat(product.regular_price)) *
+                          100
+                      )}
+                      % OFF
+                    </SalePrice>
+                  )}
                 </Box>
                 <Box textAlign="left">
                   <Typography style={{ fontWeight: 600 }}>
@@ -310,7 +317,7 @@ function Products(props) {
             ))}
           </Box>
           <Box marginTop={4}>
-            {new Array(2).fill(1).map((q, i) => (
+            {new Array(10).fill(1).map((q, i) => (
               <Box
                 key={i}
                 p={2}
@@ -318,7 +325,7 @@ function Products(props) {
                 paddingTop={0}
                 width="100%"
                 className="center-all"
-                style={{ opacity: 1 - i / 2 }}
+                style={{ opacity: 1 - i / 4 }}
               >
                 <Skeleton
                   animation="wave"
@@ -334,7 +341,7 @@ function Products(props) {
         </React.Fragment>
       )}
       <Tabs
-        centered
+        // centered
         value={tabValue}
         fullWidth
         onChange={(e, val) => setTabValue(val)}

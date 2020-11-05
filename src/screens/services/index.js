@@ -2,7 +2,7 @@ import { Box } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { motion } from "framer-motion";
 import "pure-react-carousel/dist/react-carousel.es.css";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Address from "../../components/Address";
 import HorizontalScroll from "../../components/HorizontalScroll";
 import ScreenHeader from "../../components/ScreenHeader";
@@ -16,6 +16,7 @@ import Epagakain from "./Epagakain";
 
 function Services(props) {
   const { service_id } = props.match?.params || { service_id: props.service };
+  const serviceContentRef = useRef();
   const { setLoadingScreen } = useContext(LoadingScreenContext);
   const [service, setService] = useState();
   const bcontext = useContext(BottomNavContext);
@@ -52,6 +53,7 @@ function Services(props) {
       animate="in"
       exit="out"
       variants={slideRightStill}
+      ref={serviceContentRef}
     >
       {!props.service && (
         <Box p={3}>
@@ -59,7 +61,11 @@ function Services(props) {
         </Box>
       )}
       {typeof Service === "function" && (
-        <Service {...props} service={service} />
+        <Service
+          {...props}
+          service={service}
+          serviceContentRef={serviceContentRef}
+        />
       )}
       <HorizontalScroll>
         {typeof Service !== "function" &&

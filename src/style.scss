@@ -368,3 +368,59 @@ body {
   background: $primary;
   color: #fff;
 }
+
+.product-archive {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  .product {
+    margin-bottom: 24px;
+    width: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 13px;
+    border-radius: 20px;
+    box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+  }
+  .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & img,
+    & {
+      width: 100%;
+    }
+    & img {
+      padding: 13px;
+    }
+  }
+}
+
+.sale-price {
+  position: absolute;
+  top: 0;
+  right: 0;
+  & p {
+    display: block;
+    height: 20px;
+    background: red;
+    margin-right: -10px;
+    padding-left: 10px;
+    color: #fff;
+    z-index: 2;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    right: -20px;
+    top: 0;
+    width: 20px;
+    height: 40px;
+    background: url("/static/images/sale-bg.svg");
+    background-size: cover;
+  }
+}

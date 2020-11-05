@@ -3,20 +3,38 @@ import React from "react";
 import { history } from "../../App";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import HorizontalScroll from "../../components/HorizontalScroll";
+import ProductArchive from "../../components/ProductArchive";
+import { Block } from "../home";
 
 function Epagakain(props) {
   const { merchants } = props.service;
   return (
     <Box width="100vw" height="100%">
-      <HorizontalScroll>
-        {merchants?.map((m, i) => (
-          <Box key={i} width={150} height={200} m={1}>
-            <AnimateOnTap whileTap={{ opacity: 0.8 }}>
-              <MerchantCard merchant={m} />
-            </AnimateOnTap>
-          </Box>
-        ))}
-      </HorizontalScroll>
+      {!props.hidden?.blocks["restaurants"] && (
+        <Block
+          p={0}
+          title="Popular Restaurants"
+          titleStyle={{
+            paddingTop: 0,
+            paddingBottom: 0,
+          }}
+        >
+          <HorizontalScroll>
+            {merchants?.map((m, i) => (
+              <Box key={i} width={150} height={200} m={1}>
+                <AnimateOnTap whileTap={{ opacity: 0.8 }}>
+                  <MerchantCard merchant={m} />
+                </AnimateOnTap>
+              </Box>
+            ))}
+          </HorizontalScroll>
+        </Block>
+      )}
+      {!props.hidden?.blocks["products"] && (
+        <Block title="Popular Products">
+          <ProductArchive params={props.blocks?.params["products"] || {}} />
+        </Block>
+      )}
     </Box>
   );
 }

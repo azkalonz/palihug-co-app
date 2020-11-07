@@ -15,8 +15,11 @@ export function ProductCard(props) {
 
   return product ? (
     <Paper style={{ marginBottom: 24, position: "relative" }}>
+      {props.header}
       {product.sale_price && (
-        <SalePrice>
+        <SalePrice
+          style={{ transform: "scale(1.7)", transformOrigin: "right" }}
+        >
           {parseInt(
             (parseFloat(product.sale_price) /
               parseFloat(product.regular_price)) *
@@ -87,7 +90,7 @@ export function Price(props) {
 
 export function SalePrice(props) {
   return (
-    <Box className="sale-price">
+    <Box className="sale-price" style={props.style}>
       <Typography style={{ fontWeight: 700 }}>{props.children}</Typography>
     </Box>
   );

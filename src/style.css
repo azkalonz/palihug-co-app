@@ -358,6 +358,34 @@ body {
   width: 135px;
 }
 
+.search-input {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 999;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background: #fff;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.search-input .MuiTextField-root {
+  margin: 0 !important;
+}
+
+.search-input button {
+  width: auto !important;
+  height: auto !important;
+  margin-left: 7px;
+  padding: 12px !important;
+  border-radius: 16px !important;
+}
+
 .fixed {
   position: fixed;
   z-index: 3;
@@ -508,15 +536,16 @@ body {
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   width: 100%;
 }
 
 .product-archive .product {
+  margin: 0 10px;
   margin-bottom: 24px;
-  width: 170px;
+  width: 175px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -532,6 +561,21 @@ body {
   border-radius: 20px;
   -webkit-box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
           box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+}
+
+@media all and (max-width: 800px) {
+  .product-archive {
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
+  }
+  .product-archive .product {
+    width: 45%;
+    margin: 0;
+    margin-bottom: 24px;
+  }
+  .product-archive .product p {
+    padding: 0 15px;
+  }
 }
 
 .product-archive .image {
@@ -562,6 +606,7 @@ body {
 
 .sale-price p {
   display: block;
+  line-height: 21px;
   height: 20px;
   background: red;
   margin-right: -10px;
@@ -580,5 +625,92 @@ body {
   height: 40px;
   background: url("/static/images/sale-bg.svg");
   background-size: cover;
+}
+
+.carousel-pagination {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 20px;
+}
+
+.carousel-pagination ul {
+  list-style-type: none;
+  margin: 0;
+  height: 20px;
+  -webkit-padding-start: 0;
+          padding-inline-start: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: relative;
+}
+
+.carousel-pagination li {
+  -webkit-filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.671));
+          filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.671));
+  cursor: pointer;
+}
+
+.carousel-pagination .disc {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  pointer-events: none;
+}
+
+.carousel-pagination .disc > div {
+  width: 10px;
+  height: 10px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  -webkit-transition: all 0.6s ease-out;
+  transition: all 0.6s ease-out;
+}
+
+.carousel-pagination li:not(.disc) {
+  position: relative;
+  margin: 0 2px;
+  width: 10px;
+}
+
+.carousel-pagination li:not(.disc)::after {
+  width: 10px;
+  -webkit-transition: width 0.6s ease-out;
+  transition: width 0.6s ease-out;
+}
+
+.carousel-pagination li:not(.disc).active::after {
+  width: 0;
+}
+
+.carousel-pagination li:not(.disc)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  border-radius: 9px;
+  top: 7.5px;
+  height: 4px;
+  background: #fff;
 }
 /*# sourceMappingURL=style.css.map */

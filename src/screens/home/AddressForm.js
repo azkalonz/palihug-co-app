@@ -34,7 +34,7 @@ function AddressForm(props) {
       fullWidth: true,
       className: "themed-input",
       disabled: saving,
-      defaultValue: form[type] || "",
+      defaultValue: state ? state[type] : "",
       ...(errors[type] ? { helperText: errors[type], error: true } : {}),
     }),
     [errors, saving]
@@ -80,7 +80,10 @@ function AddressForm(props) {
   return (
     <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
       <Box p={3}>
-        <ScreenHeader title="New Address" path="/address" />
+        <ScreenHeader
+          title={state?.add_id ? "Edit Address" : "New Address"}
+          path="/address"
+        />
         <Block title="Contact Info">
           <TextField
             label="Full Name"

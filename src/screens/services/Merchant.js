@@ -1,10 +1,12 @@
 import {
   Box,
+  Button,
   ButtonBase,
   Icon,
   IconButton,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
@@ -54,6 +56,9 @@ function MerchantView(props) {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState();
   const [contentYState, setContentY] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
   const contentY = useMotionValue(0);
   const imgOpacity = useTransform(contentY, [-175, 0], [0.2, 0.7]);
   const logoOpacity = useTransform(contentY, [-175, 0], [1, 0]);
@@ -61,7 +66,45 @@ function MerchantView(props) {
   const imgScale = useTransform(contentY, [-175, 0], [1, 1.5]);
   const iconColor = useTransform(contentY, [-175, 0], ["#757575", "#ffffff"]);
   const borderRadius = useTransform(contentY, [-175, 0], [0, 30]);
+
+  const search = useCallback(
+    (element) => {
+      if (!element) {
+        setContentY(-175);
+        setIsSearching(!isSearching);
+        contentY.set(-175);
+        return;
+      } else if (element.value) {
+        (async () => {
+          setLoading(true);
+          let result = await new Promise(function (resolve, reject) {
+            window.searching = setInterval(() => {
+              if (window.products?.length) {
+                let result = window.products.filter(
+                  (q) =>
+                    JSON.stringify(q)
+                      .toLowerCase()
+                      .indexOf(element.value.toLowerCase()) >= 0
+                );
+                resolve(
+                  result.map((q) => ({
+                    ...q,
+                    categories: [{ id: 1, name: "Search Results" }],
+                  }))
+                );
+              }
+            }, 1000);
+          });
+          window.clearInterval(window.searching);
+          setSearchResult(result);
+          setLoading(false);
+        })();
+      }
+    },
+    [isSearching, window.products]
+  );
   useEffect(() => {
+    window.products = [];
     bcontext.setBottomNavContext({
       ...bcontext.bottomNavContext,
       visible: false,
@@ -77,6 +120,7 @@ function MerchantView(props) {
             const { categories, products, merchant } = data;
             setMerchant(merchant);
             setProducts(products);
+            window.products = products;
             setCategories(categories);
             setLoadingScreen(false);
           }
@@ -101,6 +145,31 @@ function MerchantView(props) {
       })}
       style={{ height: "100%", overflow: "hidden" }}
     >
+      {isSearching && (
+        <Box className="search-input">
+          <IconButton onClick={() => setIsSearching(false)}>
+            <Icon>close</Icon>
+          </IconButton>
+          <TextField
+            id="search-val"
+            className="themed-input"
+            variant="outlined"
+            type="text"
+            fullWidth
+            placeholder="Product Name"
+            onKeyDown={(e) => {
+              if (e.key === "Enter")
+                search(document.querySelector("#search-val"));
+            }}
+          />
+          <Button
+            className="themed-button"
+            onClick={() => search(document.querySelector("#search-val"))}
+          >
+            <Icon>search</Icon>
+          </Button>
+        </Box>
+      )}
       <AnimateOnTap className="fixed left">
         <IconButton
           className="back-button"
@@ -120,7 +189,7 @@ function MerchantView(props) {
         <IconButton
           className="back-button"
           onClick={() => {
-            goBackOrPush(props.path || "/");
+            search();
           }}
         >
           <motion.span
@@ -141,8 +210,7 @@ function MerchantView(props) {
             {merchant.merch_banner && (
               <motion.img
                 src={
-                  "http://192.168.0.106/storage/merchants/" +
-                  merchant.merch_banner
+                  "http://localhost/storage/merchants/" + merchant.merch_banner
                 }
                 alt={merchant.merch_name}
                 width="100%"
@@ -202,19 +270,32 @@ function MerchantView(props) {
                     <Skeleton animation="wave" width="40%" height={55} />
                   )}
               </motion.div>
-              <motion.img
-                src={"/static/images/logo/horizontal.png"}
-                alt={merchant.merch_name}
-                className="merchant-logo"
-                style={{ opacity: logoOpacity }}
-              />
+              {!isSearching && (
+                <motion.img
+                  src={"/static/images/logo/horizontal.png"}
+                  alt={merchant.merch_name}
+                  className="merchant-logo"
+                  style={{ opacity: logoOpacity }}
+                />
+              )}
             </motion.div>
 
-            <Products
-              categories={categories}
-              products={products}
-              y={contentYState}
-            />
+            {isSearching ? (
+              <Products
+                categories={[{ name: "Search Result", id: 1 }]}
+                products={searchResult}
+                y={contentYState}
+                loading={loading}
+                searching={true}
+              />
+            ) : (
+              <Products
+                categories={categories}
+                products={products}
+                y={contentYState}
+                loading={loading}
+              />
+            )}
           </motion.div>
         </Box>
       </Box>
@@ -227,6 +308,10 @@ function Products(props) {
   const { categories, products } = props;
   const [tabValue, setTabValue] = useState(0);
   const { cartContext, setCartContext } = useContext(CartContext);
+  const { bottomNavContext } = useContext(BottomNavContext);
+  useEffect(() => setTabValue(props.searching ? 0 : tabValue), [
+    props.searching,
+  ]);
   const ListProducts = useCallback(
     (category) => {
       const p = products?.filter((q) => {
@@ -298,10 +383,10 @@ function Products(props) {
       style={{ transform: `translateY(${props.y}px)` }}
       className="merchant-content-view"
     >
-      {categories && products?.length === 0 ? (
+      {categories && products?.length === 0 && !props.searching ? (
         <EmptyListMessage>No available products</EmptyListMessage>
       ) : null}
-      {!categories && (
+      {(!categories || props.loading) && (
         <React.Fragment>
           <Box className="center-all">
             {new Array(3).fill(1).map((q, i) => (
@@ -325,16 +410,21 @@ function Products(props) {
                 paddingTop={0}
                 width="100%"
                 className="center-all"
-                style={{ opacity: 1 - i / 4 }}
+                style={{ opacity: 1 - i / 3 }}
               >
-                <Skeleton
-                  animation="wave"
-                  variant="circle"
-                  width={100}
-                  style={{ minWidth: 100, marginRight: 10 }}
-                  height={100}
-                />
-                <Skeleton animation="wave" width="100%" height={100} />
+                <Box display="flex" width="100%">
+                  <Skeleton
+                    animation="wave"
+                    width={100}
+                    style={{ minWidth: 100, marginRight: 10 }}
+                    height={100}
+                  />
+                  <Box width="100%">
+                    <Skeleton animation="wave" width="100%" height={20} />
+                    <br />
+                    <Skeleton animation="wave" width="100%" height={40} />
+                  </Box>
+                </Box>
               </Box>
             ))}
           </Box>
@@ -359,7 +449,10 @@ function Products(props) {
         onChangeIndex={(index) => {
           setTabValue(index);
         }}
-        style={{ height: "100%" }}
+        style={{
+          height: "100%",
+          paddingBottom: bottomNavContext.visible ? 60 : 0,
+        }}
         className="swipeable-products"
         onSwitching={(t) => {
           if (!(t % 1))

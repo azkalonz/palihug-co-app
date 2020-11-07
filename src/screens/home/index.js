@@ -1,6 +1,6 @@
 import { Box, Container, Typography, useTheme } from "@material-ui/core";
 import { motion } from "framer-motion";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
 import Address from "../../components/Address";
@@ -55,6 +55,7 @@ function HomePage(props) {
   const ucontext = useContext(UserContext);
   const scontext = useContext(ServicesContext);
   const bcontext = useContext(BottomNavContext);
+  const [page, setPage] = useState(1);
   const theme = useTheme();
   const { userContext } = ucontext;
   const { servicesContext } = scontext;
@@ -77,35 +78,65 @@ function HomePage(props) {
           Hi, {userContext.user_fname}{" "}
         </Typography>
         <Address />
-        <AutoPlaySwipeableViews resistance>
-          <Box
-            p={3}
-            display="flex"
-            borderRadius={20}
-            className="logo-container"
-          >
+      </Block>
+      <br />
+      <Box position="relative">
+        <AutoPlaySwipeableViews
+          index={page - 1}
+          resistance
+          onChangeIndex={(index) => setPage(index + 1)}
+        >
+          <Box display="flex">
             <img
-              src="/static/images/logo/horizontal.png"
-              width="50%"
-              alt="ESGO"
-              style={{ filter: "grayscale(1) invert(1) brightness(2)" }}
+              src="/static/images/carousel/jollibee.jpg"
+              width="100%"
+              alt="Jollibee"
             />
           </Box>
-          <Box
-            p={3}
-            display="flex"
-            borderRadius={20}
-            className="logo-container"
-            style={{ background: "#fff" }}
-          >
+          <Box display="flex">
             <img
-              src="/static/images/logo/horizontal.png"
-              width="50%"
-              alt="ESGO"
+              src="/static/images/carousel/mcdo.jpg"
+              width="100%"
+              alt="McDonalds"
+            />
+          </Box>
+          <Box display="flex">
+            <img
+              src="/static/images/carousel/kfc.jpg"
+              width="100%"
+              alt="McDonalds"
+            />
+          </Box>
+          <Box display="flex">
+            <img
+              src="/static/images/carousel/jollibee.jpg"
+              width="100%"
+              alt="Jollibee"
+            />
+          </Box>
+          <Box display="flex">
+            <img
+              src="/static/images/carousel/mcdo.jpg"
+              width="100%"
+              alt="McDonalds"
+            />
+          </Box>
+          <Box display="flex">
+            <img
+              src="/static/images/carousel/kfc.jpg"
+              width="100%"
+              alt="McDonalds"
             />
           </Box>
         </AutoPlaySwipeableViews>
-      </Block>
+        <CarouselPagination
+          page={page}
+          totalPages={6}
+          onClick={(index) => {
+            setPage(index);
+          }}
+        />
+      </Box>
       <Block title="Services">
         <Box className="services">
           {servicesContext?.map &&
@@ -170,6 +201,35 @@ function HomePage(props) {
         }}
       />
     </Box>
+  );
+}
+
+function CarouselPagination(props) {
+  const step = 14;
+  const { totalPages, page } = props;
+  const translate = useMemo(() => {
+    let t = 2;
+    if (page !== 1) {
+      t = step * (page - 1);
+      t += 2;
+    }
+    return `translateX(${t}px)`;
+  }, [page]);
+  return (
+    <div className="carousel-pagination">
+      <ul>
+        {new Array(totalPages).fill("").map((a, i) => (
+          <li
+            onClick={() => props.onClick(i + 1)}
+            key={i}
+            className={"p-button " + (i === page - 1 ? "active" : "")}
+          ></li>
+        ))}
+        <li className="disc">
+          <div style={{ transform: translate }}></div>
+        </li>
+      </ul>
+    </div>
   );
 }
 

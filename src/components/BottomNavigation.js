@@ -7,11 +7,13 @@ import { motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import BottomNavContext from "../context/BottomNavContext";
+import CartContext from "../context/CartContext";
 import { slideBottom } from "../misc/transitions";
 function BottomNavigation(props) {
   const history = useHistory();
   const bcontext = useContext(BottomNavContext);
-  const { bottomNavContext } = bcontext;
+  const { cartContext } = useContext(CartContext);
+  const { bottomNavContext, setBottomNavContext } = bcontext;
   const [selected, setSelected] = useState("");
   const menu = useMemo(
     () =>
@@ -71,6 +73,17 @@ function BottomNavigation(props) {
     if (!m) setSelected("");
     else setSelected(m.value);
   }, [window.location.pathname, menu]);
+  useEffect(() => {
+    if (cartContext.products) {
+      setBottomNavContext({
+        visible: true,
+        notifications: {
+          ...bottomNavContext.notifications,
+          cart: cartContext.products.length,
+        },
+      });
+    }
+  }, [cartContext.products]);
   return bcontext.bottomNavContext?.visible ? (
     <motion.div
       initial="initial"

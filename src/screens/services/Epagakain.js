@@ -9,7 +9,7 @@ import { Block } from "../home";
 function Epagakain(props) {
   const { merchants } = props.service;
   return (
-    <Box width="100vw" height="100%">
+    <Box width="100%" height="100%">
       {!props.hidden?.blocks["restaurants"] && (
         <Block
           p={0}
@@ -31,7 +31,7 @@ function Epagakain(props) {
         </Block>
       )}
       {!props.hidden?.blocks["products"] && (
-        <Block title="Popular Products">
+        <Block title="Popular Pagkain">
           <ProductArchive params={props.blocks?.params["products"] || {}} />
         </Block>
       )}

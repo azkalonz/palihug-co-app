@@ -1,4 +1,12 @@
-import { Box, Button, Container, Icon, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Container,
+  Icon,
+  IconButton,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
 import { InputQuantity, ProductCard, Price } from "../../components/Product";
@@ -13,35 +21,19 @@ import EmptyListMessage from "../../components/EmptyListMessage";
 import { Block } from "../home";
 import Address from "../../components/Address";
 import UserContext from "../../context/UserContext";
+import DialogContext from "../../context/DialogContext";
 
 function Cart(props) {
   const bcontext = useContext(BottomNavContext);
-  const { add, remove } = props.location?.state || {};
+  const { add } = props.location?.state || {};
   const { cartContext, setCartContext } = useContext(CartContext);
+  const { setDialogContext } = useContext(DialogContext);
   const { userContext } = useContext(UserContext);
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: true });
     if (add) {
-      const products = [
-        ...cartContext.products,
-        { ...add, id: cartContext.length },
-      ];
-      setCartContext({
-        products,
-        total: (() => {
-          let t = 0;
-          products.map((p) => {
-            t += parseInt(p.product.price);
-          });
-          return t;
-        })(),
-      });
-      const notifications = { ...bottomNavContext.notifications };
-      if (notifications["cart"]) notifications["cart"]++;
-      else notifications["cart"] = 1;
-      setBottomNavContext({ ...bottomNavContext, notifications });
-      console.log(add);
+      cartContext.addToCart(add);
     }
   }, []);
   return (
@@ -75,12 +67,78 @@ function Cart(props) {
                   product={item.product}
                   key={item.product.id}
                   variant="small"
+                  header={
+                    <Box position="absolute" top={0} right={0}>
+                      <IconButton
+                        onClick={() =>
+                          setDialogContext({
+                            visible: true,
+                            title: "Remove to Cart",
+                            message: (
+                              <Box>
+                                <Typography>
+                                  Do you want to remove this item to your cart?
+                                </Typography>
+                                <ProductCard
+                                  product={item.product}
+                                  key={item.product.id}
+                                  variant="small"
+                                >
+                                  <Typography>
+                                    Quantity {item.quantity}
+                                  </Typography>
+                                </ProductCard>
+                              </Box>
+                            ),
+                            actions: [
+                              {
+                                name: "YES",
+                                callback: ({ closeDialog }) => {
+                                  closeDialog();
+                                  cartContext.removeFromCart(item);
+                                },
+                                props: {
+                                  variant: "contained",
+                                  color: "primary",
+                                },
+                              },
+                              {
+                                name: "Cancel",
+                                callback: ({ closeDialog }) => closeDialog(),
+                              },
+                            ],
+                          })
+                        }
+                      >
+                        <Icon>close</Icon>
+                      </IconButton>
+                    </Box>
+                  }
                 >
                   <Typography>Quantity {item.quantity}</Typography>
                 </ProductCard>
               ))}
             </Block>
-            <Block title="Total">
+            <Block title="Note">
+              <TextField
+                inputProps={{ maxLength: 200 }}
+                variant="outlined"
+                label="Your Message"
+                multiline
+                helperText="Maximum of 200 Characters"
+                fullWidth
+              />
+            </Block>
+            <Block
+              title={
+                <React.Fragment>
+                  Total&nbsp;
+                  <span style={{ color: "#000" }}>
+                    {cartContext.products.length} Item(s)
+                  </span>
+                </React.Fragment>
+              }
+            >
               <Price>
                 <CurrencyFormat
                   value={cartContext.total}

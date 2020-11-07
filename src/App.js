@@ -6,7 +6,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Spinner from "./components/Spinner";
 import UserGlobals from "./components/UserGlobals";
 import BottomNavContext from "./context/BottomNavContext";
-import CartContext from "./context/CartContext";
+import CartContext, { getCartContext } from "./context/CartContext";
+import DialogContext from "./context/DialogContext";
 import GetStartedContext from "./context/GetStartedContext";
 import LoadingScreenContext from "./context/LoadingScreenContext";
 import ServicesContext from "./context/ServicesContext";
@@ -29,10 +30,15 @@ function App() {
     page: 1,
   });
   const [loadingScreen, setLoadingScreen] = useState(false);
-  const [cartContext, setCartContext] = useState({ products: [], total: 0 });
+  const [dialogContext, setDialogContext] = useState({ visible: false });
   const [bottomNavContext, setBottomNavContext] = useState({
     visible: false,
     notifications: {},
+  });
+  const [cartContext, setCartContext] = useState({
+    build: function () {
+      setCartContext(getCartContext(setCartContext));
+    },
   });
   const [servicesContext, setServicesContext] = useState({});
   const [userContext, setUserContext] = useState({});
@@ -79,6 +85,9 @@ function App() {
       updatePastLocations(location);
     });
   }, [window.location.pathname]);
+  useEffect(() => {
+    if (cartContext.build) cartContext.build();
+  }, [cartContext.build]);
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <CartContext.Provider value={{ cartContext, setCartContext }}>
@@ -88,45 +97,47 @@ function App() {
           <ServicesContext.Provider
             value={{ servicesContext, setServicesContext }}
           >
-            <BottomNavContext.Provider
-              value={{ bottomNavContext, setBottomNavContext }}
-            >
-              <ThemeProvider theme={theme}>
-                <LoadingScreenContext.Provider
-                  value={{ loadingScreen, setLoadingScreen }}
-                >
-                  {!loading && (
-                    <BrowserRouter history={history}>
-                      {loadingScreen && <Spinner />}
-                      <Route
-                        render={(r) => {
-                          const { location } = r;
-                          const h = r.history;
-                          history.push = h.push;
-                          history.goBack = h.goBack;
-                          return (
-                            <AnimatePresence exitBeforeEnter>
-                              <Switch
-                                location={location}
-                                key={location.pathname}
-                              >
-                                {Routes.map((route, index) => (
-                                  <Route key={index} {...route} />
-                                ))}
-                              </Switch>
-                            </AnimatePresence>
-                          );
-                        }}
-                      />
-                      {userContext?.user_status === "Verified" && (
-                        <UserGlobals />
-                      )}
-                    </BrowserRouter>
-                  )}
-                </LoadingScreenContext.Provider>
-                {loading && <Spinner image />}
-              </ThemeProvider>
-            </BottomNavContext.Provider>
+            <DialogContext.Provider value={{ dialogContext, setDialogContext }}>
+              <BottomNavContext.Provider
+                value={{ bottomNavContext, setBottomNavContext }}
+              >
+                <ThemeProvider theme={theme}>
+                  <LoadingScreenContext.Provider
+                    value={{ loadingScreen, setLoadingScreen }}
+                  >
+                    {!loading && (
+                      <BrowserRouter history={history}>
+                        {loadingScreen && <Spinner />}
+                        <Route
+                          render={(r) => {
+                            const { location } = r;
+                            const h = r.history;
+                            history.push = h.push;
+                            history.goBack = h.goBack;
+                            return (
+                              <AnimatePresence exitBeforeEnter>
+                                <Switch
+                                  location={location}
+                                  key={location.pathname}
+                                >
+                                  {Routes.map((route, index) => (
+                                    <Route key={index} {...route} />
+                                  ))}
+                                </Switch>
+                              </AnimatePresence>
+                            );
+                          }}
+                        />
+                        {userContext?.user_status === "Verified" && (
+                          <UserGlobals />
+                        )}
+                      </BrowserRouter>
+                    )}
+                  </LoadingScreenContext.Provider>
+                  {loading && <Spinner image />}
+                </ThemeProvider>
+              </BottomNavContext.Provider>
+            </DialogContext.Provider>
           </ServicesContext.Provider>
         </GetStartedContext.Provider>
       </CartContext.Provider>

@@ -6,11 +6,12 @@ import {
   DialogTitle as MuiDialogTitle,
   Icon,
   IconButton,
+  LinearProgress,
   Typography,
   withStyles,
 } from "@material-ui/core";
-import React, { useCallback, useContext } from "react";
-import DialogContext from "../context/DialogContext";
+import React, { useCallback, useContext, useState } from "react";
+import DialogContext from "../../context/DialogContext";
 
 const styles = (theme) => ({
   root: {
@@ -48,6 +49,7 @@ const DialogTitle = withStyles(styles)((props) => {
 });
 function DialogComponent(props) {
   const { dialogContext, setDialogContext } = useContext(DialogContext);
+  const [loading, setLoading] = useState(false);
   const closeDialog = useCallback(
     () => setDialogContext({ ...dialogContext, visible: false }),
     [dialogContext]
@@ -57,13 +59,19 @@ function DialogComponent(props) {
       <DialogTitle onClose={() => closeDialog()}>
         {dialogContext.title}
       </DialogTitle>
-      <DialogContent>{dialogContext.message}</DialogContent>
+      <DialogContent>
+        {loading && <LinearProgress />}
+        {dialogContext.message}
+      </DialogContent>
       <DialogActions>
         {dialogContext.actions?.map((action, index) => (
           <Button
+            disabled={loading}
             key={index}
             {...(action.props ? action.props : {})}
-            onClick={() => action.callback({ closeDialog, dialogContext })}
+            onClick={() =>
+              action.callback({ closeDialog, dialogContext, setLoading })
+            }
           >
             {action.name}
           </Button>

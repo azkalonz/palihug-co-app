@@ -18,7 +18,10 @@ export function ProductCard(props) {
       {props.header}
       {product.sale_price && (
         <SalePrice
-          style={{ transform: "scale(1.7)", transformOrigin: "right" }}
+          style={{
+            transform: props.variant === "small" ? "scale(1)" : "scale(1.7)",
+            transformOrigin: "right",
+          }}
         >
           {parseInt(
             (parseFloat(product.sale_price) /
@@ -111,7 +114,7 @@ export function InputQuantity(props) {
 
   return (
     <React.Fragment>
-      <ButtonGroup>
+      <ButtonGroup disabled={!!props.disabled}>
         <Button onClick={() => removeQty()}>
           <Icon>remove</Icon>
         </Button>

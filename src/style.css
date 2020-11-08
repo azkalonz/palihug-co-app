@@ -152,7 +152,7 @@ body {
   border-radius: 30px 30px 0 0;
   -webkit-box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
           box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
-  z-index: 9999;
+  z-index: 1300;
   overflow: hidden;
 }
 
@@ -712,5 +712,19 @@ body {
   top: 7.5px;
   height: 4px;
   background: #fff;
+}
+
+.MuiSnackbar-root {
+  margin-bottom: 50px !important;
+}
+
+.MuiIcon-colorPrimary {
+  color: #d92e45 !important;
+}
+
+@media (min-width: 1280px) {
+  .MuiContainer-maxWidthLg {
+    max-width: 810px !important;
+  }
 }
 /*# sourceMappingURL=style.css.map */

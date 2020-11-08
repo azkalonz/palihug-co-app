@@ -20,11 +20,6 @@ import fetchData from "../../utils/fetchData";
 const form = {};
 function AddressForm(props) {
   let state = props.location?.state;
-  if (state) {
-    Object.keys(state).forEach((s) => {
-      form[s] = state[s];
-    });
-  }
   const [saving, setSaving] = useState(false);
   const { userContext, setUserContext } = useContext(UserContext);
   const [errors, setErrors] = useState({});
@@ -45,6 +40,13 @@ function AddressForm(props) {
   const clearForm = () => {
     for (var member in form) delete form[member];
   };
+  if (state) {
+    Object.keys(state).forEach((s) => {
+      form[s] = state[s];
+    });
+  } else {
+    clearForm();
+  }
   const onSave = useCallback(() => {
     fetchData({
       before: () => setSaving(true),
@@ -62,7 +64,9 @@ function AddressForm(props) {
         } else if (data?.success && data?.address) {
           clearForm();
           const address = {};
-          address["address"] = [...userContext.address];
+          address["address"] = [
+            ...(userContext.address ? userContext.address : []),
+          ];
           let index = address["address"].findIndex(
             (q) => q.add_id === data.address.add_id
           );

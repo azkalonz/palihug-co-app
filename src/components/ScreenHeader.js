@@ -10,6 +10,7 @@ function ScreenHeader(props) {
     <Box className="center-align">
       <AnimateOnTap>
         <IconButton
+          disabled={!!props.disabled}
           className="back-button"
           onClick={() => {
             goBackOrPush(props.path || "/");

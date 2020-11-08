@@ -1,6 +1,5 @@
 import { Box, TextField, Typography } from "@material-ui/core";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+import { useSnackbar } from "notistack";
 import React, { useCallback, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { history } from "../../App";
@@ -11,16 +10,13 @@ import UserContext from "../../context/UserContext";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
 
-export function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 const form = {};
 export function Login(props) {
   const ucontext = useContext(UserContext);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({});
   const [errors, setErrors] = useState({});
+  const [snackbarKey, setsnackbarKey] = useState();
   const textFieldProps = useCallback(
     (type) => ({
       variant: "outlined",
@@ -38,7 +34,6 @@ export function Login(props) {
     fetchData({
       before: () => {
         setErrors({});
-        setError({});
         setLoading(true);
       },
       send: async () =>
@@ -52,8 +47,14 @@ export function Login(props) {
       },
       after: (data) => {
         if (!data?.user_token) {
-          setError(data);
+          setsnackbarKey(
+            enqueueSnackbar(data?.message || "Enter Email and Password", {
+              variant: "error",
+              autoHideDuration: 10000000,
+            })
+          );
         } else if (data?.user_token) {
+          closeSnackbar(snackbarKey);
           if (data.user_token) {
             window.localStorage["user"] = JSON.stringify({
               user_token: data.user_token,
@@ -77,15 +78,6 @@ export function Login(props) {
       subTitle="Good day! Sign in to continue."
       {...props}
     >
-      <Snackbar
-        open={error?.message ? true : false}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-      >
-        <Alert onClose={() => setError(null)} severity="error">
-          {error?.message}
-        </Alert>
-      </Snackbar>
       <Box
         height="100%"
         display="flex"
@@ -99,12 +91,18 @@ export function Login(props) {
               {...textFieldProps("user_email")}
               type="email"
               onChange={(e) => onChange(e, "user_email")}
+              onKeyDown={({ key }) => {
+                if (key === "Enter") onSubmit();
+              }}
             />
             <TextField
               label="Password"
               type="password"
               onChange={(e) => onChange(e, "user_password")}
               {...textFieldProps("user_password")}
+              onKeyDown={({ key }) => {
+                if (key === "Enter") onSubmit();
+              }}
             />
           </form>
         </Box>

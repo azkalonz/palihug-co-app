@@ -8,33 +8,31 @@ import {
   Typography,
 } from "@material-ui/core";
 import { motion } from "framer-motion";
-import React, { useContext, useEffect, useState } from "react";
-import { InputQuantity, ProductCard, Price } from "../../components/Product";
+import { useSnackbar } from "notistack";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import CurrencyFormat from "react-currency-format";
+import Address from "../../components/Address";
+import EmptyListMessage from "../../components/EmptyListMessage";
+import { InputQuantity, Price, ProductCard } from "../../components/Product";
+import SavingButton from "../../components/SavingButton";
 import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
-import { slideRight } from "../../misc/transitions";
-import CurrencyFormat from "react-currency-format";
-import { goBackOrPush } from "../../utils/goBackOrPush";
 import CartContext from "../../context/CartContext";
-import SavingButton from "../../components/SavingButton";
-import EmptyListMessage from "../../components/EmptyListMessage";
-import { Block } from "../home";
-import Address from "../../components/Address";
-import UserContext from "../../context/UserContext";
 import DialogContext from "../../context/DialogContext";
+import UserContext from "../../context/UserContext";
+import { slideRight } from "../../misc/transitions";
+import { goBackOrPush } from "../../utils/goBackOrPush";
+import { Block } from "../home";
 
 function Cart(props) {
   const bcontext = useContext(BottomNavContext);
-  const { add } = props.location?.state || {};
-  const { cartContext, setCartContext } = useContext(CartContext);
   const { setDialogContext } = useContext(DialogContext);
   const { userContext } = useContext(UserContext);
+  const { cartContext } = useContext(CartContext);
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: true });
-    if (add) {
-      cartContext.addToCart(add);
-    }
   }, []);
   return (
     <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
@@ -93,9 +91,19 @@ function Cart(props) {
                             actions: [
                               {
                                 name: "YES",
-                                callback: ({ closeDialog }) => {
-                                  closeDialog();
-                                  cartContext.removeFromCart(item);
+                                callback: ({ closeDialog, setLoading }) => {
+                                  setLoading(true);
+                                  cartContext.removeFromCart(
+                                    item,
+                                    userContext,
+                                    () => {
+                                      closeDialog();
+                                      setLoading(false);
+                                      enqueueSnackbar("Removed", {
+                                        variant: "success",
+                                      });
+                                    }
+                                  );
                                 },
                                 props: {
                                   variant: "contained",
@@ -166,8 +174,18 @@ function Cart(props) {
 
 export function AddToCart(props) {
   const bcontext = useContext(BottomNavContext);
+  const { userContext } = useContext(UserContext);
   const [product, setProduct] = useState(props.location?.state || {});
   const [quantity, setQuantity] = useState(1);
+  const [saving, setSaving] = useState(false);
+  const { cartContext } = useContext(CartContext);
+  const addToCart = useCallback((order) => {
+    setSaving(true);
+    cartContext.addToCart(order, userContext, () => {
+      setSaving(false);
+      props.history.replace("/cart");
+    });
+  }, []);
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: false });
@@ -175,11 +193,17 @@ export function AddToCart(props) {
   return product.id ? (
     <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
       <Box p={3}>
-        <ScreenHeader title={!product.edit ? "Add To Cart" : "Edit Order"} />
+        <ScreenHeader
+          title={!product.edit ? "Add To Cart" : "Edit Order"}
+          disabled={saving}
+        />
         <Container>
           <ProductCard product={product}>
             <CartRow title="Quantity">
-              <InputQuantity onChange={(qty) => setQuantity(qty)} />
+              <InputQuantity
+                onChange={(qty) => setQuantity(qty)}
+                disabled={saving}
+              />
             </CartRow>
             <CartRow title="Total">
               <Typography
@@ -197,27 +221,20 @@ export function AddToCart(props) {
             </CartRow>
           </ProductCard>
           <br />
-          <Button
+          <SavingButton
+            saving={saving}
             className="themed-button"
-            onClick={() => {
-              props.history.replace({
-                pathname: "/cart",
-                state: {
-                  add: {
-                    product,
-                    quantity,
-                  },
-                },
-              });
-            }}
+            onClick={() => addToCart({ product, quantity })}
+            disabled={saving}
           >
             Add To Cart
-          </Button>
+          </SavingButton>
           <br />
           <br />
           <Button
             className="themed-button inverted"
             onClick={() => goBackOrPush("/")}
+            disabled={saving}
           >
             Cancel
           </Button>

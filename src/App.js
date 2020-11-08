@@ -1,6 +1,7 @@
-import { ThemeProvider } from "@material-ui/core";
+import { Button, Icon, IconButton, ThemeProvider } from "@material-ui/core";
 import { AnimatePresence } from "framer-motion";
 import { createBrowserHistory } from "history";
+import { SnackbarProvider } from "notistack";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Spinner from "./components/Spinner";
@@ -25,6 +26,7 @@ history.listen = (callback) => {
 };
 
 function App() {
+  const notistackRef = React.createRef();
   const [loading, setLoading] = useState(true);
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
@@ -45,6 +47,9 @@ function App() {
   const pushHistory = (name) => {
     setLoading(false);
     if (window.location.pathname !== name) history.push(name);
+  };
+  const onClickDismiss = (key) => () => {
+    notistackRef.current.closeSnackbar(key);
   };
   useEffect(() => {
     let user = window.localStorage["user"];
@@ -86,8 +91,30 @@ function App() {
     });
   }, [window.location.pathname]);
   useEffect(() => {
-    if (cartContext.build) cartContext.build();
+    if (cartContext.build) {
+      cartContext.build();
+    }
   }, [cartContext.build]);
+  useEffect(() => {
+    if (
+      userContext?.user_token &&
+      cartContext?.products &&
+      !cartContext?.isFetched
+    ) {
+      fetchData({
+        send: async () => Api.get("/cart?token=" + userContext.user_token),
+        after: (data) => {
+          try {
+            let meta = JSON.parse(data?.meta);
+            if (meta) {
+              setCartContext({ ...cartContext, ...meta, isFetched: true });
+            }
+          } catch (e) {}
+        },
+      });
+    }
+  }, [userContext?.user_token, cartContext.products]);
+  useEffect(() => console.log(userContext), [userContext]);
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <CartContext.Provider value={{ cartContext, setCartContext }}>
@@ -97,47 +124,64 @@ function App() {
           <ServicesContext.Provider
             value={{ servicesContext, setServicesContext }}
           >
-            <DialogContext.Provider value={{ dialogContext, setDialogContext }}>
-              <BottomNavContext.Provider
-                value={{ bottomNavContext, setBottomNavContext }}
+            <SnackbarProvider
+              ref={notistackRef}
+              maxSnack={3}
+              preventDuplicate
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              action={(key) => (
+                <IconButton onClick={onClickDismiss(key)}>
+                  <Icon>close</Icon>
+                </IconButton>
+              )}
+            >
+              <DialogContext.Provider
+                value={{ dialogContext, setDialogContext }}
               >
-                <ThemeProvider theme={theme}>
-                  <LoadingScreenContext.Provider
-                    value={{ loadingScreen, setLoadingScreen }}
-                  >
-                    {!loading && (
-                      <BrowserRouter history={history}>
-                        {loadingScreen && <Spinner />}
-                        <Route
-                          render={(r) => {
-                            const { location } = r;
-                            const h = r.history;
-                            history.push = h.push;
-                            history.goBack = h.goBack;
-                            return (
-                              <AnimatePresence exitBeforeEnter>
-                                <Switch
-                                  location={location}
-                                  key={location.pathname}
-                                >
-                                  {Routes.map((route, index) => (
-                                    <Route key={index} {...route} />
-                                  ))}
-                                </Switch>
-                              </AnimatePresence>
-                            );
-                          }}
-                        />
-                        {userContext?.user_status === "Verified" && (
-                          <UserGlobals />
-                        )}
-                      </BrowserRouter>
-                    )}
-                  </LoadingScreenContext.Provider>
-                  {loading && <Spinner image />}
-                </ThemeProvider>
-              </BottomNavContext.Provider>
-            </DialogContext.Provider>
+                <BottomNavContext.Provider
+                  value={{ bottomNavContext, setBottomNavContext }}
+                >
+                  <ThemeProvider theme={theme}>
+                    <LoadingScreenContext.Provider
+                      value={{ loadingScreen, setLoadingScreen }}
+                    >
+                      {!loading && (
+                        <BrowserRouter history={history}>
+                          {loadingScreen && <Spinner />}
+                          <Route
+                            render={(r) => {
+                              const { location } = r;
+                              const h = r.history;
+                              history.push = h.push;
+                              history.goBack = h.goBack;
+                              return (
+                                <AnimatePresence exitBeforeEnter>
+                                  <Switch
+                                    location={location}
+                                    key={location.pathname}
+                                  >
+                                    {Routes.map((route, index) => (
+                                      <Route key={index} {...route} />
+                                    ))}
+                                  </Switch>
+                                </AnimatePresence>
+                              );
+                            }}
+                          />
+                          {userContext?.user_status === "Verified" && (
+                            <UserGlobals />
+                          )}
+                        </BrowserRouter>
+                      )}
+                    </LoadingScreenContext.Provider>
+                    {loading && <Spinner image />}
+                  </ThemeProvider>
+                </BottomNavContext.Provider>
+              </DialogContext.Provider>
+            </SnackbarProvider>
           </ServicesContext.Provider>
         </GetStartedContext.Provider>
       </CartContext.Provider>

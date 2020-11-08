@@ -25,7 +25,7 @@ function ProductArchive(props) {
           },
         }),
       after: (data) => {
-        if (data.length) setProducts([...products, ...data]);
+        if (data?.length) setProducts([...products, ...data]);
         else setLastPage(true);
         setLoading(false);
         setPage(page + 1);

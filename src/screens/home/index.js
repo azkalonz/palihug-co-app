@@ -75,7 +75,7 @@ function HomePage(props) {
     >
       <Block>
         <Typography color="primary" variant="h5" style={{ fontWeight: 700 }}>
-          Hi, {userContext.user_fname}{" "}
+          Hi, {userContext?.user_fname}{" "}
         </Typography>
         <Address />
       </Block>

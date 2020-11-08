@@ -130,9 +130,9 @@ function EnterOTP(props) {
             backDisabled={userContext?.user_id ? true : false}
           >
             <Box>
-              <Snackbar open={error ? true : false} autoHideDuration={6000}>
+              {/* <Snackbar open={error ? true : false} autoHideDuration={6000}>
                 <Alert severity="error">Invalid Code</Alert>
-              </Snackbar>
+              </Snackbar> */}
               <PinInput
                 length={4}
                 focus

@@ -6,9 +6,9 @@ import {
 import { motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import BottomNavContext from "../context/BottomNavContext";
-import CartContext from "../context/CartContext";
-import { slideBottom } from "../misc/transitions";
+import BottomNavContext from "../../context/BottomNavContext";
+import CartContext from "../../context/CartContext";
+import { slideBottom } from "../../misc/transitions";
 function BottomNavigation(props) {
   const history = useHistory();
   const bcontext = useContext(BottomNavContext);

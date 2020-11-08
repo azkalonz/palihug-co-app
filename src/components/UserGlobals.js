@@ -1,6 +1,6 @@
 import React from "react";
-import BottomNavigation from "./BottomNavigation";
-import DialogComponent from "./DialogComponent";
+import BottomNavigation from "./user-globals/BottomNavigation";
+import DialogComponent from "./user-globals/DialogComponent";
 
 function UserGlobals(props) {
   return (

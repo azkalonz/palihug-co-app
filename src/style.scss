@@ -9,6 +9,9 @@ body {
   user-select: none;
   box-sizing: border-box;
 }
+img {
+  pointer-events: none;
+}
 .spinner {
   position: absolute;
   top: 0;
@@ -79,18 +82,18 @@ body {
   }
 }
 
+.MuiBottomNavigation-root {
+  box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
+  border-radius: 30px 30px 0 0;
+}
 .bottom-navigation {
+  z-index: 1300;
   width: 100%;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  border-radius: 30px 30px 0 0;
-  box-shadow: 0 -5px 4px rgba(0, 0, 0, 0.062);
-  z-index: 1300;
-  overflow: hidden;
 }
-
 .auto-width {
   width: auto !important;
 }
@@ -117,7 +120,9 @@ body {
 .profile-screen {
   .name {
     font-weight: 800;
-    font-size: 1.5rem;
+  }
+  .email {
+    font-size: 0.6em;
   }
 }
 .themed-list {
@@ -369,7 +374,8 @@ body {
     display: flex;
     align-items: center;
     & img {
-      width: 40%;
+      width: 30%;
+      margin-right: 7px;
     }
     & > div {
       width: 60%;
@@ -388,6 +394,7 @@ body {
   border-radius: 10px;
   background: $primary;
   color: #fff;
+  transform: scale(0.6);
 }
 
 .product-archive {
@@ -406,6 +413,10 @@ body {
     padding-bottom: 13px;
     border-radius: 20px;
     box-shadow: 0 8px 11px rgba(121, 121, 121, 0.14);
+    p {
+      font-size: 0.7rem;
+      margin-bottom: 7px;
+    }
   }
   @media all and (max-width: 800px) {
     justify-content: space-around;

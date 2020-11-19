@@ -39,11 +39,11 @@ function Services(props) {
       visible: true,
     });
     fetchData({
-      before: () => setLoadingScreen(false),
+      before: () => setLoadingScreen({ visible: false }),
       send: async () => Api.get("/services/" + service_id),
       after: (data) => {
         setService(data);
-        setLoadingScreen(false);
+        setLoadingScreen({ visible: false });
       },
     });
   }, []);

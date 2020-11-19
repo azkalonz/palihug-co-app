@@ -15,18 +15,27 @@ export const getCartContext = (setCartContext) => ({
     return t;
   },
   addToCart: function (order, userContext, callback = () => {}) {
-    const products = [...this.products, { ...order, id: this.products.length }];
+    let products = [...this.products];
+    let productIndex = this.products.findIndex(
+      (q) => q.product.id === order.product.id
+    );
+    if (productIndex >= 0) {
+      products[productIndex].quantity += order.quantity;
+    } else {
+      products.push({ ...order, id: this.products.length });
+    }
     const updatedContext = {
       ...this,
       products,
       total: (() => {
         let t = 0;
         products.map((p) => {
-          t += parseInt(p.product.price);
+          t += parseInt(p.product.price) * p.quantity;
         });
         return t;
       })(),
     };
+    console.log(updatedContext);
     fetchData({
       send: async () =>
         Api.post("/cart?token=" + userContext.user_token, {
@@ -39,9 +48,9 @@ export const getCartContext = (setCartContext) => ({
         }),
       after: (data) => {
         callback(data);
+        setCartContext(updatedContext);
       },
     });
-    setCartContext(updatedContext);
   },
   removeFromCart: function (order, userContext, callback = () => {}) {
     const orders = [...this.products];
@@ -68,9 +77,9 @@ export const getCartContext = (setCartContext) => ({
         }),
       after: (data) => {
         callback(data);
+        setCartContext(updatedContext);
       },
     });
-    setCartContext(updatedContext);
   },
 });
 

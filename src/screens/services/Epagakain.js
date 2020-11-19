@@ -21,7 +21,7 @@ function Epagakain(props) {
         >
           <HorizontalScroll>
             {merchants?.map((m, i) => (
-              <Box key={i} width={150} height={200} m={1}>
+              <Box key={i} width={150} height={200} m={1} marginBottom="18px">
                 <AnimateOnTap whileTap={{ opacity: 0.8 }}>
                   <MerchantCard merchant={m} />
                 </AnimateOnTap>

@@ -31,7 +31,7 @@ function App() {
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
   });
-  const [loadingScreen, setLoadingScreen] = useState(false);
+  const [loadingScreen, setLoadingScreen] = useState({ visible: false });
   const [dialogContext, setDialogContext] = useState({ visible: false });
   const [bottomNavContext, setBottomNavContext] = useState({
     visible: false,
@@ -57,7 +57,6 @@ function App() {
       try {
         user = JSON.parse(user);
         if (user?.user_token) {
-          // if stored user variable has user_token
           let token =
             (user.user_token + "").length <= 9
               ? parseInt(user.user_token) / 1234
@@ -73,15 +72,21 @@ function App() {
               } else if (user?.user_status === "Unverified") {
                 pushHistory("/verify-otp");
               } else {
+                // if user status is neither verified/unverified
                 pushHistory("/get-started");
               }
             },
           });
+        } else {
+          // invalid user token or no user token found
+          pushHistory("/login");
         }
       } catch (e) {
+        // error from API
         pushHistory("/get-started");
       }
     } else {
+      // if no user in localStorage
       pushHistory("/get-started");
     }
   }, []);
@@ -92,6 +97,7 @@ function App() {
   }, [window.location.pathname]);
   useEffect(() => {
     if (cartContext.build) {
+      // build() replaces the state of cartContext to the returned object (removes build() on the process)
       cartContext.build();
     }
   }, [cartContext.build]);
@@ -101,12 +107,15 @@ function App() {
       cartContext?.products &&
       !cartContext?.isFetched
     ) {
+      // only fetch cart items once base on the condition inside if statement to minimize api calls
       fetchData({
         send: async () => Api.get("/cart?token=" + userContext.user_token),
         after: (data) => {
           try {
+            // meta is a json string of the cartContext from the Api
             let meta = JSON.parse(data?.meta);
             if (meta) {
+              // if there is a meta available, replace the current cartContext and set fetched to true
               setCartContext({ ...cartContext, ...meta, isFetched: true });
             }
           } catch (e) {}
@@ -150,7 +159,9 @@ function App() {
                     >
                       {!loading && (
                         <BrowserRouter history={history}>
-                          {loadingScreen && <Spinner />}
+                          {loadingScreen.visible && (
+                            <Spinner variant={loadingScreen.variant} />
+                          )}
                           <Route
                             render={(r) => {
                               const { location } = r;

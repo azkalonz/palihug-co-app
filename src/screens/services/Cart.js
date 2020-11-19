@@ -40,7 +40,7 @@ function Cart(props) {
         <ScreenHeader title="Cart" />
         {cartContext.products.length ? (
           <React.Fragment>
-            <Block title="Delivery Info">
+            {/* <Block title="Delivery Info">
               {Object.keys(userContext.default_address || {}).length ? (
                 <React.Fragment>
                   <CartColumn title="Name">
@@ -58,7 +58,7 @@ function Cart(props) {
               <CartColumn title="Address">
                 <Address />
               </CartColumn>
-            </Block>
+            </Block> */}
             <Block title="Your Order">
               {cartContext.products.map((item) => (
                 <ProductCard
@@ -66,7 +66,7 @@ function Cart(props) {
                   key={item.product.id}
                   variant="small"
                   header={
-                    <Box position="absolute" top={0} right={0}>
+                    <Box position="absolute" top={10} right={0}>
                       <IconButton
                         onClick={() =>
                           setDialogContext({
@@ -127,7 +127,7 @@ function Cart(props) {
                 </ProductCard>
               ))}
             </Block>
-            <Block title="Note">
+            {/* <Block title="Note">
               <TextField
                 inputProps={{ maxLength: 200 }}
                 variant="outlined"
@@ -136,7 +136,7 @@ function Cart(props) {
                 helperText="Maximum of 200 Characters"
                 fullWidth
               />
-            </Block>
+            </Block> */}
             <Block
               title={
                 <React.Fragment>

@@ -113,7 +113,6 @@ function MerchantView(props) {
   useEffect(() => {
     if (merchant_id) {
       fetchData({
-        before: () => setLoadingScreen(false),
         send: async () => await Api.get("/merchants/" + merchant_id + "/data"),
         after: (data) => {
           if (data) {
@@ -122,7 +121,6 @@ function MerchantView(props) {
             setProducts(products);
             window.products = products;
             setCategories(categories);
-            setLoadingScreen(false);
           }
         },
       });

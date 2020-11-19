@@ -19,16 +19,16 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 export function Home(props) {
   const scontext = useContext(ServicesContext);
   const ucontext = useContext(UserContext);
-  const { setLoadingScreen, loadingScreen } = useContext(LoadingScreenContext);
+  const { setLoadingScreen } = useContext(LoadingScreenContext);
   const { setServicesContext } = scontext;
   const { userContext } = ucontext;
   useEffect(() => {
     fetchData({
-      before: () => setLoadingScreen(true),
+      before: () => setLoadingScreen({ visible: true, variant: "home" }),
       send: async () => await Api.get("/services"),
       after: (data) => {
         setServicesContext(data);
-        setLoadingScreen(false);
+        setLoadingScreen({ visible: false });
       },
     });
   }, []);
@@ -178,20 +178,6 @@ function HomePage(props) {
       </Block>
       <Services
         service={1}
-        hidden={{ blocks: { restaurants: true } }}
-        blocks={{
-          params: {
-            products: {
-              order: "asc",
-            },
-          },
-        }}
-      />
-      <br />
-      <br />
-      <Services
-        service={1}
-        hidden={{ blocks: { products: true } }}
         blocks={{
           params: {
             products: {

@@ -13,7 +13,10 @@ function ScreenHeader(props) {
           disabled={!!props.disabled}
           className="back-button"
           onClick={() => {
-            goBackOrPush(props.path || "/");
+            if (props.pushTo) {
+              if (typeof props.pushTo === "string") history.push(props.pushTo);
+              else if (typeof props.pushTo === "function") props.pushTo();
+            } else goBackOrPush(props.path || "/");
           }}
         >
           <Icon fontSize="large">navigate_before</Icon>

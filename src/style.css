@@ -792,13 +792,20 @@ img {
 }
 
 .place-search .result {
-  background: #fff;
+  max-height: 60vh;
+  overflow: auto;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.602)), to(white));
+  background: linear-gradient(rgba(255, 255, 255, 0.602), white);
   border: 1px solid grey;
   border-radius: 15px;
 }
 
 .place-search .result li {
   padding: 12px;
+}
+
+.place-search .result li p {
+  font-weight: 500;
 }
 
 .save-place {
@@ -809,6 +816,12 @@ img {
   z-index: 100;
   -webkit-animation: slideup 0.4s ease-out 1;
           animation: slideup 0.4s ease-out 1;
+}
+
+.checkout-static-map {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 3px solid #d92e45;
 }
 
 @-webkit-keyframes slideup {

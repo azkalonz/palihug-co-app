@@ -578,11 +578,16 @@ img {
     top:5px;
   }
   .result {
-    background: #fff;
+    max-height: 60vh;
+    overflow: auto;
+    background: linear-gradient(rgba(255, 255, 255, 0.602),rgb(255, 255, 255));
     border: 1px solid grey;
     border-radius: 15px;
     li {
       padding: 12px;
+      p {
+        font-weight: 500;
+      }
     }
   }
 }
@@ -595,6 +600,13 @@ img {
   z-index: 100;
   animation: slideup 0.4s ease-out 1;
 }
+
+.checkout-static-map {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 3px solid $primary;
+}
+
 @keyframes slideup {
   from {
     transform: translateY(75px);

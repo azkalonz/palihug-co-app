@@ -1,7 +1,13 @@
 import { Box, Button, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import "mapbox-gl/dist/mapbox-gl.css";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactMapGL, { GeolocateControl, Marker } from "react-map-gl";
 import PlaceSearch, { searchPlace } from "./PlaceSearch";
 import { slideLeft } from "../misc/transitions";
@@ -30,13 +36,21 @@ export default function PinMap(props) {
   const [viewport, setViewport] = useState({
     width: "100%",
     height: "100%",
-    latitude: 10.3766,
-    longitude: 123.9573,
+    latitude: 10.361336086091555,
+    longitude: 123.98039321697425,
     zoom: 15,
     minZoom: 15,
     maxZoom: 18,
   });
   const [selected, setSelected] = useState(null);
+  const onChange = useCallback((feature) => {
+    const { geometry } = feature;
+    const latitude = geometry.coordinates[1];
+    const longitude = geometry.coordinates[0];
+    setViewport({ ...viewport, latitude, longitude });
+    setPinLoc({ latitude, longitude });
+    setSelected(feature);
+  }, []);
   useEffect(() => {
     setDialogContext({
       visible: true,
@@ -63,6 +77,12 @@ export default function PinMap(props) {
       ],
     });
   }, []);
+  useEffect(() => {
+    if (props.address) {
+      onChange(props.address);
+      setPlaceName(props.address.place_name);
+    }
+  }, [props.address]);
   return (
     <motion.div
       variant={slideLeft}
@@ -72,14 +92,7 @@ export default function PinMap(props) {
       style={{ width: "100vw", height: "100vh" }}
     >
       <PlaceSearch
-        onChange={(feature) => {
-          const { geometry } = feature;
-          const latitude = geometry.coordinates[1];
-          const longitude = geometry.coordinates[0];
-          setViewport({ ...viewport, latitude, longitude });
-          setPinLoc({ latitude, longitude });
-          setSelected(feature);
-        }}
+        onChange={onChange}
         onClear={() => {
           setSelected(null);
         }}
@@ -106,7 +119,7 @@ export default function PinMap(props) {
         mapStyle="mapbox://styles/azkalonz/ckhpxvrmj072r19pemg86ytbk"
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         onViewStateChange={(state) => {
-          setSelected(null);
+          if (selected) setSelected(null);
           if (state?.interactionState?.isPanning !== undefined)
             setIsPanning(state.interactionState.isPanning);
         }}
@@ -115,15 +128,19 @@ export default function PinMap(props) {
             const { lng, lat } = mapRef.current.getMap().getCenter();
             const longitude = lng;
             const latitude = lat;
-            searchPlace(`${longitude},${latitude}`, (res) => {
-              if (res.data.features && res.data.features[0]) {
-                setSelected(res.data.features[0]);
-                setPlaceName(res.data.features[0].place_name);
-              } else {
-                setPlaceName(null);
-                setSelected(null);
-              }
-            });
+            searchPlace(
+              `${longitude},${latitude}`,
+              (res) => {
+                if (res.data.features && res.data.features[0]) {
+                  setSelected(res.data.features[0]);
+                  setPlaceName(res.data.features[0].place_name);
+                } else {
+                  setPlaceName(null);
+                  setSelected(null);
+                }
+              },
+              1
+            );
           }
           setIsPanning(false);
           setSelected(null);
@@ -150,7 +167,13 @@ export default function PinMap(props) {
       </ReactMapGL>
       {selected && (
         <Box className="save-place" p={3} paddingBottom={0} paddingTop={0}>
-          <Button className="themed-button" variant="outlined">
+          <Button
+            className="themed-button"
+            variant="outlined"
+            onClick={() => {
+              if (props.onChange) props.onChange(selected);
+            }}
+          >
             Continue
           </Button>
         </Box>

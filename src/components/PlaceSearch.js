@@ -19,10 +19,10 @@ import React, {
 import UserContext from "../context/UserContext";
 import Address from "./Address";
 
-export async function searchPlace(value, callback) {
+export async function searchPlace(value, callback, limit = 10) {
   let token = process.env.REACT_APP_MAPBOX_TOKEN;
   let res = await Axios.get(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/${value}.json?autocomplete=true&access_token=${token}`
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${value}.json?autocomplete=true&access_token=${token}&limit=${limit}&country=PH&region=Cebu`
   );
   callback(res);
 }
@@ -54,6 +54,7 @@ function PlaceSearch(props) {
   }, [setVal, setResult]);
   useEffect(() => {
     if (props.value) {
+      console.log(props.value);
       setVal(props.value);
     }
   }, [props.value]);

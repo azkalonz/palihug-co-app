@@ -159,6 +159,7 @@ function Cart(props) {
               <SavingButton
                 className="themed-button"
                 startIcon={<Icon>https</Icon>}
+                onClick={() => props.history.push("/checkout")}
               >
                 <Typography>Checkout</Typography>
               </SavingButton>

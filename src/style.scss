@@ -537,6 +537,72 @@ img {
 .MuiIcon-colorPrimary {
   color: #d92e45 !important;
 }
+.center-pin {
+  transform: scale(3);
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.32, 0.38, 0, 0.65);
+  transform-origin: bottom;
+  &.panning {
+    transform: scale(4);
+  }
+  &.panning::after {
+    content: '';
+    position: absolute;
+    bottom:-5px;
+    right:-10px;
+    width: 30px;
+    height: 10px;
+    opacity: 0.5;
+    border-radius: 50%;
+    background: radial-gradient(rgba(0, 0, 0, 0.842),rgba(0,0,0,0),rgba(0,0,0,0));
+  }
+}
+.place-search {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index: 100;
+  padding: 0 10px;
+  margin-top: 30px;
+  .MuiTextField-root.themed-input {
+    margin-top: 0;
+  }
+  input {
+    background: #fff;
+    padding-right: 80px;
+  }
+  .clear {
+    position: absolute;
+    right:10px;
+    top:5px;
+  }
+  .result {
+    background: #fff;
+    border: 1px solid grey;
+    border-radius: 15px;
+    li {
+      padding: 12px;
+    }
+  }
+}
+
+.save-place {
+  position: absolute;
+  bottom:75px;
+  left:0;
+  right:0;
+  z-index: 100;
+  animation: slideup 0.4s ease-out 1;
+}
+@keyframes slideup {
+  from {
+    transform: translateY(75px);
+  } to {
+    transform: translateY(0);
+  }
+}
+
 @media (min-width: 1280px) {
   .MuiContainer-maxWidthLg {
     max-width: 810px !important;

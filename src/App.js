@@ -14,11 +14,12 @@ import LoadingScreenContext from "./context/LoadingScreenContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
 import theme from "./misc/theme";
-import Routes from "./Routes";
+import Routes, { CustomerRoutes, DriverRoutes } from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
 import { updatePastLocations } from "./utils/goBackOrPush";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
@@ -174,6 +175,15 @@ function App() {
                                     location={location}
                                     key={location.pathname}
                                   >
+                                    {userContext.user_type?.name === "driver" &&
+                                      DriverRoutes.map((route, index) => (
+                                        <Route key={index} {...route} />
+                                      ))}
+                                    {userContext.user_type?.name ===
+                                      "customer" &&
+                                      CustomerRoutes.map((route, index) => (
+                                        <Route key={index} {...route} />
+                                      ))}
                                     {Routes.map((route, index) => (
                                       <Route key={index} {...route} />
                                     ))}

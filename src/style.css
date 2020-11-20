@@ -739,6 +739,100 @@ img {
   color: #d92e45 !important;
 }
 
+.center-pin {
+  -webkit-transform: scale(3);
+          transform: scale(3);
+  position: relative;
+  -webkit-transition: all 0.5s cubic-bezier(0.32, 0.38, 0, 0.65);
+  transition: all 0.5s cubic-bezier(0.32, 0.38, 0, 0.65);
+  -webkit-transform-origin: bottom;
+          transform-origin: bottom;
+}
+
+.center-pin.panning {
+  -webkit-transform: scale(4);
+          transform: scale(4);
+}
+
+.center-pin.panning::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  right: -10px;
+  width: 30px;
+  height: 10px;
+  opacity: 0.5;
+  border-radius: 50%;
+  background: radial-gradient(rgba(0, 0, 0, 0.842), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+
+.place-search {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 10px;
+  margin-top: 30px;
+}
+
+.place-search .MuiTextField-root.themed-input {
+  margin-top: 0;
+}
+
+.place-search input {
+  background: #fff;
+  padding-right: 80px;
+}
+
+.place-search .clear {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.place-search .result {
+  background: #fff;
+  border: 1px solid grey;
+  border-radius: 15px;
+}
+
+.place-search .result li {
+  padding: 12px;
+}
+
+.save-place {
+  position: absolute;
+  bottom: 75px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  -webkit-animation: slideup 0.4s ease-out 1;
+          animation: slideup 0.4s ease-out 1;
+}
+
+@-webkit-keyframes slideup {
+  from {
+    -webkit-transform: translateY(75px);
+            transform: translateY(75px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+
+@keyframes slideup {
+  from {
+    -webkit-transform: translateY(75px);
+            transform: translateY(75px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+
 @media (min-width: 1280px) {
   .MuiContainer-maxWidthLg {
     max-width: 810px !important;

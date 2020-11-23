@@ -1,19 +1,31 @@
-import { Box, List, ListItem, Tab, Tabs, Typography } from "@material-ui/core";
+import {
+  Box,
+  ButtonBase,
+  List,
+  ListItem,
+  Tab,
+  Tabs,
+  Typography,
+} from "@material-ui/core";
 import { motion } from "framer-motion";
+import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
-import AnimateOnTap from "../../components/AnimateOnTap";
-import ScreenHeader from "../../components/ScreenHeader";
-import BottomNavContext from "../../context/BottomNavContext";
-import LoadingScreenContext from "../../context/LoadingScreenContext";
-import OrderContext from "../../context/OrderContext";
-import { slideRight } from "../../misc/transitions";
-import moment from "moment";
-import { history } from "../../App";
+import { history } from "../../../App";
+import AnimateOnTap from "../../../components/AnimateOnTap";
+import ScreenHeader from "../../../components/ScreenHeader";
+import BottomNavContext from "../../../context/BottomNavContext";
+import DialogContext from "../../../context/DialogContext";
+import LoadingScreenContext from "../../../context/LoadingScreenContext";
+import OrderContext from "../../../context/OrderContext";
+import UserContext from "../../../context/UserContext";
+import config from "../../../misc/config";
+import { slideRight } from "../../../misc/transitions";
 
 function Orders(props) {
   const bcontext = useContext(BottomNavContext);
   const { orderContext, setOrderContext } = useContext(OrderContext);
+  const { userContext } = useContext(UserContext);
   const [tabValue, setTabValue] = useState(0);
   const [serviceId, setServiceId] = useState(0);
   const { loadingScreen, setLoadingScreen } = useContext(LoadingScreenContext);
@@ -46,7 +58,7 @@ function Orders(props) {
     });
     setLoadingScreen({ ...loadingScreen, visible: true });
     (async () => {
-      await orderContext.fetchOrders(setOrderContext);
+      await orderContext.fetchOrders(setOrderContext, userContext);
       setLoadingScreen({ ...loadingScreen, visible: false });
     })();
   }, []);
@@ -58,42 +70,43 @@ function Orders(props) {
       variants={slideRight}
       style={{ height: "100%" }}
     >
-      <Box p={3}>
-        <ScreenHeader title="Orders" />
-      </Box>
-      <Tabs
-        value={serviceId}
-        fullWidth
-        onChange={(e, val) => setServiceId(val)}
-        className="icon-tabs"
-      >
-        {menu.map((m, index) => (
-          <Tab
-            key={index}
-            label={
-              <AnimateOnTap>
-                {typeof m.icon === "string" ? (
-                  <span className={m.icon}></span>
-                ) : (
-                  m.icon
-                )}
-              </AnimateOnTap>
-            }
-          />
-        ))}
-      </Tabs>
-      <Box m={3} marginTop={0} marginBottom={0}>
+      <Box p={3} bgcolor={config.palette.primary.pale} paddingBottom={0}>
+        <ScreenHeader title="Orders" noGoBack />
+        <br />
+        <br />
         <Tabs
+          value={serviceId}
+          fullWidth
+          onChange={(e, val) => setServiceId(val)}
+          className="icon-tabs"
+        >
+          {menu.map((m, index) => (
+            <Tab
+              key={index}
+              label={
+                <AnimateOnTap>
+                  {typeof m.icon === "string" ? (
+                    <span className={m.icon}></span>
+                  ) : (
+                    m.icon
+                  )}
+                </AnimateOnTap>
+              }
+            />
+          ))}
+        </Tabs>
+        <Tabs
+          centered
           value={tabValue}
           fullWidth
           onChange={(e, val) => setTabValue(val)}
         >
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
-          <Tab label={<AnimateOnTap>To Deliver</AnimateOnTap>} />
-          <Tab label={<AnimateOnTap>To Receive</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Cancelled</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>Finished</AnimateOnTap>} />
         </Tabs>
       </Box>
+
       <SwipeableViews
         resistance
         index={tabValue}
@@ -104,13 +117,10 @@ function Orders(props) {
           <Active status="pending" serviceId={serviceId} />
         </Box>
         <Box height="100%">
-          <Active status="processing" serviceId={serviceId} />
+          <Active status="cancelled" serviceId={serviceId} />
         </Box>
         <Box height="100%">
           <Active status="finishing" serviceId={serviceId} />
-        </Box>
-        <Box height="100%">
-          <Active status="cancelled" serviceId={serviceId} />
         </Box>
       </SwipeableViews>
     </motion.div>
@@ -137,12 +147,35 @@ function Active(props) {
 }
 
 function OrderCard(props) {
-  const { status_text, order_date, order_id, total } = props;
+  const { status_text, order_date, order_id, total, delivery_info } = props;
+  const { dialogContext, setDialogContext } = useContext(DialogContext);
+  const info = JSON.parse(delivery_info);
   return (
     <AnimateOnTap
       whileTap={{ opacity: 0.5 }}
       style={{ width: "100%" }}
-      onClick={() => history.push("/orders/" + order_id)}
+      onClick={() => {
+        setDialogContext({
+          visible: true,
+          title: moment(order_date).format("llll"),
+          message: (
+            <React.Fragment>
+              <List>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() => {
+                    setDialogContext({ ...dialogContext, visible: false });
+                    history.push("/orders/" + order_id);
+                  }}
+                >
+                  View Order
+                </ListItem>
+                <ListItem component={ButtonBase}>Accept Order</ListItem>
+              </List>
+            </React.Fragment>
+          ),
+        });
+      }}
     >
       <Box className="column-flex-100">
         <Box>
@@ -155,9 +188,20 @@ function OrderCard(props) {
           </Typography>
         </Box>
         <Box className="row-spaced center-align">
-          <Typography color="primary" variant="body2">
-            {status_text}
-          </Typography>
+          <Box style={{ maxWidth: "70%" }}>
+            <Typography
+              color="primary"
+              variant="body2"
+              style={{ fontWeight: 600 }}
+            >
+              {info.contact.name}
+              <br />
+              {info.contact.contact}
+            </Typography>
+            <Typography color="primary" variant="body2">
+              {info.address.place_name}
+            </Typography>
+          </Box>
           <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
             P {total}
           </Typography>

@@ -8,6 +8,7 @@ import { Price } from "../../components/Product";
 import SavingButton from "../../components/SavingButton";
 import ScreenHeader from "../../components/ScreenHeader";
 import CartContext from "../../context/CartContext";
+import OrderContext from "../../context/OrderContext";
 import UserContext from "../../context/UserContext";
 import { fadeInOut, slideBottom, slideRight } from "../../misc/transitions";
 import Api from "../../utils/api";
@@ -19,8 +20,10 @@ function Checkout(props) {
   const [address, setAddress] = useState(null);
   const { userContext } = useContext(UserContext);
   const { cartContext, setCartContext } = useContext(CartContext);
+  const { orderContext, setOrderContext } = useContext(OrderContext);
   const [selecting, setSelecting] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [note, setNote] = useState(null);
   const [deliveryInfo, setDeliveryInfo] = useState({
     address,
     contact: userContext.default_address
@@ -41,20 +44,33 @@ function Checkout(props) {
             payment_id: 1,
             total: cartContext.total,
             delivery_info: JSON.stringify(deliveryInfo),
+            status_text: "Preparing your food",
+            note,
+            products: cartContext.products.map((q) => ({
+              prod_id: q.product.id,
+              order_qty: q.quantity,
+              order_total: eval(q.product.price * q.quantity),
+              merchant_id: q.product.store.vendor_id,
+              product_meta: JSON.stringify(q.product),
+            })),
           },
         }),
-      after: (data) => {
+      after: (order) => {
         setSaving(false);
         fetchData({
           send: async () => Api.delete("/cart?token=" + userContext.user_token),
           after: () => {
             cartContext.emptyCart(setCartContext);
+            setOrderContext({
+              ...orderContext,
+              orders: [order, ...orderContext.orders],
+            });
             props.history.replace("/orders");
           },
         });
       },
     });
-  }, [deliveryInfo, cartContext, userContext]);
+  }, [deliveryInfo, cartContext, userContext, note]);
   useEffect(() => {
     if (userContext.default_address) {
       setDeliveryInfo({
@@ -123,6 +139,15 @@ function Checkout(props) {
                   label="Name"
                   className="themed-input"
                   fullWidth
+                  onChange={(e) =>
+                    setDeliveryInfo({
+                      ...deliveryInfo,
+                      contact: {
+                        ...deliveryInfo.contact,
+                        address: e.target.value,
+                      },
+                    })
+                  }
                 />
                 <TextField
                   defaultValue={deliveryInfo.contact.contact}
@@ -130,6 +155,15 @@ function Checkout(props) {
                   className="themed-input"
                   label="Contact Number"
                   fullWidth
+                  onChange={(e) =>
+                    setDeliveryInfo({
+                      ...deliveryInfo,
+                      contact: {
+                        ...deliveryInfo.contact,
+                        contact: e.target.value,
+                      },
+                    })
+                  }
                 />
                 <br />
                 <br />
@@ -168,6 +202,7 @@ function Checkout(props) {
                   multiline
                   helperText="Maximum of 200 Characters"
                   fullWidth
+                  onChange={(e) => setNote(e.target.value)}
                 />
               </Block>
               <OrdersBlock />

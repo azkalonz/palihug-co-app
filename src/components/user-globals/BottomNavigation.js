@@ -8,51 +8,22 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import BottomNavContext from "../../context/BottomNavContext";
 import CartContext from "../../context/CartContext";
+import UserContext from "../../context/UserContext";
 import { slideBottom } from "../../misc/transitions";
+import { bottomNavRoutes } from "../../Routes";
 function BottomNavigation(props) {
   const history = useHistory();
   const bcontext = useContext(BottomNavContext);
+  const { userContext } = useContext(UserContext);
   const { cartContext } = useContext(CartContext);
   const { bottomNavContext, setBottomNavContext } = bcontext;
   const [selected, setSelected] = useState("");
   const menu = useMemo(
     () =>
-      [
-        {
-          label: "Home",
-          icon: "icon-home-alt md",
-          value: "home",
-          url: "/",
-        },
-        {
-          label: "Orders",
-          icon: "icon-task-alt md",
-          value: "orders",
-          url: "/orders",
-        },
-        {
-          label: "Cart",
-          icon: "icon-cart-alt md",
-          iconStyle: {
-            color: "#b9b8b8",
-          },
-          value: "cart",
-          url: "/cart",
-        },
-        {
-          label: "Notifications",
-          icon: "icon-bell-alt md",
-          value: "notifications",
-          url: "/notifications",
-        },
-        {
-          label: "Profile",
-          icon: "icon-user-alt md",
-          value: "profile",
-          url: "/profile",
-          relatedUrls: ["/info"],
-        },
-      ].map((q) =>
+      (userContext?.user_type?.name === "driver"
+        ? bottomNavRoutes.driver
+        : bottomNavRoutes.customer
+      ).map((q) =>
         q.value === selected ? { ...q, icon: q.icon.replace("-alt", "") } : q
       ),
     [selected]

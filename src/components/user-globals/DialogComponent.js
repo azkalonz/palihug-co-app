@@ -55,7 +55,12 @@ function DialogComponent(props) {
     [dialogContext]
   );
   return (
-    <Dialog open={dialogContext.visible} onClose={() => closeDialog()}>
+    <Dialog
+      open={dialogContext.visible}
+      onClose={() => closeDialog()}
+      maxWidth="md"
+      fullWidth
+    >
       <DialogTitle onClose={() => closeDialog()}>
         {dialogContext.title}
       </DialogTitle>

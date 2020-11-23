@@ -77,6 +77,14 @@ const Api = {
     )
       window.location = "/login?r=" + window.location.pathname;
   },
+  getToken: function () {
+    try {
+      let user = JSON.parse(window.localStorage["user"]);
+      if (user.user_token) {
+        return user.user_token;
+      }
+    } catch (e) {}
+  },
 };
 
 export const SocketApi = {

@@ -222,7 +222,11 @@ function CarouselPagination(props) {
 export function Block(props) {
   const theme = useTheme();
   return (
-    <Box p={props.p !== undefined ? props.p : 3} paddingBottom={0}>
+    <Box
+      p={props.p !== undefined ? props.p : 3}
+      paddingBottom={0}
+      style={props.style || {}}
+    >
       {props.p !== undefined ? (
         <Typography
           color="primary"

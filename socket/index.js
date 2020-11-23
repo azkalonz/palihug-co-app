@@ -51,7 +51,6 @@ function startCountDown(user) {
 }
 
 io.on("connection", (socket) => {
-  console.log("test");
   socket.on("notification", (args) => {
     console.log(args);
   });
@@ -71,16 +70,11 @@ io.on("connection", (socket) => {
     }
     startCountDown(args);
   });
-});
 
-setInterval(() => {
-  console.log(
-    OTP.map((q) => ({
-      email: q.user_email,
-      duration: q.duration,
-    }))
-  );
-}, 1000);
+  socket.on("new order", (args) => {
+    socket.broadcast.emit("new order", args);
+  });
+});
 
 http.listen(3001, () => {
   console.log("listening on *:3001");

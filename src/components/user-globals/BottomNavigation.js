@@ -25,10 +25,10 @@ function BottomNavigation(props) {
           url: "/",
         },
         {
-          label: "History",
+          label: "Orders",
           icon: "icon-task-alt md",
-          value: "history",
-          url: "/history",
+          value: "orders",
+          url: "/orders",
         },
         {
           label: "Cart",

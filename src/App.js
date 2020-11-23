@@ -20,6 +20,7 @@ import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
 import { updatePastLocations } from "./utils/goBackOrPush";
 import "mapbox-gl/dist/mapbox-gl.css";
+import OrderContext, { getOrderContext } from "./context/OrderContext";
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
@@ -41,6 +42,11 @@ function App() {
   const [cartContext, setCartContext] = useState({
     build: function () {
       setCartContext(getCartContext(setCartContext));
+    },
+  });
+  const [orderContext, setOrderContext] = useState({
+    build: function () {
+      setOrderContext(getOrderContext(setOrderContext));
     },
   });
   const [servicesContext, setServicesContext] = useState({});
@@ -101,7 +107,10 @@ function App() {
       // build() replaces the state of cartContext to the returned object (removes build() on the process)
       cartContext.build();
     }
-  }, [cartContext.build]);
+    if (orderContext.build) {
+      orderContext.build();
+    }
+  }, [cartContext.build, orderContext.build]);
   useEffect(() => {
     if (
       userContext?.user_token &&
@@ -110,7 +119,7 @@ function App() {
     ) {
       // only fetch cart items once base on the condition inside if statement to minimize api calls
       fetchData({
-        send: async () => Api.get("/cart?token=" + userContext.user_token),
+        send: async () => Api.get("/cart?token=" + userContext?.user_token),
         after: (data) => {
           try {
             // meta is a json string of the cartContext from the Api
@@ -128,83 +137,86 @@ function App() {
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <CartContext.Provider value={{ cartContext, setCartContext }}>
-        <GetStartedContext.Provider
-          value={{ getStartedContext, setGetStartedContext }}
-        >
-          <ServicesContext.Provider
-            value={{ servicesContext, setServicesContext }}
+        <OrderContext.Provider value={{ orderContext, setOrderContext }}>
+          <GetStartedContext.Provider
+            value={{ getStartedContext, setGetStartedContext }}
           >
-            <SnackbarProvider
-              ref={notistackRef}
-              maxSnack={3}
-              preventDuplicate
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              action={(key) => (
-                <IconButton onClick={onClickDismiss(key)}>
-                  <Icon>close</Icon>
-                </IconButton>
-              )}
+            <ServicesContext.Provider
+              value={{ servicesContext, setServicesContext }}
             >
-              <DialogContext.Provider
-                value={{ dialogContext, setDialogContext }}
+              <SnackbarProvider
+                ref={notistackRef}
+                maxSnack={3}
+                preventDuplicate
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                action={(key) => (
+                  <IconButton onClick={onClickDismiss(key)}>
+                    <Icon>close</Icon>
+                  </IconButton>
+                )}
               >
-                <BottomNavContext.Provider
-                  value={{ bottomNavContext, setBottomNavContext }}
+                <DialogContext.Provider
+                  value={{ dialogContext, setDialogContext }}
                 >
-                  <ThemeProvider theme={theme}>
-                    <LoadingScreenContext.Provider
-                      value={{ loadingScreen, setLoadingScreen }}
-                    >
-                      {!loading && (
-                        <BrowserRouter history={history}>
-                          {loadingScreen.visible && (
-                            <Spinner variant={loadingScreen.variant} />
-                          )}
-                          <Route
-                            render={(r) => {
-                              const { location } = r;
-                              const h = r.history;
-                              history.push = h.push;
-                              history.goBack = h.goBack;
-                              return (
-                                <AnimatePresence exitBeforeEnter>
-                                  <Switch
-                                    location={location}
-                                    key={location.pathname}
-                                  >
-                                    {userContext.user_type?.name === "driver" &&
-                                      DriverRoutes.map((route, index) => (
+                  <BottomNavContext.Provider
+                    value={{ bottomNavContext, setBottomNavContext }}
+                  >
+                    <ThemeProvider theme={theme}>
+                      <LoadingScreenContext.Provider
+                        value={{ loadingScreen, setLoadingScreen }}
+                      >
+                        {!loading && (
+                          <BrowserRouter history={history}>
+                            {loadingScreen.visible && (
+                              <Spinner variant={loadingScreen.variant} />
+                            )}
+                            <Route
+                              render={(r) => {
+                                const { location } = r;
+                                const h = r.history;
+                                history.push = h.push;
+                                history.goBack = h.goBack;
+                                return (
+                                  <AnimatePresence exitBeforeEnter>
+                                    <Switch
+                                      location={location}
+                                      key={location.pathname}
+                                    >
+                                      {userContext?.user_type?.name ===
+                                        "driver" &&
+                                        DriverRoutes.map((route, index) => (
+                                          <Route key={index} {...route} />
+                                        ))}
+                                      {userContext?.user_type?.name ===
+                                        "customer" &&
+                                        CustomerRoutes.map((route, index) => (
+                                          <Route key={index} {...route} />
+                                        ))}
+                                      {Routes.map((route, index) => (
                                         <Route key={index} {...route} />
                                       ))}
-                                    {userContext.user_type?.name ===
-                                      "customer" &&
-                                      CustomerRoutes.map((route, index) => (
-                                        <Route key={index} {...route} />
-                                      ))}
-                                    {Routes.map((route, index) => (
-                                      <Route key={index} {...route} />
-                                    ))}
-                                  </Switch>
-                                </AnimatePresence>
-                              );
-                            }}
-                          />
-                          {userContext?.user_status === "Verified" && (
-                            <UserGlobals />
-                          )}
-                        </BrowserRouter>
-                      )}
-                    </LoadingScreenContext.Provider>
-                    {loading && <Spinner image />}
-                  </ThemeProvider>
-                </BottomNavContext.Provider>
-              </DialogContext.Provider>
-            </SnackbarProvider>
-          </ServicesContext.Provider>
-        </GetStartedContext.Provider>
+                                    </Switch>
+                                  </AnimatePresence>
+                                );
+                              }}
+                            />
+                            {userContext?.user_status === "Verified" && (
+                              <UserGlobals />
+                            )}
+                          </BrowserRouter>
+                        )}
+                      </LoadingScreenContext.Provider>
+                      {loading && <Spinner image />}
+                    </ThemeProvider>
+                  </BottomNavContext.Provider>
+                </DialogContext.Provider>
+              </SnackbarProvider>
+            </ServicesContext.Provider>
+          </GetStartedContext.Provider>
+        </OrderContext.Provider>
       </CartContext.Provider>
     </UserContext.Provider>
   );

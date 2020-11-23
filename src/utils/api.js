@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const DOMAIN = "http://192.168.1.14";
-const SOCKET_DOMAIN = "http://192.168.1.14:3001";
+const DOMAIN = "http://localhost";
+const SOCKET_DOMAIN = "http://localhost:3001";
 
 const Api = {
   get: (ENDPOINT, params = {}) =>
@@ -39,6 +39,19 @@ const Api = {
         cancelToken: new axios.CancelToken(function executor(c) {
           if (params.cancelToken) params.cancelToken(c);
         }),
+        ...params.config,
+      })
+      .then((resp) => resp.data);
+  },
+  delete: (ENDPOINT, params = {}) => {
+    return axios
+      .delete(DOMAIN + ENDPOINT, params.body, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + Api.token,
+          ...params.headers,
+        },
         ...params.config,
       })
       .then((resp) => resp.data);

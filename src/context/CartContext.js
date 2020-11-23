@@ -52,6 +52,9 @@ export const getCartContext = (setCartContext) => ({
       },
     });
   },
+  emptyCart: function (setCartContext) {
+    setCartContext({ ...this, total: 0, products: [] });
+  },
   removeFromCart: function (order, userContext, callback = () => {}) {
     const orders = [...this.products];
     let orderIndex = this.products.findIndex(({ id }) => {

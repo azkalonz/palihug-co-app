@@ -7,7 +7,7 @@ import { GetStartedScreen } from "./screens/get-started";
 import { Home } from "./screens/home";
 import Address from "./screens/home/Address";
 import AddressForm from "./screens/home/AddressForm";
-import History from "./screens/home/History";
+import Orders from "./screens/home/Orders";
 import Notifications from "./screens/home/Notifications";
 import Profile from "./screens/home/Profile";
 import { default as DriverProfile } from "./screens/driver/home/Profile";
@@ -53,20 +53,19 @@ export const CustomerRoutes = [
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, Home),
   }),
-  createRoute("/history", true, null, {
-    render: (p) => withNavBottom(p, History, "column-flex-100"),
+  createRoute("/orders", true, null, {
+    render: (p) => withNavBottom(p, Orders, "column-flex-100"),
   }),
   createRoute("/profile", true, null, {
     render: (p) => withNavBottom(p, Profile),
   }),
-  createRoute("/profile/info", true, History),
+  createRoute("/profile/info", true, Orders),
   createRoute("/address", true, null, {
     render: (p) => withNavBottom(p, Address, "column-flex-100"),
   }),
   createRoute("/new-address", true, null, {
     render: (p) => withNavBottom(p, AddressForm, "column-flex-100"),
   }),
-  createRoute("/orders", true, History),
   createRoute("/service/:service_id", true, null, {
     render: (p) => withNavBottom(p, Services),
   }),

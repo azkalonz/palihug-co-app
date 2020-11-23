@@ -1,6 +1,6 @@
 import { Box, Icon, TextField, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import CurrencyFormat from "react-currency-format";
 import { Marker, StaticMap } from "react-map-gl";
 import PinMap from "../../components/PinMap";
@@ -10,14 +10,78 @@ import ScreenHeader from "../../components/ScreenHeader";
 import CartContext from "../../context/CartContext";
 import UserContext from "../../context/UserContext";
 import { fadeInOut, slideBottom, slideRight } from "../../misc/transitions";
+import Api from "../../utils/api";
+import fetchData from "../../utils/fetchData";
 import { Block } from "../home";
 import { CartColumn, OrdersBlock } from "./Cart";
 
 function Checkout(props) {
   const [address, setAddress] = useState(null);
   const { userContext } = useContext(UserContext);
-  const { cartContext } = useContext(CartContext);
+  const { cartContext, setCartContext } = useContext(CartContext);
   const [selecting, setSelecting] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [deliveryInfo, setDeliveryInfo] = useState({
+    address,
+    contact: userContext.default_address
+      ? {
+          name: userContext.default_address.name,
+          contact: userContext.default_address.contact,
+        }
+      : {},
+  });
+  const submitOrder = useCallback(() => {
+    fetchData({
+      before: () => setSaving(true),
+      send: async () =>
+        await Api.post("/checkout?token=" + userContext.user_token, {
+          body: {
+            consumer_user_id: userContext.user_id,
+            service_id: 1,
+            payment_id: 1,
+            total: cartContext.total,
+            delivery_info: JSON.stringify(deliveryInfo),
+          },
+        }),
+      after: (data) => {
+        setSaving(false);
+        fetchData({
+          send: async () => Api.delete("/cart?token=" + userContext.user_token),
+          after: () => {
+            cartContext.emptyCart(setCartContext);
+            props.history.replace("/orders");
+          },
+        });
+      },
+    });
+  }, [deliveryInfo, cartContext, userContext]);
+  useEffect(() => {
+    if (userContext.default_address) {
+      setDeliveryInfo({
+        address: !Object.keys(userContext?.default_address || {}).length
+          ? deliveryInfo.address
+          : (() => {
+              const {
+                street,
+                barangay,
+                city,
+                house_number,
+                zip,
+              } = userContext.default_address;
+              return `${
+                street ? street + ", " : ""
+              }${barangay}, ${city}, ${zip}`;
+            })(),
+        contact: {
+          name: userContext.default_address.name,
+          contact: userContext.default_address.contact,
+        },
+      });
+    }
+  }, [userContext.default_address]);
+  useEffect(() => {
+    setDeliveryInfo({ ...deliveryInfo, address });
+  }, [address]);
   return (
     <motion.div variants={fadeInOut} initial="initial" exit="out" animate="in">
       {selecting && (
@@ -53,20 +117,22 @@ function Checkout(props) {
                 }}
               />
               <Block title="Delivery Info" p={0}>
-                {Object.keys(userContext.default_address || {}).length ? (
-                  <React.Fragment>
-                    <CartColumn title="Name">
-                      <Typography style={{ fontWeight: 700 }} color="primary">
-                        {userContext?.default_address?.name}
-                      </Typography>
-                    </CartColumn>
-                    <CartColumn title="Number">
-                      <Typography style={{ fontWeight: 700 }} color="primary">
-                        {userContext?.default_address?.contact}
-                      </Typography>
-                    </CartColumn>
-                  </React.Fragment>
-                ) : null}
+                <TextField
+                  defaultValue={deliveryInfo.contact.name}
+                  variant="outlined"
+                  label="Name"
+                  className="themed-input"
+                  fullWidth
+                />
+                <TextField
+                  defaultValue={deliveryInfo.contact.contact}
+                  variant="outlined"
+                  className="themed-input"
+                  label="Contact Number"
+                  fullWidth
+                />
+                <br />
+                <br />
                 <CartColumn title="Address">
                   <Typography style={{ fontWeight: 700 }} color="primary">
                     {address.place_name}
@@ -135,7 +201,8 @@ function Checkout(props) {
                 <SavingButton
                   className="themed-button"
                   startIcon={<Icon>https</Icon>}
-                  onClick={() => props.history.push("/checkout")}
+                  saving={saving}
+                  onClick={submitOrder}
                 >
                   <Typography>Submit Order</Typography>
                 </SavingButton>

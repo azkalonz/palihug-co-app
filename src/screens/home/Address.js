@@ -59,6 +59,9 @@ function Address(props) {
         }
         setSaving(false);
         goBackOrPush("/");
+        if (props.location?.state?.onSave) {
+          props.location.state.onSave(data.address);
+        }
       },
     });
   }, [saving, selected]);

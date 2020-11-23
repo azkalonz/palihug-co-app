@@ -7,9 +7,31 @@ import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
 import { slideRight } from "../../misc/transitions";
 
-function History(props) {
+function Orders(props) {
   const bcontext = useContext(BottomNavContext);
   const [tabValue, setTabValue] = useState(0);
+  const [serviceId, setServiceId] = useState(0);
+  const menu = useMemo(
+    () => [
+      { icon: "icon-coke-burger md" },
+      { icon: "icon-gift md" },
+      { icon: "icon-task md" },
+      {
+        icon: (
+          <span className="icon-laundry md">
+            <span className="path1"></span>
+            <span className="path2"></span>
+            <span className="path3"></span>
+            <span className="path4"></span>
+            <span className="path5"></span>
+            <span className="path6"></span>
+          </span>
+        ),
+      },
+      { icon: "icon-basket md" },
+    ],
+    []
+  );
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: true });
@@ -23,17 +45,39 @@ function History(props) {
       style={{ height: "100%" }}
     >
       <Box p={3}>
-        <ScreenHeader title="History" />
-        <Tabs
-          centered
-          value={tabValue}
-          fullWidth
-          onChange={(e, val) => setTabValue(val)}
-        >
-          <Tab label={<AnimateOnTap>Active</AnimateOnTap>} />
-          <Tab label={<AnimateOnTap>History</AnimateOnTap>} />
-        </Tabs>
+        <ScreenHeader title="Orders" />
       </Box>
+      <Tabs
+        value={serviceId}
+        fullWidth
+        onChange={(e, val) => setServiceId(val)}
+        className="icon-tabs"
+      >
+        {menu.map((m, index) => (
+          <Tab
+            key={index}
+            label={
+              <AnimateOnTap>
+                {typeof m.icon === "string" ? (
+                  <span className={m.icon}></span>
+                ) : (
+                  m.icon
+                )}
+              </AnimateOnTap>
+            }
+          />
+        ))}
+      </Tabs>
+      <Tabs
+        centered
+        value={tabValue}
+        fullWidth
+        onChange={(e, val) => setTabValue(val)}
+      >
+        <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
+        <Tab label={<AnimateOnTap>To Deliver</AnimateOnTap>} />
+        <Tab label={<AnimateOnTap>To Receive</AnimateOnTap>} />
+      </Tabs>
       <SwipeableViews
         resistance
         index={tabValue}
@@ -41,10 +85,13 @@ function History(props) {
         style={{ height: "100%" }}
       >
         <Box height="100%">
+          <InActive />
+        </Box>
+        <Box height="100%">
           <Active />
         </Box>
         <Box height="100%">
-          <InActive />
+          <Active />
         </Box>
       </SwipeableViews>
     </motion.div>
@@ -67,50 +114,9 @@ function Active() {
 }
 function InActive() {
   const [tabValue, setTabValue] = useState(0);
-  const menu = useMemo(
-    () => [
-      { icon: "icon-coke-burger md" },
-      { icon: "icon-gift md" },
-      { icon: "icon-task md" },
-      {
-        icon: (
-          <span className="icon-laundry md">
-            <span className="path1"></span>
-            <span className="path2"></span>
-            <span className="path3"></span>
-            <span className="path4"></span>
-            <span className="path5"></span>
-            <span className="path6"></span>
-          </span>
-        ),
-      },
-      { icon: "icon-basket md" },
-    ],
-    []
-  );
+
   return (
     <React.Fragment>
-      <Tabs
-        value={tabValue}
-        fullWidth
-        onChange={(e, val) => setTabValue(val)}
-        className="icon-tabs"
-      >
-        {menu.map((m, index) => (
-          <Tab
-            key={index}
-            label={
-              <AnimateOnTap>
-                {typeof m.icon === "string" ? (
-                  <span className={m.icon}></span>
-                ) : (
-                  m.icon
-                )}
-              </AnimateOnTap>
-            }
-          />
-        ))}
-      </Tabs>
       <SwipeableViews
         resistance
         index={tabValue}
@@ -168,4 +174,4 @@ function OrderCard() {
   );
 }
 
-export default History;
+export default Orders;

@@ -14,8 +14,10 @@ function ScreenHeader(props) {
           className="back-button"
           onClick={() => {
             if (props.pushTo) {
-              if (typeof props.pushTo === "string") history.push(props.pushTo);
-              else if (typeof props.pushTo === "function") props.pushTo();
+              if (typeof props.pushTo !== "function") {
+                if (!props.replace) history.push(props.pushTo);
+                else history.replace(props.pushTo);
+              } else props.pushTo();
             } else goBackOrPush(props.path || "/");
           }}
         >

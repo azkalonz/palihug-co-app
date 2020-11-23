@@ -202,15 +202,14 @@ function MerchantView(props) {
         <Box style={{ height: "100%" }}>
           <Box
             className={
-              "merchant-banner" + (merchant.merch_banner ? "" : " no-image")
+              "merchant-banner" +
+              (merchant.vendor?.vendor_banner ? "" : " no-image")
             }
           >
-            {merchant.merch_banner && (
+            {merchant.vendor?.vendor_banner && (
               <motion.img
-                src={
-                  "http://localhost/storage/merchants/" + merchant.merch_banner
-                }
-                alt={merchant.merch_name}
+                src={merchant.vendor.vendor_banner}
+                alt={merchant.vendor?.vendor_shop_name}
                 width="100%"
                 style={{ opacity: imgOpacity, scale: imgScale }}
               />
@@ -247,9 +246,11 @@ function MerchantView(props) {
                 drag_handle
               </Icon>
               <motion.div
+                className="center-all"
                 style={{
                   opacity: nameOpacity,
                   padding: 24,
+                  justifyContent: "space-between",
                 }}
               >
                 <Typography
@@ -265,13 +266,24 @@ function MerchantView(props) {
                 </Typography>
                 {!merchant.vendor?.errors &&
                   !merchant.vendor?.vendor_shop_name && (
-                    <Skeleton animation="wave" width="40%" height={55} />
+                    <Skeleton animation="wave" width="100%" height={55} />
                   )}
+                <IconButton
+                  onClick={() =>
+                    history.push({
+                      pathname: "/merchant/" + merchant_id + "/details",
+                      state: { merchant },
+                    })
+                  }
+                  color="primary"
+                >
+                  <Icon>info</Icon>
+                </IconButton>
               </motion.div>
               {!isSearching && (
                 <motion.img
                   src={"/static/images/logo/horizontal.png"}
-                  alt={merchant.merch_name}
+                  alt={merchant.vendor?.vendor_shop_name}
                   className="merchant-logo"
                   style={{ opacity: logoOpacity }}
                 />

@@ -16,6 +16,7 @@ function Epagakain(props) {
           title="Popular Restaurants"
           titleStyle={{
             paddingTop: 0,
+            paddingLeft: 24,
             paddingBottom: 0,
           }}
         >

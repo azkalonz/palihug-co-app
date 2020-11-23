@@ -755,7 +755,7 @@ img {
 }
 
 .center-pin.panning::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -5px;
   right: -10px;
@@ -822,6 +822,39 @@ img {
   border-radius: 10px;
   overflow: hidden;
   border: 3px solid #d92e45;
+}
+
+.merchant-details-banner {
+  position: relative;
+  background-size: cover !important;
+}
+
+.merchant-details-banner h1,
+.merchant-details-banner h2,
+.merchant-details-banner h3,
+.merchant-details-banner h4,
+.merchant-details-banner h5,
+.merchant-details-banner h6,
+.merchant-details-banner span {
+  position: relative;
+  z-index: 10;
+  color: #fff;
+}
+
+.merchant-details-banner::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.151)), to(rgba(0, 0, 0, 0.3)));
+  background: linear-gradient(rgba(0, 0, 0, 0.151), rgba(0, 0, 0, 0.3));
+}
+
+.merchant-details-banner img {
+  background: #fff;
+  border-radius: 7px;
 }
 
 @-webkit-keyframes slideup {

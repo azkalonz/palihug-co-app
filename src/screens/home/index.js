@@ -234,7 +234,7 @@ export function Block(props) {
           style={{
             fontWeight: 700,
             marginBottom: 13,
-            padding: theme.spacing(3),
+            padding: props.p === undefined ? theme.spacing(3) : 0,
             ...(props.titleStyle ? props.titleStyle : {}),
           }}
         >

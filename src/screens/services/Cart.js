@@ -45,6 +45,7 @@ function Cart(props) {
                   </span>
                 </React.Fragment>
               }
+              p={0}
             >
               <Price>
                 <CurrencyFormat
@@ -78,7 +79,7 @@ export function OrdersBlock(props) {
   const { userContext } = useContext(UserContext);
   const { enqueueSnackbar } = useSnackbar();
   return (
-    <Block title="Your Order">
+    <Block title="Your Order" p={0}>
       {cartContext.products.map((item) => (
         <ProductCard
           product={item.product}

@@ -115,8 +115,12 @@ function RegisterForm(props) {
       initial="initial"
       variants={slideRight}
       transition="tween"
+      style={{
+        height: "100vh",
+        overflow: "auto",
+      }}
     >
-      <Container style={{ paddingTop: 13 }}>
+      <Container style={{ paddingTop: 13, height: "100%" }}>
         <Box>
           <ScreenHeader title="Registration" path="/get-started" />
           <Typography color="textSecondary">Welcome</Typography>

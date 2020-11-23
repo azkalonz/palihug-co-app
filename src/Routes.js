@@ -17,6 +17,7 @@ import Services from "./screens/services";
 import Cart, { AddToCart } from "./screens/services/Cart";
 import Merchant from "./screens/services/Merchant";
 import Checkout from "./screens/services/Checkout";
+import MerchantDetails from "./screens/services/MerchantDetails";
 
 function createRoute(path, exact, component, props = {}) {
   return { path, exact, ...(component ? { component } : {}), ...props };
@@ -78,6 +79,9 @@ export const CustomerRoutes = [
   createRoute("/checkout", true, Checkout),
   createRoute("/merchant/:merchant_id", true, null, {
     render: (p) => withNavBottom(p, Merchant, "", 0),
+  }),
+  createRoute("/merchant/:merchant_id/details", true, null, {
+    render: (p) => withNavBottom(p, MerchantDetails),
   }),
   createRoute("/notifications", true, Notifications),
 ];

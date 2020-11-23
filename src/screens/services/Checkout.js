@@ -1,18 +1,17 @@
+import { Box, Icon, TextField, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useState } from "react";
+import CurrencyFormat from "react-currency-format";
+import { Marker, StaticMap } from "react-map-gl";
 import PinMap from "../../components/PinMap";
+import { Price } from "../../components/Product";
+import SavingButton from "../../components/SavingButton";
+import ScreenHeader from "../../components/ScreenHeader";
+import CartContext from "../../context/CartContext";
+import UserContext from "../../context/UserContext";
 import { fadeInOut, slideBottom, slideRight } from "../../misc/transitions";
-import { StaticMap, Marker } from "react-map-gl";
 import { Block } from "../home";
 import { CartColumn, OrdersBlock } from "./Cart";
-import { Box, Icon, TextField, Typography } from "@material-ui/core";
-import UserContext from "../../context/UserContext";
-import Address from "../../components/Address";
-import ScreenHeader from "../../components/ScreenHeader";
-import CurrencyFormat from "react-currency-format";
-import { Price } from "../../components/Product";
-import CartContext from "../../context/CartContext";
-import SavingButton from "../../components/SavingButton";
 
 function Checkout(props) {
   const [address, setAddress] = useState(null);
@@ -53,7 +52,7 @@ function Checkout(props) {
                   setSelecting(true);
                 }}
               />
-              <Block title="Delivery Info">
+              <Block title="Delivery Info" p={0}>
                 {Object.keys(userContext.default_address || {}).length ? (
                   <React.Fragment>
                     <CartColumn title="Name">
@@ -95,7 +94,7 @@ function Checkout(props) {
                   </StaticMap>
                 </div>
               </Block>
-              <Block title="Note">
+              <Block title="Note" p={0}>
                 <TextField
                   inputProps={{ maxLength: 200 }}
                   variant="outlined"
@@ -106,7 +105,7 @@ function Checkout(props) {
                 />
               </Block>
               <OrdersBlock />
-              <Block title="Payment">
+              <Block title="Payment" p={0}>
                 <CartColumn title="Method">
                   <Typography style={{ fontWeight: 700 }} color="primary">
                     Cash on delivery
@@ -122,6 +121,7 @@ function Checkout(props) {
                     </span>
                   </React.Fragment>
                 }
+                p={0}
               >
                 <Price>
                   <CurrencyFormat

@@ -13,6 +13,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import { history } from "../../../App";
 import AnimateOnTap from "../../../components/AnimateOnTap";
+import EmptyListMessage from "../../../components/EmptyListMessage";
 import ScreenHeader from "../../../components/ScreenHeader";
 import BottomNavContext from "../../../context/BottomNavContext";
 import DialogContext from "../../../context/DialogContext";
@@ -129,18 +130,23 @@ function Orders(props) {
 
 function Active(props) {
   const { orderContext } = useContext(OrderContext);
+  const orders = useMemo(
+    () =>
+      orderContext?.orders
+        ?.filter((order) => order.status === props.status)
+        .filter((order) => order.service_id === props.serviceId + 1)
+        .sort((a, b) => new Date(b.order_date) - new Date(a.order_date)),
+    [orderContext, props.serviceId]
+  );
   return (
     <Box p={3}>
+      {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
       <List>
-        {orderContext?.orders
-          ?.filter((order) => order.status === props.status)
-          .filter((order) => order.service_id === props.serviceId + 1)
-          .sort((a, b) => new Date(b.order_date) - new Date(a.order_date))
-          .map((order, index) => (
-            <ListItem divider>
-              <OrderCard {...order} />
-            </ListItem>
-          ))}
+        {orders.map((order, index) => (
+          <ListItem divider>
+            <OrderCard {...order} />
+          </ListItem>
+        ))}
       </List>
     </Box>
   );
@@ -170,7 +176,6 @@ function OrderCard(props) {
                 >
                   View Order
                 </ListItem>
-                <ListItem component={ButtonBase}>Accept Order</ListItem>
               </List>
             </React.Fragment>
           ),

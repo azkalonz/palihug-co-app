@@ -13,4 +13,5 @@ export default async ({
     onError && onError(e);
   }
   after && after(res);
+  return res;
 };

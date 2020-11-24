@@ -29,21 +29,25 @@ function BottomNavigation(props) {
     [selected]
   );
   useEffect(() => {
+    let found = false;
     menu.forEach((m) => {
       const currentUrl = window.location.pathname;
-      if (m.url === currentUrl) setSelected(m.value);
-      else if (m.relatedUrls) {
+      if (m.url === currentUrl) {
+        setSelected(m.value);
+        found = m.value;
+      } else if (m.relatedUrls) {
         m.relatedUrls.forEach((mm) => {
-          if (mm === currentUrl) setSelected(m.value);
+          if (mm === currentUrl) {
+            setSelected(m.value);
+            found = m.value;
+          }
         });
       }
     });
-  }, [menu]);
-  useEffect(() => {
-    const m = menu.find((q) => q.url === window.location.pathname);
-    if (!m) setSelected("");
-    else setSelected(m.value);
+    if (!found) setSelected("");
+    else setSelected(found);
   }, [window.location.pathname, menu]);
+
   useEffect(() => {
     if (cartContext.products) {
       setBottomNavContext({

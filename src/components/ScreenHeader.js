@@ -33,6 +33,7 @@ function ScreenHeader(props) {
       ) : (
         props.title
       )}
+      {props.children}
     </Box>
   );
 }

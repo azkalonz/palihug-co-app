@@ -74,6 +74,20 @@ io.on("connection", (socket) => {
   socket.on("new order", (args) => {
     socket.broadcast.emit("new order", args);
   });
+
+  socket.on("join:room:orders", ({ order_id }) => {
+    console.log("joined", socket.id);
+    socket.join("orders_" + order_id);
+  });
+
+  socket.on("leave:room:orders", ({ order_id }) => {
+    console.log("left", socket.id);
+    socket.leave("orders_" + order_id);
+  });
+
+  socket.on("send:room:orders", (chat) => {
+    socket.to("orders_" + chat.order_id).emit("message:room:orders", chat);
+  });
 });
 
 http.listen(3001, () => {

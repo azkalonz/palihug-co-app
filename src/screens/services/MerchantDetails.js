@@ -57,14 +57,7 @@ function MerchantDetails(props) {
             animation="wave"
           />
         ) : null}
-        <ScreenHeader
-          title={vendor?.vendor_display_name}
-          pushTo={{
-            pathname: `/merchant/${merchant_id}`,
-            state: { merchant },
-          }}
-          replace={true}
-        />
+        <ScreenHeader title={vendor?.vendor_display_name} replace={true} />
         <Block p={0} title="">
           <Box className="center-all" justifyContent="flex-start">
             <Avatar

@@ -1,6 +1,11 @@
 $pale: #f9dce0;
 $primary: #d92e45;
 
+$success: rgb(55, 177, 55);
+$error: rgb(151, 0, 0);
+$warning: rgb(255, 179, 0);
+$neutral: rgb(34, 131, 241);
+
 body {
   margin: 0;
   overflow: hidden;
@@ -160,6 +165,9 @@ img {
 
 .icon-tabs {
   button {
+    &:first-of-type {
+      margin-left: 30px;
+    }
     background: $pale;
     border-radius: 20px;
     margin: 0 10px;
@@ -640,6 +648,86 @@ img {
   }
 }
 
+.chip {
+  &.pending {
+    color: $neutral;
+    border: 1px solid $neutral;
+    background: none;
+  }
+  &.processing {
+    color: $success;
+    border: 1px solid $success;
+    background: none;
+  }
+  &.cancelled {
+    color: $error;
+    border: 1px solid $error;
+    background: none;
+  }
+}
+.PrivateTabIndicator-colorSecondary-13 {
+  background-color: $primary!important;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  .chat-controls {
+  }
+  .chat-content {
+    overflow: auto;
+    height: 100%;
+  }
+  .message-container[data-show] {
+    .chat-details {
+      height:14px;
+    }
+  }
+  .chat-details {
+    transition: height 0.2s ease-out;
+    height:0;
+    p {
+    font-size: 12px;
+  }
+  overflow: hidden;
+  }
+  .chat-entry {
+    margin-bottom: 30px;
+    padding: 0 13px;
+    &.right {
+      justify-content: flex-end;
+    }
+    &.left {
+      justify-content: flex-start;
+    }
+  }
+  .text-message {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    &.left {
+      margin-left: 14px;
+      justify-content: flex-start;
+      .message {
+      background: $pale;
+      }
+    }
+    &.right {
+      margin-right: 14px;
+      justify-content: flex-end;
+    }
+    .message {
+      border-radius: 13px;
+      padding: 5px;
+      max-width: 80%;
+      p {
+        word-break: break-word;
+      }
+    }
+  }
+}
 @keyframes slideup {
   from {
     transform: translateY(75px);

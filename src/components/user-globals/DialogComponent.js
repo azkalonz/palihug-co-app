@@ -35,7 +35,7 @@ const DialogTitle = withStyles(styles)((props) => {
       >
         {children}
       </Typography>
-      {onClose ? (
+      {onClose && !props.noClose ? (
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -50,10 +50,10 @@ const DialogTitle = withStyles(styles)((props) => {
 function DialogComponent(props) {
   const { dialogContext, setDialogContext } = useContext(DialogContext);
   const [loading, setLoading] = useState(false);
-  const closeDialog = useCallback(
-    () => setDialogContext({ ...dialogContext, visible: false }),
-    [dialogContext]
-  );
+  const closeDialog = useCallback(() => {
+    if (!dialogContext.noClose)
+      setDialogContext({ ...dialogContext, visible: false });
+  }, [dialogContext]);
   return (
     <Dialog
       open={dialogContext.visible}
@@ -61,7 +61,10 @@ function DialogComponent(props) {
       maxWidth="md"
       fullWidth
     >
-      <DialogTitle onClose={() => closeDialog()}>
+      <DialogTitle
+        onClose={() => closeDialog()}
+        noClose={dialogContext.noClose}
+      >
         {dialogContext.title}
       </DialogTitle>
       <DialogContent>

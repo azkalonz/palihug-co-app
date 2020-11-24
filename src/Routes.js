@@ -19,6 +19,7 @@ import Merchant from "./screens/services/Merchant";
 import MerchantDetails from "./screens/services/MerchantDetails";
 import { default as DriverOrders } from "./screens/driver/home/Orders";
 import OrderDetails from "./screens/home/OrderDetails";
+import Chat from "./screens/home/Chat";
 function createRoute(path, exact, component, props = {}) {
   return { path, exact, ...(component ? { component } : {}), ...props };
 }
@@ -43,8 +44,15 @@ export default [
 ];
 
 export const DriverRoutes = [
+  createRoute("/chat", true, Chat),
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, DriverOrders, "", 0),
+  }),
+  createRoute("/orders", true, null, {
+    render: (p) => withNavBottom(p, DriverOrders, "", 0),
+  }),
+  createRoute("/merchant/:merchant_id/details", true, null, {
+    render: (p) => withNavBottom(p, MerchantDetails),
   }),
   createRoute("/notifications", true, Notifications),
   createRoute("/profile", true, null, {
@@ -56,6 +64,7 @@ export const DriverRoutes = [
 ];
 
 export const CustomerRoutes = [
+  createRoute("/chat", true, Chat),
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, Home),
   }),
@@ -101,6 +110,7 @@ export const bottomNavRoutes = {
       icon: "icon-task-alt md",
       value: "home",
       url: "/",
+      relatedUrls: ["/orders"],
     },
     {
       label: "Notifications",

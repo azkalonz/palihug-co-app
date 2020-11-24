@@ -10,6 +10,7 @@ import OrderContext from "../../context/OrderContext";
 import { slideRight } from "../../misc/transitions";
 import moment from "moment";
 import { history } from "../../App";
+import EmptyListMessage from "../../components/EmptyListMessage";
 
 function Orders(props) {
   const bcontext = useContext(BottomNavContext);
@@ -19,9 +20,9 @@ function Orders(props) {
   const { loadingScreen, setLoadingScreen } = useContext(LoadingScreenContext);
   const menu = useMemo(
     () => [
-      { icon: "icon-coke-burger md" },
-      { icon: "icon-gift md" },
-      { icon: "icon-task md" },
+      { icon: "icon-coke-burger md", title: "E-Pagkain" },
+      { icon: "icon-gift md", title: "E-Pasurprise" },
+      { icon: "icon-task md", title: "E-Pasugo" },
       {
         icon: (
           <span className="icon-laundry md">
@@ -33,8 +34,9 @@ function Orders(props) {
             <span className="path6"></span>
           </span>
         ),
+        title: "E-Palaba",
       },
-      { icon: "icon-basket md" },
+      { icon: "icon-basket md", title: "E-Pabili" },
     ],
     []
   );
@@ -77,6 +79,7 @@ function Orders(props) {
                 ) : (
                   m.icon
                 )}
+                <span style={{ marginLeft: 7 }}>{m.title}</span>
               </AnimateOnTap>
             }
           />
@@ -89,7 +92,7 @@ function Orders(props) {
           onChange={(e, val) => setTabValue(val)}
         >
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
-          <Tab label={<AnimateOnTap>To Deliver</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>Processing</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>To Receive</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Cancelled</AnimateOnTap>} />
         </Tabs>
@@ -119,18 +122,23 @@ function Orders(props) {
 
 function Active(props) {
   const { orderContext } = useContext(OrderContext);
+  const orders = useMemo(
+    () =>
+      orderContext?.orders
+        ?.filter((order) => order.status === props.status)
+        .filter((order) => order.service_id === props.serviceId + 1)
+        .sort((a, b) => new Date(b.order_date) - new Date(a.order_date)),
+    [orderContext, props.serviceId]
+  );
   return (
     <Box p={3}>
+      {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
       <List>
-        {orderContext?.orders
-          ?.filter((order) => order.status === props.status)
-          .filter((order) => order.service_id === props.serviceId + 1)
-          .sort((a, b) => new Date(b.order_date) - new Date(a.order_date))
-          .map((order, index) => (
-            <ListItem divider>
-              <OrderCard {...order} />
-            </ListItem>
-          ))}
+        {orders.map((order, index) => (
+          <ListItem divider>
+            <OrderCard {...order} />
+          </ListItem>
+        ))}
       </List>
     </Box>
   );

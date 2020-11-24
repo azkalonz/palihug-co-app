@@ -246,6 +246,10 @@ img {
   margin: 0 10px;
 }
 
+.icon-tabs button:first-of-type {
+  margin-left: 30px;
+}
+
 .icon-tabs button.Mui-selected {
   border: 2px solid;
 }
@@ -855,6 +859,115 @@ img {
 .merchant-details-banner img {
   background: #fff;
   border-radius: 7px;
+}
+
+.chip.pending {
+  color: #2283f1;
+  border: 1px solid #2283f1;
+  background: none;
+}
+
+.chip.processing {
+  color: #37b137;
+  border: 1px solid #37b137;
+  background: none;
+}
+
+.chip.cancelled {
+  color: #970000;
+  border: 1px solid #970000;
+  background: none;
+}
+
+.PrivateTabIndicator-colorSecondary-13 {
+  background-color: #d92e45 !important;
+}
+
+.chat-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.chat-container .chat-content {
+  overflow: auto;
+  height: 100%;
+}
+
+.chat-container .message-container[data-show] .chat-details {
+  height: 14px;
+}
+
+.chat-container .chat-details {
+  -webkit-transition: height 0.2s ease-out;
+  transition: height 0.2s ease-out;
+  height: 0;
+  overflow: hidden;
+}
+
+.chat-container .chat-details p {
+  font-size: 12px;
+}
+
+.chat-container .chat-entry {
+  margin-bottom: 30px;
+  padding: 0 13px;
+}
+
+.chat-container .chat-entry.right {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.chat-container .chat-entry.left {
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.chat-container .text-message {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+}
+
+.chat-container .text-message.left {
+  margin-left: 14px;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.chat-container .text-message.left .message {
+  background: #f9dce0;
+}
+
+.chat-container .text-message.right {
+  margin-right: 14px;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.chat-container .text-message .message {
+  border-radius: 13px;
+  padding: 5px;
+  max-width: 80%;
+}
+
+.chat-container .text-message .message p {
+  word-break: break-word;
 }
 
 @-webkit-keyframes slideup {

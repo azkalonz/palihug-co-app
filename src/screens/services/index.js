@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Address from "../../components/Address";
+import EmptyListMessage from "../../components/EmptyListMessage";
 import HorizontalScroll from "../../components/HorizontalScroll";
 import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
@@ -67,8 +68,14 @@ function Services(props) {
           serviceContentRef={serviceContentRef}
         />
       )}
+      {service && !service.merchants.length ? (
+        <EmptyListMessage>
+          {service.service_name} is not available.
+        </EmptyListMessage>
+      ) : null}
       <HorizontalScroll>
         {typeof Service !== "function" &&
+          !service &&
           new Array(5).fill(1).map((q, i) => (
             <Box key={i} width={150} height={200} m={1}>
               <Skeleton animation="wave" width="100%" height="100%" />

@@ -144,7 +144,7 @@ function Checkout(props) {
                       ...deliveryInfo,
                       contact: {
                         ...deliveryInfo.contact,
-                        address: e.target.value,
+                        name: e.target.value,
                       },
                     })
                   }

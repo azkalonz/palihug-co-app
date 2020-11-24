@@ -163,7 +163,7 @@ function ChatComponent(props) {
   }, [messages]);
   return (
     <React.Fragment>
-      {!messages.length ? <LinearProgress /> : null}
+      {loading && <LinearProgress />}
       {!selectingMap && (
         <React.Fragment>
           <div className="chat-content" ref={chatRef}>

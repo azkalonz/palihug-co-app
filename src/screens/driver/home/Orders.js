@@ -102,6 +102,7 @@ function Orders(props) {
           fullWidth
           onChange={(e, val) => setTabValue(val)}
         >
+          <Tab label={<AnimateOnTap>Active</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Cancelled</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Finished</AnimateOnTap>} />
@@ -115,27 +116,30 @@ function Orders(props) {
         style={{ paddingBottom: 50 }}
       >
         <Box height="100%">
-          <Active status="pending" serviceId={serviceId} />
+          <Order status="processing" serviceId={serviceId} />
         </Box>
         <Box height="100%">
-          <Active status="cancelled" serviceId={serviceId} />
+          <Order status="pending" serviceId={serviceId} />
         </Box>
         <Box height="100%">
-          <Active status="finishing" serviceId={serviceId} />
+          <Order status="cancelled" serviceId={serviceId} />
+        </Box>
+        <Box height="100%">
+          <Order status="finishing" serviceId={serviceId} />
         </Box>
       </SwipeableViews>
     </motion.div>
   );
 }
 
-function Active(props) {
+function Order(props) {
   const { orderContext } = useContext(OrderContext);
   const orders = useMemo(
     () =>
       orderContext?.orders
         ?.filter((order) => order.status === props.status)
         .filter((order) => order.service_id === props.serviceId + 1)
-        .sort((a, b) => new Date(b.order_date) - new Date(a.order_date)),
+        .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)),
     [orderContext, props.serviceId]
   );
   return (
@@ -175,6 +179,18 @@ function OrderCard(props) {
                   }}
                 >
                   View Order
+                </ListItem>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() => {
+                    setDialogContext({ ...dialogContext, visible: false });
+                    history.push({
+                      pathname: "/orders/" + order_id,
+                      search: "?tab=3",
+                    });
+                  }}
+                >
+                  Chat
                 </ListItem>
               </List>
             </React.Fragment>

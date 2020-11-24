@@ -674,11 +674,28 @@ img {
   flex-direction: column;
   height: 100vh;
   width: 100%;
+  .chat-static-map {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 3px solid $primary;
+  }
   .chat-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 13px;
+    .themed-input {
+      width: 100%;
+      margin: 0;
+    }
   }
   .chat-content {
     overflow: auto;
     height: 100%;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+    border-color: rgba(0, 0, 0, 0.246);
+
   }
   .message-container[data-show] {
     .chat-details {
@@ -688,6 +705,7 @@ img {
   .chat-details {
     transition: height 0.2s ease-out;
     height:0;
+    margin-bottom: 13px;
     p {
     font-size: 12px;
   }
@@ -717,11 +735,14 @@ img {
     &.right {
       margin-right: 14px;
       justify-content: flex-end;
+      .message {
+        background: $pale;
+      }
     }
     .message {
       border-radius: 13px;
-      padding: 5px;
-      max-width: 80%;
+      padding: 13px;
+      max-width: 90%;
       p {
         word-break: break-word;
       }

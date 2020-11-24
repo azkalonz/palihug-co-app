@@ -44,7 +44,7 @@ function Checkout(props) {
             payment_id: 1,
             total: cartContext.total,
             delivery_info: JSON.stringify(deliveryInfo),
-            status_text: "Preparing your food",
+            status_text: "Finding you a rider",
             note,
             products: cartContext.products.map((q) => ({
               prod_id: q.product.id,
@@ -65,7 +65,7 @@ function Checkout(props) {
               ...orderContext,
               orders: [order, ...orderContext.orders],
             });
-            props.history.replace("/orders");
+            props.history.replace("/orders/" + order.order_id);
           },
         });
       },

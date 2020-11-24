@@ -27,6 +27,7 @@ import SavingButton from "../../components/SavingButton";
 import ScreenHeader from "../../components/ScreenHeader";
 import DialogContext from "../../context/DialogContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
+import OrderContext from "../../context/OrderContext";
 import UserContext from "../../context/UserContext";
 import config from "../../misc/config";
 import { slideBottom } from "../../misc/transitions";
@@ -42,6 +43,7 @@ function OrderDetails(props) {
   const { order_id } = props.match.params;
   const { setLoadingScreen } = useContext(LoadingScreenContext);
   const { setDialogContext } = useContext(DialogContext);
+  const { setOrderContext, orderContext } = useContext(OrderContext);
   const { userContext } = useContext(UserContext);
   const acceptOrder = useCallback(() => {
     setDialogContext({
@@ -53,6 +55,20 @@ function OrderDetails(props) {
           <LinearProgress style={{ width: "100%" }} />
         </Box>
       ),
+    });
+    fetchData({
+      send: async () =>
+        await Api.post("/accept-order?token=" + Api.getToken(), {
+          body: {
+            order_id,
+          },
+        }),
+      after: (data) => {
+        console.log(data);
+        orderContext.updateOrder(data, setOrderContext);
+        setDialogContext({ visible: false });
+        props.history.replace("/orders");
+      },
     });
   }, []);
   useEffect(() => {

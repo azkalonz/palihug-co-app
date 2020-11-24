@@ -1,4 +1,4 @@
-import { Box } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect } from "react";
 import ChatComponent from "../../components/ChatComponent";
@@ -12,6 +12,8 @@ function Chat(props) {
   const { setBottomNavContext, bottomNavContext } = useContext(
     BottomNavContext
   );
+  const { delivery_info } = order || {};
+  const { contact } = delivery_info;
   useEffect(() => {
     if (bottomNavContext.visible)
       setBottomNavContext({ ...bottomNavContext, visible: false });
@@ -25,9 +27,22 @@ function Chat(props) {
       className="chat-container"
     >
       <Box p={2} paddingBottom={0}>
-        <ScreenHeader title="Chat" />
+        <ScreenHeader
+          title={
+            <Box>
+              <Typography
+                color="primary"
+                style={{ fontWeight: 700 }}
+                variant="h5"
+              >
+                {contact.name}
+              </Typography>
+              <Typography>{contact.contact}</Typography>
+            </Box>
+          }
+        />
       </Box>
-      {order && <ChatComponent {...order} />}
+      {order && <ChatComponent {...order} {...props} />}
     </motion.div>
   );
 }

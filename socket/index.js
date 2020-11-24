@@ -4,7 +4,7 @@ var io = require("socket.io")(http);
 var qs = require("query-string");
 var cors = require("cors");
 const OTP = [];
-const users = [];
+const users = {};
 
 app.use(cors());
 
@@ -51,12 +51,8 @@ function startCountDown(user) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("notification", (args) => {
-    console.log(args);
-  });
-
-  socket.on("chat", (args) => {
-    console.log("new message", args);
+  socket.on("user:online", (user_id) => {
+    users[user_id] = { socket };
   });
 
   socket.on("otp", (args) => {
@@ -71,8 +67,12 @@ io.on("connection", (socket) => {
     startCountDown(args);
   });
 
-  socket.on("new order", (args) => {
-    socket.broadcast.emit("new order", args);
+  socket.on("order:new", (args) => {
+    socket.broadcast.emit("order:new", args);
+  });
+
+  socket.on("order:update", (args) => {
+    io.to(users[args.consumer_user_id].socket.id).emit("order:update", args);
   });
 
   socket.on("join:room:orders", ({ order_id }) => {

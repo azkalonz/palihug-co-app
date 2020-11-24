@@ -103,15 +103,6 @@ export default function PinMap(props) {
         {...viewport}
         {...settings}
         onViewportChange={(viewport) => {
-          if (viewport.longitude < maxBounds.minLong) {
-            viewport.longitude = maxBounds.minLong;
-          } else if (viewport.longitude > maxBounds.maxLong) {
-            viewport.longitude = maxBounds.maxLong;
-          } else if (viewport.latitude < maxBounds.minLat) {
-            viewport.latitude = maxBounds.minLat;
-          } else if (viewport.latitude > maxBounds.maxLat) {
-            viewport.latitude = maxBounds.maxLat;
-          }
           const { latitude, longitude } = viewport;
           setPinLoc({ latitude, longitude });
           setViewport(viewport);

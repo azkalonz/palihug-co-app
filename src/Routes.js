@@ -3,12 +3,15 @@ import React from "react";
 import RegisterForm from "./components/RegisterForm";
 import VerifyOTP from "./components/VerifyOTP";
 import NotFound from "./screens/404";
+import { default as DriverOrders } from "./screens/driver/home/Orders";
 import { default as DriverProfile } from "./screens/driver/home/Profile";
 import { GetStartedScreen } from "./screens/get-started";
 import { Home } from "./screens/home";
 import Address from "./screens/home/Address";
 import AddressForm from "./screens/home/AddressForm";
+import Chat from "./screens/home/Chat";
 import Notifications from "./screens/home/Notifications";
+import OrderDetails from "./screens/home/OrderDetails";
 import Orders from "./screens/home/Orders";
 import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
@@ -17,9 +20,6 @@ import Cart, { AddToCart } from "./screens/services/Cart";
 import Checkout from "./screens/services/Checkout";
 import Merchant from "./screens/services/Merchant";
 import MerchantDetails from "./screens/services/MerchantDetails";
-import { default as DriverOrders } from "./screens/driver/home/Orders";
-import OrderDetails from "./screens/home/OrderDetails";
-import Chat from "./screens/home/Chat";
 function createRoute(path, exact, component, props = {}) {
   return { path, exact, ...(component ? { component } : {}), ...props };
 }

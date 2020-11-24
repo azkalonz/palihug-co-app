@@ -6,8 +6,15 @@ const OrderContext = React.createContext();
 export const getOrderContext = (setOrderContext) => ({
   orders: [],
   newOrder: function (order, setOrderContext) {
-    console.log("this", this);
     setOrderContext({ ...this, orders: [...this.orders, order] });
+  },
+  updateOrder: function (order, setOrderContext) {
+    let orders = [...this.orders];
+    let orderIndex = orders.findIndex((q) => q.order_id === order.order_id);
+    if (orderIndex >= 0) {
+      orders[orderIndex] = order;
+    }
+    setOrderContext({ ...this, orders });
   },
   fetchOrders: async function (setOrderContext, userContext = null) {
     if (!userContext) {

@@ -64,10 +64,13 @@ function OrderDetails(props) {
           },
         }),
       after: (data) => {
-        console.log(data);
-        orderContext.updateOrder(data, setOrderContext);
-        setDialogContext({ visible: false });
-        props.history.replace("/orders");
+        if (data) {
+          orderContext.updateOrder(data, setOrderContext);
+          setDialogContext({ visible: false });
+          data.delivery_info = JSON.parse(data.delivery_info);
+          setOrder(data);
+          props.history.replace("/orders/" + data.order_id + "?tab=1");
+        }
       },
     });
   }, []);
@@ -94,10 +97,7 @@ function OrderDetails(props) {
     });
   }, [order]);
   const openChat = useCallback(() => {
-    props.history.push({
-      pathname: "/chat",
-      state: order,
-    });
+    props.history.push("/chat/" + order.order_id);
     setDialogContext({ visible: false });
   }, [order]);
   useEffect(() => {

@@ -90,12 +90,27 @@ io.on("connection", (socket) => {
     socket.to("orders_" + chat.order_id).emit("message:room:orders", chat);
   });
 
+  socket.on("notifications:chat:remove", (args = []) => {
+    if (args.length) {
+      if (users[args[0].consumer_user_id]) {
+        io.to(users[args[0].consumer_user_id].socket.id).emit(
+          "notifications:chat:remove",
+          args
+        );
+      }
+    }
+  });
   socket.on("notifications:chat", (args) => {
-    if (users[args.consumer_user_id])
+    if (users[args.consumer_user_id]) {
       io.to(users[args.consumer_user_id].socket.id).emit(
         "notifications:chat",
         args
       );
+      io.to(users[args.consumer_user_id].socket.id).emit(
+        "notifications:new",
+        args
+      );
+    }
   });
 });
 

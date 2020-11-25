@@ -2,18 +2,30 @@ import React from "react";
 
 const BottomNavContext = React.createContext();
 
-export const getBottomNavContext = (setCartContext) => ({
+export const getBottomNavContext = () => ({
   visible: false,
   notifications: {},
-  addNotification: function (type, setCartContext) {
+  add: function (type, setBottomNavContext) {
     let nextNotifications = { ...this.notifications };
     if (nextNotifications[type]) {
       nextNotifications[type] += 1;
     } else {
       nextNotifications[type] = 1;
     }
-    console.log("a", this);
-    setCartContext({
+    setBottomNavContext({
+      ...this,
+      visible: true,
+      notifications: nextNotifications,
+    });
+  },
+  remove: function (type, total, setBottomNavContext) {
+    let nextNotifications = { ...this.notifications };
+    if (nextNotifications[type]) {
+      nextNotifications[type] -= total;
+    } else {
+      nextNotifications[type] = 0;
+    }
+    setBottomNavContext({
       ...this,
       visible: true,
       notifications: nextNotifications,

@@ -45,6 +45,7 @@ export default [
 
 export const DriverRoutes = [
   createRoute("/chat", true, Chat),
+  createRoute("/chat/:order_id", true, Chat),
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, DriverOrders, "", 0),
   }),
@@ -65,6 +66,7 @@ export const DriverRoutes = [
 
 export const CustomerRoutes = [
   createRoute("/chat", true, Chat),
+  createRoute("/chat/:order_id", true, Chat),
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, Home),
   }),

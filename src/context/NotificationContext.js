@@ -5,16 +5,29 @@ import fetchData from "../utils/fetchData";
 const NotificationContext = React.createContext();
 export const getNotificationContext = (setNotificationContext) => ({
   notifications: [],
-  newOrder: function (order, setNotificationContext) {
-    setNotificationContext({ ...this, orders: [...this.orders, order] });
+  newNotification: function (notification, setNotificationContext) {
+    const nextNotifications = [...this.notifications];
+    const { provider_user_id, consumer_user_id } = notification;
+    const index = nextNotifications.findIndex(
+      (q) =>
+        q.provider_user_id === provider_user_id &&
+        q.consumer_user_id === consumer_user_id
+    );
+    if (index >= 0) nextNotifications[index] = notification;
+    setNotificationContext({
+      ...this,
+      notifications: nextNotifications,
+    });
   },
-  updateOrder: function (order, setNotificationContext) {
-    let orders = [...this.orders];
-    let orderIndex = orders.findIndex((q) => q.order_id === order.order_id);
-    if (orderIndex >= 0) {
-      orders[orderIndex] = order;
+  updateNotification: function (notification, setNotificationContext) {
+    let notifications = [...this.notifications];
+    let index = notifications.findIndex(
+      (q) => q.noti_id === notification.noti_id
+    );
+    if (index >= 0) {
+      notifications[index] = notification;
     }
-    setNotificationContext({ ...this, orders });
+    setNotificationContext({ ...this, notifications });
   },
   fetchNotifications: async function (
     setNotificationContext,

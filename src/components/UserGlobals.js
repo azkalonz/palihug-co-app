@@ -7,8 +7,12 @@ import socket from "../utils/socket";
 import BottomNavContext from "../context/BottomNavContext";
 import fetchData from "../utils/fetchData";
 import Api from "../utils/api";
+import NotificationContext from "../context/NotificationContext";
 function UserGlobals(props) {
   const { orderContext, setOrderContext } = useContext(OrderContext);
+  const { notificationContext, setNotificationContext } = useContext(
+    NotificationContext
+  );
   const { userContext } = useContext(UserContext);
   const { bottomNavContext, setBottomNavContext } = useContext(
     BottomNavContext
@@ -20,21 +24,47 @@ function UserGlobals(props) {
     [orderContext]
   );
   useEffect(() => {
-    if (userContext?.user_type.name === "driver") {
-      socket.off("order:new");
-      socket.on("order:new", newOrder);
-    } else if (userContext?.user_type.name === "customer") {
-      socket.off("order:update");
-      socket.on("order:update", function (order) {
-        orderContext.updateOrder(order, setOrderContext);
+    if (orderContext?.isFetched) {
+      if (userContext?.user_type.name === "driver") {
+        socket.off("order:new");
+        socket.on("order:new", newOrder);
+      } else if (userContext?.user_type.name === "customer") {
+        socket.off("order:update");
+        socket.on("order:update", function (order) {
+          orderContext.updateOrder(order, setOrderContext);
+        });
+      }
+    }
+    if (notificationContext?.isFetched) {
+      socket.off("notifications:new");
+      socket.on("notifications:new", function (notification) {
+        notificationContext.newNotification(
+          notification,
+          setNotificationContext
+        );
       });
     }
-  }, [orderContext]);
+  }, [orderContext, notificationContext]);
   useEffect(() => {
-    if (bottomNavContext.addNotification) {
+    if (!bottomNavContext.build) {
       socket.off("notifications:chat");
+      socket.off("notifications:chat:remove");
       socket.on("notifications:chat", function (notification) {
-        bottomNavContext.addNotification("notifications", setBottomNavContext);
+        bottomNavContext.add("notifications", setBottomNavContext);
+      });
+      socket.on("notifications:chat:remove", function (notifications) {
+        console.log(notifications, "aaa");
+        if (notifications?.length) {
+          bottomNavContext.remove(
+            "notifications",
+            notifications.length,
+            setBottomNavContext
+          );
+          notificationContext.updateNotification(
+            notifications,
+            setBottomNavContext
+          );
+        }
       });
     }
   }, [bottomNavContext]);

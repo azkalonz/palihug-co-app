@@ -1,4 +1,12 @@
-import { Box, List, ListItem, Tab, Tabs, Typography } from "@material-ui/core";
+import {
+  Box,
+  ButtonBase,
+  List,
+  ListItem,
+  Tab,
+  Tabs,
+  Typography,
+} from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
@@ -11,6 +19,7 @@ import { slideRight } from "../../misc/transitions";
 import moment from "moment";
 import { history } from "../../App";
 import EmptyListMessage from "../../components/EmptyListMessage";
+import DialogContext from "../../context/DialogContext";
 
 function Orders(props) {
   const bcontext = useContext(BottomNavContext);
@@ -151,12 +160,43 @@ function Order(props) {
 }
 
 function OrderCard(props) {
-  const { status_text, order_date, order_id, total } = props;
+  const { status_text, order_date, order_id, total, status } = props;
+  const { dialogContext, setDialogContext } = useContext(DialogContext);
   return (
     <AnimateOnTap
       whileTap={{ opacity: 0.5 }}
       style={{ width: "100%" }}
-      onClick={() => history.push("/orders/" + order_id)}
+      onClick={() => {
+        setDialogContext({
+          visible: true,
+          title: moment(order_date).format("llll"),
+          message: (
+            <React.Fragment>
+              <List>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() => {
+                    setDialogContext({ ...dialogContext, visible: false });
+                    history.push("/orders/" + order_id);
+                  }}
+                >
+                  View Order
+                </ListItem>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() => {
+                    setDialogContext({ ...dialogContext, visible: false });
+                    if (status !== "pending") history.push("/chat/" + order_id);
+                    else history.push("/orders/" + order_id + "?tab=3");
+                  }}
+                >
+                  Chat
+                </ListItem>
+              </List>
+            </React.Fragment>
+          ),
+        });
+      }}
     >
       <Box className="column-flex-100">
         <Box>

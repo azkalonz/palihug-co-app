@@ -181,7 +181,11 @@ function NotificationCard(props) {
               <Typography color="textSecondary" variant="body2">
                 {meta.title}
               </Typography>
-              <Typography color="textSecondary" variant="body2">
+              <Typography
+                color="textSecondary"
+                variant="body2"
+                style={{ fontWeight: viewed ? "normal" : 700 }}
+              >
                 {meta.body}
               </Typography>
             </Box>
@@ -190,7 +194,7 @@ function NotificationCard(props) {
       ),
     };
     return render[notif_type] || null;
-  }, [notif_type]);
+  }, [notif_type, props]);
   return Renderer();
 }
 

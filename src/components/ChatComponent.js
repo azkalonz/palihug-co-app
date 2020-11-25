@@ -30,6 +30,10 @@ import PinMap from "./PinMap";
 import { motion } from "framer-motion";
 import { slideBottom } from "../misc/transitions";
 import { Marker, StaticMap } from "react-map-gl";
+import fetchData from "../utils/fetchData";
+import Api from "../utils/api";
+import BottomNavContext from "../context/BottomNavContext";
+import NotificationContext from "../context/NotificationContext";
 
 function ChatComponent(props) {
   const { order_id, consumer_user_id, provider_user_id } = props;
@@ -51,6 +55,12 @@ function ChatComponent(props) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [chatRef]);
+  const { bottomNavContext, setBottomNavContext } = useContext(
+    BottomNavContext
+  );
+  const { notificationContext, setNotificationContext } = useContext(
+    NotificationContext
+  );
   const sendMessage = useCallback(async () => {
     if (participants?.length) {
       let sender_id = userContext.user_id;
@@ -114,6 +124,41 @@ function ChatComponent(props) {
   useEffect(() => {
     Chat.subscribe(order_id);
     (async () => {
+      fetchData({
+        send: async () =>
+          await Api.post("/seen?token=" + Api.getToken(), {
+            body: { order_id },
+          }),
+        after: (data) => {
+          if (data?.notification && data.total) {
+            let nextNotifications = { ...bottomNavContext.notifications };
+            if (nextNotifications["notifications"]) {
+              nextNotifications["notifications"] -= data.total;
+            } else {
+              nextNotifications["notifications"] = 0;
+            }
+            setBottomNavContext({
+              ...bottomNavContext,
+              visible: true,
+              notifications: nextNotifications,
+            });
+            let nextNotifi = [...notificationContext.notifications];
+            let index = nextNotifi.findIndex(
+              (q) => q.order_id === data.notification.order_id
+            );
+            if (index >= 0) {
+              nextNotifi[index] = {
+                ...nextNotifi[index],
+                ...data.notification,
+              };
+            }
+            setNotificationContext({
+              ...notificationContext,
+              notifications: nextNotifi.map((q) => ({ ...q, viewed: 1 })),
+            });
+          }
+        },
+      });
       let chat = await Chat.get(order_id);
       const { participants, messages } = chat;
       if (messages) setMessages(messages);
@@ -137,6 +182,7 @@ function ChatComponent(props) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     });
   }, [messages]);
+
   return (
     <React.Fragment>
       {loading && <LinearProgress />}
@@ -307,7 +353,7 @@ function TextMessage(props) {
           {props.children}
         </Box>
         <Typography className="time">
-          {moment(props.created_at).format("h:m A")}
+          {moment(props.created_at).format("h:mm A")}
         </Typography>
       </div>
     </React.Fragment>

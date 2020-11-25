@@ -157,7 +157,14 @@ function Order(props) {
 }
 
 function OrderCard(props) {
-  const { status_text, order_date, order_id, total, delivery_info } = props;
+  const {
+    status_text,
+    order_date,
+    order_id,
+    total,
+    delivery_info,
+    status,
+  } = props;
   const { dialogContext, setDialogContext } = useContext(DialogContext);
   const info = JSON.parse(delivery_info);
   return (
@@ -184,10 +191,8 @@ function OrderCard(props) {
                   component={ButtonBase}
                   onClick={() => {
                     setDialogContext({ ...dialogContext, visible: false });
-                    history.push({
-                      pathname: "/orders/" + order_id,
-                      search: "?tab=3",
-                    });
+                    if (status !== "pending") history.push("/chat/" + order_id);
+                    else history.push("/orders/" + order_id + "?tab=3");
                   }}
                 >
                   Chat

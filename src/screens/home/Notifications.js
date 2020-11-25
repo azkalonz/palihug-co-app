@@ -158,6 +158,7 @@ function NotificationCard(props) {
   const meta = JSON.parse(notif_meta);
   const Renderer = useCallback(() => {
     const render = {
+      map: <div>tet</div>,
       chat: (
         <AnimateOnTap
           whileTap={{ opacity: 0.5 }}
@@ -169,12 +170,6 @@ function NotificationCard(props) {
               <Avatar />
             </Box>
             <Box>
-              <Box className="center-all" justifyContent="flex-start">
-                {!viewed && <div className="unread-sign"></div>}
-                <Typography style={{ fontSize: "0.8em" }}>
-                  {moment(created_at).fromNow()}
-                </Typography>
-              </Box>
               <Typography variant="h6" style={{ fontWeight: 700 }}>
                 {provider_name}
               </Typography>
@@ -186,8 +181,16 @@ function NotificationCard(props) {
                 variant="body2"
                 style={{ fontWeight: viewed ? "normal" : 700 }}
               >
-                {meta.body}
+                {meta.body?.length > 40
+                  ? meta.body.substr(0, 40) + "..."
+                  : meta.body}
               </Typography>
+              <Box className="center-all" justifyContent="flex-start">
+                {!viewed && <div className="unread-sign"></div>}
+                <Typography style={{ fontSize: "0.8em" }}>
+                  {moment(created_at).fromNow()}
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </AnimateOnTap>

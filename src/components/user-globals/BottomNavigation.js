@@ -48,6 +48,18 @@ function BottomNavigation(props) {
     else setSelected(found);
   }, [window.location.pathname, menu]);
 
+  useEffect(() => {
+    if (cartContext.products) {
+      setBottomNavContext({
+        ...bottomNavContext,
+        visible: true,
+        notifications: {
+          ...bottomNavContext.notifications,
+          cart: cartContext.products.length,
+        },
+      });
+    }
+  }, [cartContext.products]);
   return bcontext.bottomNavContext?.visible ? (
     <motion.div
       initial="initial"

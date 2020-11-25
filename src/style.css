@@ -1020,6 +1020,10 @@ img {
   border-radius: 50%;
 }
 
+.MuiIconButton-colorPrimary {
+  color: #d92e45 !important;
+}
+
 .dialog-provider ul button {
   font-size: 1em;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);

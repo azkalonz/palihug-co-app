@@ -1,4 +1,4 @@
-import { Box, Typography } from "@material-ui/core";
+import { Box, Icon, IconButton, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
 import ChatComponent from "../../components/ChatComponent";
@@ -17,6 +17,7 @@ function Chat(props) {
   const { setBottomNavContext, bottomNavContext } = useContext(
     BottomNavContext
   );
+  const { userContext } = useContext(UserContext);
   const { delivery_info } = order || {};
   const { contact } = delivery_info || {};
   useEffect(() => {
@@ -65,6 +66,24 @@ function Chat(props) {
                 {contact?.name}
               </Typography>
               <Typography>{contact?.contact}</Typography>
+            </Box>
+          }
+          actions={
+            <Box>
+              <IconButton
+                onClick={() =>
+                  (window.location = `sms:+${contact?.contact}?body=${encodeURI(
+                    `Hi, ${contact.name}`
+                  )}. I'm on the way to deliver your Food. Thank you. ${
+                    userContext.user_fname
+                  } ${userContext.user_lname} from Palihug.co`)
+                }
+              >
+                <Icon>chat</Icon>
+              </IconButton>
+              <IconButton onClick={() => (window.location = "tel:2125551212")}>
+                <Icon>phone</Icon>
+              </IconButton>
             </Box>
           }
         />

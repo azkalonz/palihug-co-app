@@ -143,7 +143,7 @@ function Order(props) {
     [orderContext, props.serviceId]
   );
   return (
-    <Box p={3}>
+    <Box>
       {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
       <List>
         {orders.map((order, index) => (

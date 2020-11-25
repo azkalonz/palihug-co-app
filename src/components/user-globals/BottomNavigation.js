@@ -48,17 +48,6 @@ function BottomNavigation(props) {
     else setSelected(found);
   }, [window.location.pathname, menu]);
 
-  useEffect(() => {
-    if (cartContext.products) {
-      setBottomNavContext({
-        visible: true,
-        notifications: {
-          ...bottomNavContext.notifications,
-          cart: cartContext.products.length,
-        },
-      });
-    }
-  }, [cartContext.products]);
   return bcontext.bottomNavContext?.visible ? (
     <motion.div
       initial="initial"
@@ -74,24 +63,7 @@ function BottomNavigation(props) {
               onClick={() => {
                 history.push(m.url);
               }}
-              icon={
-                bottomNavContext.notifications[m.value] ? (
-                  <Badge
-                    badgeContent={bottomNavContext.notifications[m.value]}
-                    color="error"
-                  >
-                    <span
-                      className={m.icon}
-                      {...(m.iconStyle ? { style: m.iconStyle } : {})}
-                    />
-                  </Badge>
-                ) : (
-                  <span
-                    className={m.icon}
-                    {...(m.iconStyle ? { style: m.iconStyle } : {})}
-                  />
-                )
-              }
+              icon={<NotificationBadge m={m} />}
               label={m.label}
               value={m.value}
               key={m.value}
@@ -101,6 +73,20 @@ function BottomNavigation(props) {
       </BottomNav>
     </motion.div>
   ) : null;
+}
+function NotificationBadge(props) {
+  const { m } = props;
+  const { bottomNavContext } = useContext(BottomNavContext);
+  return true ? (
+    <Badge badgeContent={bottomNavContext.notifications[m.value]} color="error">
+      <span
+        className={m.icon}
+        {...(m.iconStyle ? { style: m.iconStyle } : {})}
+      />
+    </Badge>
+  ) : (
+    <span className={m.icon} {...(m.iconStyle ? { style: m.iconStyle } : {})} />
+  );
 }
 
 export default BottomNavigation;

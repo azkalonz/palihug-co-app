@@ -88,30 +88,6 @@ function ChatComponent(props) {
     },
     [participants, userContext, sending]
   );
-
-  const getBubbleShape = (convo, index) => {
-    let i = 5;
-    let { id } = convo[index].sender_id;
-    let top = convo[index - 1];
-    let bottom = convo[index + 1];
-    if (top && bottom && id !== top.sender_id && id !== bottom.sender_id)
-      return i;
-    if (top && top.sender_id === id) i -= 2;
-    if (bottom && bottom.sender_id === id) i -= 3;
-    return i;
-  };
-  const getClassName = (i) => {
-    switch (i) {
-      case 0:
-        return "top-bottom";
-      case 3:
-        return "bottom";
-      case 2:
-        return "top";
-      case 5:
-        return "";
-    }
-  };
   const chatOptions = useCallback(() => {
     setDialogContext({
       visible: true,
@@ -170,7 +146,6 @@ function ChatComponent(props) {
             {participants &&
               messages.map((message, index) => {
                 const meta = JSON.parse(message.chat_meta);
-                const shape = getClassName(getBubbleShape(messages, index));
                 const user = participants.find(
                   (q) => q.user_id === message.sender_id
                 );
@@ -187,7 +162,7 @@ function ChatComponent(props) {
       )}
       <div className="chat-controls">
         <IconButton color="primary" onClick={chatOptions}>
-          <Icon>more_vert</Icon>
+          <Icon>add_circle</Icon>
         </IconButton>
         <TextField
           inputRef={chatMsgRef}
@@ -304,7 +279,10 @@ function Preview(props) {
   const { chat_meta, position = "right", user } = props;
   const meta = JSON.parse(chat_meta);
   return (
-    <Box className="message-container">
+    <Box
+      className="message-container"
+      style={{ transform: "translateY(14px)" }}
+    >
       <Box
         display="flex"
         className={"chat-entry " + position}
@@ -328,6 +306,9 @@ function TextMessage(props) {
           <Typography>{meta.message}</Typography>
           {props.children}
         </Box>
+        <Typography className="time">
+          {moment(props.created_at).format("h:m A")}
+        </Typography>
       </div>
     </React.Fragment>
   );

@@ -71,9 +71,6 @@ function OrderDetails(props) {
       },
     });
   }, []);
-  useEffect(() => {
-    if (!isNaN(parseInt(query.tab))) setTabValue(parseInt(query.tab));
-  }, [query.tab]);
   const showDriverOptions = useCallback(() => {
     setDialogContext({
       title: "Action",
@@ -81,14 +78,31 @@ function OrderDetails(props) {
       message: (
         <React.Fragment>
           <List>
-            <ListItem component={ButtonBase} onClick={acceptOrder}>
-              Accept Order
-            </ListItem>
+            {order.status === "pending" && (
+              <ListItem component={ButtonBase} onClick={acceptOrder}>
+                Accept Order
+              </ListItem>
+            )}
+            {order.status !== "pending" && (
+              <ListItem component={ButtonBase} onClick={openChat}>
+                Chat
+              </ListItem>
+            )}
           </List>
         </React.Fragment>
       ),
     });
-  }, []);
+  }, [order]);
+  const openChat = useCallback(() => {
+    props.history.push({
+      pathname: "/chat",
+      state: order,
+    });
+    setDialogContext({ visible: false });
+  }, [order]);
+  useEffect(() => {
+    if (!isNaN(parseInt(query.tab))) setTabValue(parseInt(query.tab));
+  }, [query.tab]);
   useEffect(() => {
     setLoadingScreen({ visible: true });
     fetchData({
@@ -281,15 +295,7 @@ function OrderDetails(props) {
               )}
             </EmptyListMessage>
           ) : (
-            <Button
-              className="themed-button"
-              onClick={() =>
-                props.history.push({
-                  pathname: "/chat",
-                  state: order,
-                })
-              }
-            >
+            <Button className="themed-button" onClick={() => openChat()}>
               Open Chat
             </Button>
           )}

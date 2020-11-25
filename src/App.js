@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Spinner from "./components/Spinner";
 import UserGlobals from "./components/UserGlobals";
-import BottomNavContext from "./context/BottomNavContext";
+import BottomNavContext, {
+  getBottomNavContext,
+} from "./context/BottomNavContext";
 import CartContext, { getCartContext } from "./context/CartContext";
 import DialogContext from "./context/DialogContext";
 import GetStartedContext from "./context/GetStartedContext";
@@ -21,6 +23,9 @@ import fetchData from "./utils/fetchData";
 import { updatePastLocations } from "./utils/goBackOrPush";
 import "mapbox-gl/dist/mapbox-gl.css";
 import OrderContext, { getOrderContext } from "./context/OrderContext";
+import NotificationContext, {
+  getNotificationContext,
+} from "./context/NotificationContext";
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
@@ -36,8 +41,9 @@ function App() {
   const [loadingScreen, setLoadingScreen] = useState({ visible: false });
   const [dialogContext, setDialogContext] = useState({ visible: false });
   const [bottomNavContext, setBottomNavContext] = useState({
-    visible: false,
-    notifications: {},
+    build: function () {
+      setBottomNavContext(getBottomNavContext(setBottomNavContext));
+    },
   });
   const [cartContext, setCartContext] = useState({
     build: function () {
@@ -47,6 +53,11 @@ function App() {
   const [orderContext, setOrderContext] = useState({
     build: function () {
       setOrderContext(getOrderContext(setOrderContext));
+    },
+  });
+  const [notificationContext, setNotificationContext] = useState({
+    build: function () {
+      setNotificationContext(getNotificationContext(setNotificationContext));
     },
   });
   const [servicesContext, setServicesContext] = useState({});
@@ -110,7 +121,18 @@ function App() {
     if (orderContext.build) {
       orderContext.build();
     }
-  }, [cartContext.build, orderContext.build]);
+    if (bottomNavContext.build) {
+      bottomNavContext.build();
+    }
+    if (notificationContext.build) {
+      notificationContext.build();
+    }
+  }, [
+    cartContext.build,
+    orderContext.build,
+    bottomNavContext.build,
+    notificationContext.build,
+  ]);
   useEffect(() => {
     if (
       userContext?.user_token &&
@@ -138,84 +160,88 @@ function App() {
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <CartContext.Provider value={{ cartContext, setCartContext }}>
         <OrderContext.Provider value={{ orderContext, setOrderContext }}>
-          <GetStartedContext.Provider
-            value={{ getStartedContext, setGetStartedContext }}
+          <NotificationContext.Provider
+            value={{ notificationContext, setNotificationContext }}
           >
-            <ServicesContext.Provider
-              value={{ servicesContext, setServicesContext }}
+            <GetStartedContext.Provider
+              value={{ getStartedContext, setGetStartedContext }}
             >
-              <SnackbarProvider
-                ref={notistackRef}
-                maxSnack={3}
-                preventDuplicate
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-                action={(key) => (
-                  <IconButton onClick={onClickDismiss(key)}>
-                    <Icon>close</Icon>
-                  </IconButton>
-                )}
+              <ServicesContext.Provider
+                value={{ servicesContext, setServicesContext }}
               >
-                <DialogContext.Provider
-                  value={{ dialogContext, setDialogContext }}
+                <SnackbarProvider
+                  ref={notistackRef}
+                  maxSnack={3}
+                  preventDuplicate
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                  action={(key) => (
+                    <IconButton onClick={onClickDismiss(key)}>
+                      <Icon>close</Icon>
+                    </IconButton>
+                  )}
                 >
-                  <BottomNavContext.Provider
-                    value={{ bottomNavContext, setBottomNavContext }}
+                  <DialogContext.Provider
+                    value={{ dialogContext, setDialogContext }}
                   >
-                    <ThemeProvider theme={theme}>
-                      <LoadingScreenContext.Provider
-                        value={{ loadingScreen, setLoadingScreen }}
-                      >
-                        {!loading && (
-                          <BrowserRouter history={history}>
-                            {loadingScreen.visible && (
-                              <Spinner variant={loadingScreen.variant} />
-                            )}
-                            <Route
-                              render={(r) => {
-                                const { location } = r;
-                                const h = r.history;
-                                history.push = h.push;
-                                history.goBack = h.goBack;
-                                return (
-                                  <AnimatePresence exitBeforeEnter>
-                                    <Switch
-                                      location={location}
-                                      key={location.pathname}
-                                    >
-                                      {userContext?.user_type?.name ===
-                                        "driver" &&
-                                        DriverRoutes.map((route, index) => (
+                    <BottomNavContext.Provider
+                      value={{ bottomNavContext, setBottomNavContext }}
+                    >
+                      <ThemeProvider theme={theme}>
+                        <LoadingScreenContext.Provider
+                          value={{ loadingScreen, setLoadingScreen }}
+                        >
+                          {!loading && (
+                            <BrowserRouter history={history}>
+                              {loadingScreen.visible && (
+                                <Spinner variant={loadingScreen.variant} />
+                              )}
+                              <Route
+                                render={(r) => {
+                                  const { location } = r;
+                                  const h = r.history;
+                                  history.push = h.push;
+                                  history.goBack = h.goBack;
+                                  return (
+                                    <AnimatePresence exitBeforeEnter>
+                                      <Switch
+                                        location={location}
+                                        key={location.pathname}
+                                      >
+                                        {userContext?.user_type?.name ===
+                                          "driver" &&
+                                          DriverRoutes.map((route, index) => (
+                                            <Route key={index} {...route} />
+                                          ))}
+                                        {userContext?.user_type?.name ===
+                                          "customer" &&
+                                          CustomerRoutes.map((route, index) => (
+                                            <Route key={index} {...route} />
+                                          ))}
+                                        {Routes.map((route, index) => (
                                           <Route key={index} {...route} />
                                         ))}
-                                      {userContext?.user_type?.name ===
-                                        "customer" &&
-                                        CustomerRoutes.map((route, index) => (
-                                          <Route key={index} {...route} />
-                                        ))}
-                                      {Routes.map((route, index) => (
-                                        <Route key={index} {...route} />
-                                      ))}
-                                    </Switch>
-                                  </AnimatePresence>
-                                );
-                              }}
-                            />
-                            {userContext?.user_status === "Verified" && (
-                              <UserGlobals />
-                            )}
-                          </BrowserRouter>
-                        )}
-                      </LoadingScreenContext.Provider>
-                      {loading && <Spinner image />}
-                    </ThemeProvider>
-                  </BottomNavContext.Provider>
-                </DialogContext.Provider>
-              </SnackbarProvider>
-            </ServicesContext.Provider>
-          </GetStartedContext.Provider>
+                                      </Switch>
+                                    </AnimatePresence>
+                                  );
+                                }}
+                              />
+                              {userContext?.user_status === "Verified" && (
+                                <UserGlobals />
+                              )}
+                            </BrowserRouter>
+                          )}
+                        </LoadingScreenContext.Provider>
+                        {loading && <Spinner image />}
+                      </ThemeProvider>
+                    </BottomNavContext.Provider>
+                  </DialogContext.Provider>
+                </SnackbarProvider>
+              </ServicesContext.Provider>
+            </GetStartedContext.Provider>
+          </NotificationContext.Provider>
         </OrderContext.Provider>
       </CartContext.Provider>
     </UserContext.Provider>

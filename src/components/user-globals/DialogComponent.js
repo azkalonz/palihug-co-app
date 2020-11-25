@@ -60,6 +60,7 @@ function DialogComponent(props) {
       onClose={() => closeDialog()}
       maxWidth="md"
       fullWidth
+      className="dialog-provider"
     >
       <DialogTitle
         onClose={() => closeDialog()}

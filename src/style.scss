@@ -695,7 +695,7 @@ img {
     border-bottom: 1px solid;
     border-top: 1px solid;
     border-color: rgba(0, 0, 0, 0.246);
-
+    padding-bottom: 20px;
   }
   .message-container[data-show] {
     .chat-details {
@@ -722,26 +722,34 @@ img {
     }
   }
   .text-message {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
+    .time {
+      position: absolute;
+      bottom: -30px;
+      font-size: 10px;
+    }
     &.left {
       margin-left: 14px;
       justify-content: flex-start;
       .message {
-      background: $pale;
+        background: rgba(0,0,0,0.09);
+        border-radius: 17px 17px 17px 0px;
       }
     }
     &.right {
       margin-right: 14px;
       justify-content: flex-end;
       .message {
-        background: $pale;
+        background: $primary;
+        color: #fff;
+        border-radius: 17px 17px 0px 17px;
       }
     }
     .message {
-      border-radius: 13px;
-      padding: 13px;
+      padding: 7px 13px;
       max-width: 90%;
       p {
         word-break: break-word;
@@ -749,6 +757,27 @@ img {
     }
   }
 }
+.unread-sign {
+  width: 7px;
+  height: 7px;
+  background: red;
+  margin-right: 13px;
+  border-radius: 50%;
+}
+.notification {
+  
+}
+
+.dialog-provider {
+  ul button {
+    font-size: 1em;
+    border-bottom: 1px solid rgba(0,0,0,0.09);
+    &:last-of-type {
+      border-color: transparent;
+    }
+  }
+}
+
 @keyframes slideup {
   from {
     transform: translateY(75px);

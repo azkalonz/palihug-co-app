@@ -13,7 +13,7 @@ function Chat(props) {
     BottomNavContext
   );
   const { delivery_info } = order || {};
-  const { contact } = delivery_info;
+  const { contact } = delivery_info || {};
   useEffect(() => {
     if (bottomNavContext.visible)
       setBottomNavContext({ ...bottomNavContext, visible: false });
@@ -35,9 +35,9 @@ function Chat(props) {
                 style={{ fontWeight: 700 }}
                 variant="h5"
               >
-                {contact.name}
+                {contact?.name}
               </Typography>
-              <Typography>{contact.contact}</Typography>
+              <Typography>{contact?.contact}</Typography>
             </Box>
           }
         />

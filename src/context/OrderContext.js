@@ -22,7 +22,7 @@ export const getOrderContext = (setOrderContext) => ({
         await fetchData({
           send: async () => Api.get("/orders/customer?token=" + Api.getToken()),
           after: (data) => {
-            if (data.length)
+            if (data?.length)
               setOrderContext({ ...this, orders: data, isFetched: true });
           },
         });
@@ -32,7 +32,7 @@ export const getOrderContext = (setOrderContext) => ({
         await fetchData({
           send: async () => Api.get("/orders/driver?token=" + Api.getToken()),
           after: (data) => {
-            if (data.length)
+            if (data?.length)
               setOrderContext({ ...this, orders: data, isFetched: true });
           },
         });

@@ -4,9 +4,15 @@ import DialogComponent from "./user-globals/DialogComponent";
 import OrderContext from "../context/OrderContext";
 import UserContext from "../context/UserContext";
 import socket from "../utils/socket";
+import BottomNavContext from "../context/BottomNavContext";
+import fetchData from "../utils/fetchData";
+import Api from "../utils/api";
 function UserGlobals(props) {
   const { orderContext, setOrderContext } = useContext(OrderContext);
   const { userContext } = useContext(UserContext);
+  const { bottomNavContext, setBottomNavContext } = useContext(
+    BottomNavContext
+  );
   const newOrder = useCallback(
     function (order) {
       orderContext.newOrder(order, setOrderContext);
@@ -25,9 +31,33 @@ function UserGlobals(props) {
     }
   }, [orderContext]);
   useEffect(() => {
+    if (bottomNavContext.addNotification) {
+      socket.off("notifications:chat");
+      socket.on("notifications:chat", function (notification) {
+        bottomNavContext.addNotification("notifications", setBottomNavContext);
+      });
+    }
+  }, [bottomNavContext]);
+  useEffect(() => {
     if (userContext.user_id) {
       socket.emit("user:online", userContext.user_id);
     }
+    fetchData({
+      send: async () =>
+        await Api.get("/notifications?count=true&token=" + Api.getToken()),
+      after: (data) => {
+        if (data) {
+          setBottomNavContext({
+            ...bottomNavContext,
+            visible: true,
+            notifications: data,
+          });
+        }
+      },
+    });
+    return () => {
+      socket.off("notifications:chat");
+    };
   }, []);
   return (
     <React.Fragment>

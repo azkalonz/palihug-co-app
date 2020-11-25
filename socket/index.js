@@ -72,7 +72,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("order:update", (args) => {
-    io.to(users[args.consumer_user_id].socket.id).emit("order:update", args);
+    if (users[args.consumer_user_id])
+      io.to(users[args.consumer_user_id].socket.id).emit("order:update", args);
   });
 
   socket.on("join:room:orders", ({ order_id }) => {
@@ -87,6 +88,14 @@ io.on("connection", (socket) => {
 
   socket.on("send:room:orders", (chat) => {
     socket.to("orders_" + chat.order_id).emit("message:room:orders", chat);
+  });
+
+  socket.on("notifications:chat", (args) => {
+    if (users[args.consumer_user_id])
+      io.to(users[args.consumer_user_id].socket.id).emit(
+        "notifications:chat",
+        args
+      );
   });
 });
 

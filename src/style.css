@@ -1033,6 +1033,30 @@ img {
   border-color: transparent;
 }
 
+.order-item {
+  border-left: 5px solid;
+}
+
+.order-item.processing {
+  border-left-color: #37b137 !important;
+}
+
+.order-item.cancelled {
+  border-left-color: #a1a1a1;
+}
+
+.order-item.received {
+  border-left-color: #d92e45 !important;
+}
+
+.order-item.pending {
+  border-left-color: #2283f1 !important;
+}
+
+.order-item.receiving {
+  border-left-color: #ffb300 !important;
+}
+
 @-webkit-keyframes slideup {
   from {
     -webkit-transform: translateY(75px);

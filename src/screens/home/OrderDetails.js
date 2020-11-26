@@ -45,33 +45,51 @@ function OrderDetails(props) {
   const { setDialogContext } = useContext(DialogContext);
   const { setOrderContext, orderContext } = useContext(OrderContext);
   const { userContext } = useContext(UserContext);
-  const acceptOrder = useCallback(() => {
+  const acceptOrder = useCallback((meta, title) => {
     setDialogContext({
       visible: true,
-      noClose: true,
-      title: "Accepting order...",
+      title,
       message: (
         <Box width="100%" className="center-all">
-          <LinearProgress style={{ width: "100%" }} />
+          {/* <LinearProgress style={{ width: "100%" }} /> */}
         </Box>
       ),
-    });
-    fetchData({
-      send: async () =>
-        await Api.post("/accept-order?token=" + Api.getToken(), {
-          body: {
-            order_id,
+      actions: [
+        {
+          name: "Continue",
+          callback: ({ closeDialog, setLoading }) => {
+            fetchData({
+              before: () => setLoading(true),
+              send: async () =>
+                await Api.post("/order?token=" + Api.getToken(), {
+                  body: {
+                    order_id,
+                    ...meta,
+                  },
+                }),
+              after: (data) => {
+                if (data) {
+                  closeDialog();
+                  setLoading(false);
+                  orderContext.updateOrder(data, setOrderContext);
+                  setDialogContext({ visible: false });
+                  data.delivery_info = JSON.parse(data.delivery_info);
+                  setOrder(data);
+                  props.history.replace("/orders/" + data.order_id + "?tab=1");
+                }
+              },
+            });
           },
-        }),
-      after: (data) => {
-        if (data) {
-          orderContext.updateOrder(data, setOrderContext);
-          setDialogContext({ visible: false });
-          data.delivery_info = JSON.parse(data.delivery_info);
-          setOrder(data);
-          props.history.replace("/orders/" + data.order_id + "?tab=1");
-        }
-      },
+          props: {
+            variant: "contained",
+            color: "primary",
+          },
+        },
+        {
+          name: "Cancel",
+          callback: ({ closeDialog }) => closeDialog(),
+        },
+      ],
     });
   }, []);
   const showDriverOptions = useCallback(() => {
@@ -82,14 +100,68 @@ function OrderDetails(props) {
         <React.Fragment>
           <List>
             {order.status === "pending" && (
-              <ListItem component={ButtonBase} onClick={acceptOrder}>
+              <ListItem
+                component={ButtonBase}
+                onClick={() =>
+                  acceptOrder(
+                    {
+                      status: "processing",
+                      status_text: "Purchasing your order",
+                    },
+                    "Accept this order?"
+                  )
+                }
+              >
                 Accept Order
               </ListItem>
             )}
-            {order.status !== "pending" && (
-              <ListItem component={ButtonBase} onClick={openChat}>
-                Chat
+            {order.status === "receiving" && (
+              <ListItem
+                component={ButtonBase}
+                onClick={() =>
+                  acceptOrder(
+                    {
+                      status: "received",
+                      status_text: "Order Complete",
+                    },
+                    "Complete this order?"
+                  )
+                }
+              >
+                Finish Order
               </ListItem>
+            )}
+            {order.status === "processing" && (
+              <React.Fragment>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() =>
+                    acceptOrder(
+                      {
+                        status: "receiving",
+                        status_text: "Delivering your order",
+                      },
+                      "Deliver this order?"
+                    )
+                  }
+                >
+                  Deliver Order
+                </ListItem>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() =>
+                    acceptOrder(
+                      {
+                        status: "cancelled",
+                        status_text: "Order is cancelled",
+                      },
+                      "Cancel this order?"
+                    )
+                  }
+                >
+                  Cancel Order
+                </ListItem>
+              </React.Fragment>
             )}
           </List>
         </React.Fragment>
@@ -289,7 +361,18 @@ function OrderDetails(props) {
               You may use the chat feature once this order is accepted.
               <br />
               {userContext.user_type.name === "driver" && (
-                <SavingButton onClick={acceptOrder} className="themed-button">
+                <SavingButton
+                  onClick={() =>
+                    acceptOrder(
+                      {
+                        status: "processing",
+                        status_text: "Purchasing your order",
+                      },
+                      "Accept this order?"
+                    )
+                  }
+                  className="themed-button"
+                >
                   Accept Order
                 </SavingButton>
               )}

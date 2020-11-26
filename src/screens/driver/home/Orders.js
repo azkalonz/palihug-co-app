@@ -22,6 +22,7 @@ import OrderContext from "../../../context/OrderContext";
 import UserContext from "../../../context/UserContext";
 import config from "../../../misc/config";
 import { slideRight } from "../../../misc/transitions";
+import { Order } from "../../home/Orders";
 
 function Orders(props) {
   const bcontext = useContext(BottomNavContext);
@@ -97,13 +98,14 @@ function Orders(props) {
           ))}
         </Tabs>
         <Tabs
-          centered
           value={tabValue}
           fullWidth
           onChange={(e, val) => setTabValue(val)}
         >
           <Tab label={<AnimateOnTap>Active</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>All</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>To Deliver</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Cancelled</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Finished</AnimateOnTap>} />
         </Tabs>
@@ -116,45 +118,69 @@ function Orders(props) {
         style={{ paddingBottom: 50 }}
       >
         <Box height="100%">
-          <Order status="processing" serviceId={serviceId} />
+          <Order
+            status="processing"
+            serviceId={serviceId}
+            OrderCard={OrderCard}
+          />
         </Box>
         <Box height="100%">
-          <Order status="pending" serviceId={serviceId} />
+          <Order serviceId={serviceId} OrderCard={OrderCard} />
         </Box>
         <Box height="100%">
-          <Order status="cancelled" serviceId={serviceId} />
+          <Order status="pending" serviceId={serviceId} OrderCard={OrderCard} />
         </Box>
         <Box height="100%">
-          <Order status="finishing" serviceId={serviceId} />
+          <Order
+            status="receiving"
+            serviceId={serviceId}
+            OrderCard={OrderCard}
+          />
+        </Box>
+        <Box height="100%">
+          <Order
+            status="cancelled"
+            serviceId={serviceId}
+            OrderCard={OrderCard}
+          />
+        </Box>
+        <Box height="100%">
+          <Order
+            status="received"
+            serviceId={serviceId}
+            OrderCard={OrderCard}
+          />
         </Box>
       </SwipeableViews>
     </motion.div>
   );
 }
 
-function Order(props) {
-  const { orderContext } = useContext(OrderContext);
-  const orders = useMemo(
-    () =>
-      orderContext?.orders
-        ?.filter((order) => order.status === props.status)
-        .filter((order) => order.service_id === props.serviceId + 1)
-        .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)),
-    [orderContext, props.serviceId]
-  );
-  return (
-    <Box>
-      {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
-      <List>
-        {orders.map((order, index) => (
-          <ListItem divider>
-            <OrderCard {...order} />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-}
+// function Order(props) {
+//   const { orderContext } = useContext(OrderContext);
+//   const orders = useMemo(
+//     () =>
+//       orderContext?.orders
+//         ?.filter((order) => order.status === props.status)
+//         .filter((order) => order.service_id === props.serviceId + 1)
+//         .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)),
+//     [orderContext, props.serviceId]
+//   );
+//   return (
+//     <Box>
+//       {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
+//       <List>
+//         {orders.map((order, index) => {
+//           return (
+//             <ListItem divider key={index}>
+//               <OrderCard {...order} />
+//             </ListItem>
+//           );
+//         })}
+//       </List>
+//     </Box>
+//   );
+// }
 
 function OrderCard(props) {
   const {
@@ -166,7 +192,10 @@ function OrderCard(props) {
     status,
   } = props;
   const { dialogContext, setDialogContext } = useContext(DialogContext);
-  const info = JSON.parse(delivery_info);
+  const info =
+    typeof delivery_info === "string"
+      ? JSON.parse(delivery_info)
+      : delivery_info;
   return (
     <AnimateOnTap
       whileTap={{ opacity: 0.5 }}

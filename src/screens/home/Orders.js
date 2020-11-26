@@ -104,6 +104,7 @@ function Orders(props) {
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Processing</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>To Receive</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>Received</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Cancelled</AnimateOnTap>} />
         </Tabs>
       </Box>
@@ -123,7 +124,10 @@ function Orders(props) {
           <Order status="processing" serviceId={serviceId} />
         </Box>
         <Box height="100%">
-          <Order status="finishing" serviceId={serviceId} />
+          <Order status="receiving" serviceId={serviceId} />
+        </Box>
+        <Box height="100%">
+          <Order status="received" serviceId={serviceId} />
         </Box>
         <Box height="100%">
           <Order status="cancelled" serviceId={serviceId} />
@@ -133,7 +137,7 @@ function Orders(props) {
   );
 }
 
-function Order(props) {
+export function Order(props) {
   const { orderContext } = useContext(OrderContext);
   const orders = useMemo(
     () =>
@@ -150,8 +154,16 @@ function Order(props) {
       {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
       <List>
         {orders.map((order, index) => (
-          <ListItem divider>
-            <OrderCard {...order} />
+          <ListItem
+            divider
+            key={index}
+            className={"order-item " + order.status}
+          >
+            {props.OrderCard ? (
+              <props.OrderCard {...order} />
+            ) : (
+              <OrderCard {...order} />
+            )}
           </ListItem>
         ))}
       </List>

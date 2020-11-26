@@ -781,6 +781,25 @@ img {
   }
 }
 
+.order-item {
+  border-left: 5px solid;
+  &.processing {
+    border-left-color: $success!important;
+  }
+  &.cancelled {
+    border-left-color: rgb(161, 161, 161);
+  }
+  &.received {
+    border-left-color: $primary!important;
+  }
+  &.pending {
+    border-left-color: $neutral!important;
+  }
+  &.receiving {
+    border-left-color: $warning!important;
+  }
+}
+
 @keyframes slideup {
   from {
     transform: translateY(75px);

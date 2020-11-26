@@ -1,4 +1,4 @@
-import { Box, Icon, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, Icon, IconButton, Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
 import ChatComponent from "../../components/ChatComponent";
@@ -20,6 +20,7 @@ function Chat(props) {
   const { userContext } = useContext(UserContext);
   const { delivery_info } = order || {};
   const { contact } = delivery_info || {};
+  const [chatName, setChatName] = useState({ name: "", contact: "" });
   useEffect(() => {
     if (bottomNavContext.visible)
       setBottomNavContext({ ...bottomNavContext, visible: false });
@@ -63,9 +64,9 @@ function Chat(props) {
                 style={{ fontWeight: 700 }}
                 variant="h5"
               >
-                {contact?.name}
+                {chatName?.name}
               </Typography>
-              <Typography>{contact?.contact}</Typography>
+              <Typography>{chatName?.contact}</Typography>
             </Box>
           }
           actions={
@@ -88,7 +89,25 @@ function Chat(props) {
           }
         />
       </Box>
-      {order && <ChatComponent {...order} {...props} />}
+      <Box
+        width="100%"
+        className="center-all"
+        justifyContent="space-between"
+        p={3}
+        paddingBottom={0}
+        paddingTop={0}
+        style={{ borderTop: "1px solid rgba(0, 0, 0, 0.246)" }}
+      >
+        <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
+          {"Order #" + order_id}
+        </Typography>
+        <Button onClick={() => props.history.push("/orders/" + order_id)}>
+          View Order
+        </Button>
+      </Box>
+      {order && (
+        <ChatComponent {...order} {...props} setChatName={setChatName} />
+      )}
     </motion.div>
   );
 }

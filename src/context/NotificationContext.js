@@ -14,6 +14,7 @@ export const getNotificationContext = (setNotificationContext) => ({
         q.consumer_user_id === consumer_user_id
     );
     if (index >= 0) nextNotifications[index] = notification;
+    else nextNotifications.push(notification);
     setNotificationContext({
       ...this,
       notifications: nextNotifications,

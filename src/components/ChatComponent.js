@@ -162,7 +162,18 @@ function ChatComponent(props) {
       let chat = await Chat.get(order_id);
       const { participants, messages } = chat;
       if (messages) setMessages(messages);
-      if (participants) setParticipants(participants);
+      if (participants) {
+        const partner = participants.find(
+          (q) => q.user_id !== userContext.user_id
+        );
+        setParticipants(participants);
+        if (props.setChatName) {
+          props.setChatName({
+            name: partner.user_fname,
+            contact: partner.phone_number,
+          });
+        }
+      }
       setLoading(false);
       focusNewMessage();
     })();
@@ -349,7 +360,9 @@ function TextMessage(props) {
     <React.Fragment>
       <div className={"text-message " + props.position}>
         <Box className="message">
-          <Typography>{meta.message}</Typography>
+          <Typography>
+            <span dangerouslySetInnerHTML={{ __html: meta.message }}></span>
+          </Typography>
           {props.children}
         </Box>
         <Typography className="time">

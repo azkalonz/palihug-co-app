@@ -154,7 +154,11 @@ function ChatComponent(props) {
             }
             setNotificationContext({
               ...notificationContext,
-              notifications: nextNotifi,
+              notifications: nextNotifi.map((q) =>
+                parseInt(q.order_id) === parseInt(data.notification.order_id)
+                  ? { ...q, viewed: 1 }
+                  : q
+              ),
             });
           }
         },

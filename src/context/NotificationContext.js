@@ -12,7 +12,7 @@ export const getNotificationContext = (setNotificationContext) => ({
       (q) =>
         q.provider_user_id === provider_user_id &&
         q.consumer_user_id === consumer_user_id &&
-        q.order_id === order_id
+        parseInt(q.order_id) === parseInt(order_id)
     );
     if (index >= 0) nextNotifications[index] = notification;
     else nextNotifications.push(notification);

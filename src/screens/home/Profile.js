@@ -15,6 +15,9 @@ import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
+import CartContext from "../../context/CartContext";
+import NotificationContext from "../../context/NotificationContext";
+import OrderContext from "../../context/OrderContext";
 import UserContext from "../../context/UserContext";
 import { slideRight } from "../../misc/transitions";
 import logout from "../../utils/logout";
@@ -23,6 +26,11 @@ function Profile(props) {
   const theme = useTheme();
   const bcontext = useContext(BottomNavContext);
   const profile = useContext(UserContext);
+  const { setNotificationContext, notificationContext } = useContext(
+    NotificationContext
+  );
+  const { setOrderContext, orderContext } = useContext(OrderContext);
+  const { setCartContext, cartContext } = useContext(CartContext);
   const {
     user_fname,
     user_lname,
@@ -46,6 +54,18 @@ function Profile(props) {
         callback: () =>
           logout(() => {
             profile.setUserContext({});
+            setNotificationContext({
+              ...notificationContext,
+              isFetched: false,
+            });
+            setCartContext({
+              ...cartContext,
+              isFetched: false,
+            });
+            setOrderContext({
+              ...orderContext,
+              isFetched: false,
+            });
           }),
         title: "Logout",
       },

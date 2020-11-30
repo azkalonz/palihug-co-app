@@ -23,6 +23,7 @@ import UserContext from "../../../context/UserContext";
 import config from "../../../misc/config";
 import { slideRight } from "../../../misc/transitions";
 import { Order } from "../../home/Orders";
+import { getOR } from "../../services/Checkout";
 
 function Orders(props) {
   const bcontext = useContext(BottomNavContext);
@@ -33,9 +34,10 @@ function Orders(props) {
   const { loadingScreen, setLoadingScreen } = useContext(LoadingScreenContext);
   const menu = useMemo(
     () => [
-      { icon: "icon-coke-burger md" },
-      { icon: "icon-gift md" },
-      { icon: "icon-task md" },
+      { icon: "icon-coke-burger md", title: "E-Pagkain" },
+      { icon: "icon-basket md", title: "E-Pabili" },
+      { icon: "icon-task md", title: "E-Pasugo" },
+      { icon: "icon-gift md", title: "E-Pasurprise" },
       {
         icon: (
           <span className="icon-laundry md">
@@ -47,8 +49,8 @@ function Orders(props) {
             <span className="path6"></span>
           </span>
         ),
+        title: "E-Palaba",
       },
-      { icon: "icon-basket md" },
     ],
     []
   );
@@ -73,7 +75,17 @@ function Orders(props) {
       style={{ height: "100%" }}
     >
       <Box p={3} bgcolor={config.palette.primary.pale} paddingBottom={0}>
-        <ScreenHeader title="Orders" noGoBack />
+        <ScreenHeader
+          title={
+            <img
+              src="/static/images/logo/horizontal.png"
+              width={130}
+              alt="ESGO"
+            />
+          }
+          noGoBack
+        />
+
         <br />
         <br />
         <Tabs
@@ -239,7 +251,7 @@ function OrderCard(props) {
             Food Delivery
           </Typography>
           <Typography color="textSecondary" variant="body2">
-            Order no. {order_id}
+            Order no. {getOR(order_id)}
           </Typography>
         </Box>
         <Box className="row-spaced center-align">

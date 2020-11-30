@@ -16,6 +16,12 @@ import fetchData from "../../utils/fetchData";
 import { Block } from "../home";
 import { CartColumn, OrdersBlock } from "./Cart";
 
+export const getOR = (number) => {
+  let l = "0000000";
+  number = number + "";
+  return l.slice(0, l.length - number.length) + number;
+};
+
 function Checkout(props) {
   const [address, setAddress] = useState(null);
   const { userContext } = useContext(UserContext);
@@ -24,6 +30,7 @@ function Checkout(props) {
   const [selecting, setSelecting] = useState(true);
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState(null);
+  const { service_name } = props.location.state || {};
   const [deliveryInfo, setDeliveryInfo] = useState({
     address,
     contact: userContext.default_address
@@ -33,44 +40,190 @@ function Checkout(props) {
         }
       : {},
   });
-  const submitOrder = useCallback(() => {
-    fetchData({
-      before: () => setSaving(true),
-      send: async () =>
-        await Api.post("/checkout?token=" + userContext.user_token, {
-          body: {
-            consumer_user_id: userContext.user_id,
-            service_id: 1,
-            payment_id: 1,
-            total: cartContext.total,
-            delivery_info: JSON.stringify(deliveryInfo),
-            status_text: "Finding you a rider",
-            note,
-            products: cartContext.products.map((q) => ({
-              prod_id: q.product.id,
-              order_qty: q.quantity,
-              order_total: eval(q.product.price * q.quantity),
-              merchant_id: q.product.store.vendor_id,
-              product_meta: JSON.stringify(q.product),
-            })),
-          },
-        }),
-      after: (order) => {
-        setSaving(false);
-        fetchData({
-          send: async () => Api.delete("/cart?token=" + userContext.user_token),
-          after: () => {
-            cartContext.emptyCart(setCartContext);
-            setOrderContext({
-              ...orderContext,
-              orders: [order, ...orderContext.orders],
-            });
-            props.history.replace("/orders/" + order.order_id);
-          },
-        });
-      },
-    });
-  }, [deliveryInfo, cartContext, userContext, note]);
+  const submitOrder = useCallback(
+    ({ params = {}, hooks = {} }) => {
+      fetchData({
+        before: () => setSaving(true),
+        send: async () =>
+          await Api.post("/checkout?token=" + userContext.user_token, {
+            body: {
+              payment_id: 1,
+              consumer_user_id: userContext.user_id,
+              delivery_info: JSON.stringify(deliveryInfo),
+              status_text: "Finding you a rider",
+              note,
+              ...params,
+            },
+          }),
+        after: (order) => {
+          setSaving(false);
+          if (hooks?.afterCheckout) {
+            hooks.afterCheckout(order);
+          }
+        },
+      });
+    },
+    [deliveryInfo, cartContext, userContext, note]
+  );
+  const Renderer = useCallback(() => {
+    const Template = (props) => (
+      <React.Fragment>
+        {props.children}
+        <Block title="Payment" p={0}>
+          <CartColumn title="Method">
+            <Typography style={{ fontWeight: 700 }} color="primary">
+              Cash on delivery
+            </Typography>
+          </CartColumn>
+        </Block>
+        <Block
+          title={
+            <React.Fragment>
+              Total&nbsp;
+              <span style={{ color: "#000" }}>
+                {props.checkoutParams.params.products?.length || 0} Item(s)
+              </span>
+            </React.Fragment>
+          }
+          p={0}
+        >
+          <Price>
+            <CurrencyFormat
+              value={props.checkoutParams.params.total}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </Price>
+          <br />
+          <br />
+          <SavingButton
+            className="themed-button"
+            startIcon={<Icon>https</Icon>}
+            saving={saving}
+            onClick={() => submitOrder(props.checkoutParams)}
+          >
+            <Typography>Submit Order</Typography>
+          </SavingButton>
+        </Block>
+      </React.Fragment>
+    );
+    const GenericTemplate = ({ checkoutParams, title }) => (
+      <Template checkoutParams={checkoutParams}>
+        <Block p={0} title={title}>
+          <Typography color="textSecondary">
+            You opted for {title}. Please be attentive when your booking is
+            accepted. Check your notifications from time to time.
+          </Typography>
+        </Block>
+        <br />
+      </Template>
+    );
+    const render = {
+      "e-pagkain": (
+        <Template
+          checkoutParams={{
+            params: {
+              service_id: 1,
+              total: cartContext.total,
+              products: cartContext.products.map((q) => ({
+                prod_id: q.product.id,
+                order_qty: q.quantity,
+                order_total: eval(q.product.price * q.quantity),
+                merchant_id: q.product.store.vendor_id,
+                product_meta: JSON.stringify(q.product),
+              })),
+            },
+            hooks: {
+              afterCheckout: (order) =>
+                fetchData({
+                  send: async () =>
+                    Api.delete("/cart?token=" + userContext.user_token),
+                  after: () => {
+                    cartContext.emptyCart(setCartContext);
+                    setOrderContext({
+                      ...orderContext,
+                      orders: [order, ...orderContext.orders],
+                    });
+                    props.history.replace("/orders/" + order.order_id);
+                  },
+                }),
+            },
+          }}
+        >
+          <OrdersBlock />
+        </Template>
+      ),
+      "e-pabili": (
+        <GenericTemplate
+          title="E-Pabili Service"
+          checkoutParams={{
+            params: { service_id: 2, products: [], total: 0 },
+            hooks: {
+              afterCheckout: (order) => {
+                setOrderContext({
+                  ...orderContext,
+                  orders: [order, ...orderContext.orders],
+                });
+                props.history.replace("/orders/" + order.order_id);
+              },
+            },
+          }}
+        />
+      ),
+      "e-pasuyo": (
+        <GenericTemplate
+          title="E-Pasuyo Service"
+          checkoutParams={{
+            params: { service_id: 3, products: [], total: 0 },
+            hooks: {
+              afterCheckout: (order) => {
+                setOrderContext({
+                  ...orderContext,
+                  orders: [order, ...orderContext.orders],
+                });
+                props.history.replace("/orders/" + order.order_id);
+              },
+            },
+          }}
+        />
+      ),
+      "e-pasurprise": (
+        <GenericTemplate
+          title="E-Pasurprise Service"
+          checkoutParams={{
+            params: { service_id: 4, products: [], total: 0 },
+            hooks: {
+              afterCheckout: (order) => {
+                setOrderContext({
+                  ...orderContext,
+                  orders: [order, ...orderContext.orders],
+                });
+                props.history.replace("/orders/" + order.order_id);
+              },
+            },
+          }}
+        />
+      ),
+      "e-palaba": (
+        <GenericTemplate
+          title="E-Palaba Service"
+          checkoutParams={{
+            params: { service_id: 5, products: [], total: 0 },
+            hooks: {
+              afterCheckout: (order) => {
+                setOrderContext({
+                  ...orderContext,
+                  orders: [order, ...orderContext.orders],
+                });
+                props.history.replace("/orders/" + order.order_id);
+              },
+            },
+          }}
+        />
+      ),
+    };
+    return render[service_name] || render["e-pagkain"];
+  }, [service_name, address, deliveryInfo, note, saving]);
   useEffect(() => {
     if (userContext.default_address) {
       setDeliveryInfo({
@@ -119,13 +272,13 @@ function Checkout(props) {
 
       {!selecting && (
         <Box height="100vh" overflow="auto" paddingBottom={10}>
-          <motion.div
-            variants={slideRight}
-            initial="initial"
-            exit="out"
-            animate="in"
-          >
-            <Box p={3}>
+          <Box p={3}>
+            <motion.div
+              variants={slideRight}
+              initial="initial"
+              exit="out"
+              animate="in"
+            >
               <ScreenHeader
                 title="Checkout"
                 pushTo={() => {
@@ -205,45 +358,9 @@ function Checkout(props) {
                   onChange={(e) => setNote(e.target.value)}
                 />
               </Block>
-              <OrdersBlock />
-              <Block title="Payment" p={0}>
-                <CartColumn title="Method">
-                  <Typography style={{ fontWeight: 700 }} color="primary">
-                    Cash on delivery
-                  </Typography>
-                </CartColumn>
-              </Block>
-              <Block
-                title={
-                  <React.Fragment>
-                    Total&nbsp;
-                    <span style={{ color: "#000" }}>
-                      {cartContext.products.length} Item(s)
-                    </span>
-                  </React.Fragment>
-                }
-                p={0}
-              >
-                <Price>
-                  <CurrencyFormat
-                    value={cartContext.total}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                  />
-                </Price>
-                <br />
-                <br />
-                <SavingButton
-                  className="themed-button"
-                  startIcon={<Icon>https</Icon>}
-                  saving={saving}
-                  onClick={submitOrder}
-                >
-                  <Typography>Submit Order</Typography>
-                </SavingButton>
-              </Block>
-            </Box>
-          </motion.div>
+              {Renderer()}
+            </motion.div>
+          </Box>
         </Box>
       )}
     </motion.div>

@@ -799,7 +799,9 @@ img {
     border-left-color: $warning!important;
   }
 }
-
+.MuiBackdrop-root {
+  backdrop-filter: blur(3px);  
+}
 @keyframes slideup {
   from {
     transform: translateY(75px);

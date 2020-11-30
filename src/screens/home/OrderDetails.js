@@ -34,6 +34,7 @@ import { slideBottom } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
 import { CartColumn } from "../services/Cart";
+import { getOR } from "../services/Checkout";
 const qs = require("query-string");
 
 function OrderDetails(props) {
@@ -200,7 +201,7 @@ function OrderDetails(props) {
     >
       <Box p={3} bgcolor={config.palette.primary.pale}>
         <ScreenHeader
-          title={"Order #" + order.order_id}
+          title={"Order #" + getOR(order.order_id)}
           pushTo={() => props.history.replace("/orders")}
         >
           {userContext.user_type.name === "driver" && (

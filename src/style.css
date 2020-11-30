@@ -1057,6 +1057,11 @@ img {
   border-left-color: #ffb300 !important;
 }
 
+.MuiBackdrop-root {
+  -webkit-backdrop-filter: blur(3px);
+          backdrop-filter: blur(3px);
+}
+
 @-webkit-keyframes slideup {
   from {
     -webkit-transform: translateY(75px);

@@ -20,6 +20,7 @@ import moment from "moment";
 import { history } from "../../App";
 import EmptyListMessage from "../../components/EmptyListMessage";
 import DialogContext from "../../context/DialogContext";
+import { getOR } from "../services/Checkout";
 
 function Orders(props) {
   const bcontext = useContext(BottomNavContext);
@@ -30,8 +31,9 @@ function Orders(props) {
   const menu = useMemo(
     () => [
       { icon: "icon-coke-burger md", title: "E-Pagkain" },
-      { icon: "icon-gift md", title: "E-Pasurprise" },
+      { icon: "icon-basket md", title: "E-Pabili" },
       { icon: "icon-task md", title: "E-Pasugo" },
+      { icon: "icon-gift md", title: "E-Pasurprise" },
       {
         icon: (
           <span className="icon-laundry md">
@@ -45,7 +47,6 @@ function Orders(props) {
         ),
         title: "E-Palaba",
       },
-      { icon: "icon-basket md", title: "E-Pabili" },
     ],
     []
   );
@@ -217,7 +218,7 @@ function OrderCard(props) {
             Food Delivery
           </Typography>
           <Typography color="textSecondary" variant="body2">
-            Order no. {order_id}
+            Order no. {getOR(order_id)}
           </Typography>
         </Box>
         <Box className="row-spaced center-align">

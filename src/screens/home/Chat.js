@@ -9,6 +9,7 @@ import UserContext from "../../context/UserContext";
 import { slideBottom } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import { getOR } from "../services/Checkout";
 
 function Chat(props) {
   const [order, setOrder] = useState(props.location.state);
@@ -99,7 +100,7 @@ function Chat(props) {
         style={{ borderTop: "1px solid rgba(0, 0, 0, 0.246)" }}
       >
         <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-          {"Order #" + order_id}
+          {"Order #" + getOR(order_id)}
         </Typography>
         <Button onClick={() => props.history.push("/orders/" + order_id)}>
           View Order

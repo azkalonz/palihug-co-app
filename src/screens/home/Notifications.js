@@ -26,6 +26,7 @@ import EmptyListMessage from "../../components/EmptyListMessage";
 import NotificationContext from "../../context/NotificationContext";
 import { slideRight } from "../../misc/transitions";
 import { Block } from ".";
+import { getOR } from "../services/Checkout";
 
 function Notifications(props) {
   const bcontext = useContext(BottomNavContext);
@@ -77,7 +78,7 @@ function Notifications(props) {
       style={{ height: "100%" }}
     >
       <Box p={3}>
-        <ScreenHeader title="Orders" />
+        <ScreenHeader title="Notifications" />
       </Box>
       <Box m={3} marginTop={0} marginBottom={0}>
         <Tabs
@@ -119,7 +120,7 @@ function Notification(props) {
         .filter((q) =>
           props.status !== undefined ? q.viewed === props.status : true
         )
-        .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)),
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
     [notificationContext]
   );
   return (
@@ -174,7 +175,8 @@ function NotificationCard(props) {
                 {provider_name}
               </Typography>
               <Typography color="textSecondary" variant="body2">
-                {meta.title}
+                {meta.title.substr(0, meta.title.indexOf("#") + 1) +
+                  getOR(order_id)}
               </Typography>
               <Typography
                 color="textSecondary"

@@ -75,6 +75,37 @@ export function ProductCard(props) {
   ) : null;
 }
 
+export function MerchantCard(props) {
+  const { merchant } = props;
+  const { merch_banner, merch_name } = merchant;
+  return merchant ? (
+    <Paper style={{ marginBottom: 24, position: "relative" }}>
+      {props.header}
+      <Box p={2}>
+        <Box className={"product small"}>
+          <img
+            src={"http://localhost/storage/merchants/" + merch_banner}
+            width="100%"
+            alt={merch_name}
+          />
+          <br />
+          <Box>
+            <Typography
+              color="primary"
+              variant="h5"
+              style={{ fontWeight: 700 }}
+            >
+              {merch_name}
+            </Typography>
+            {props.children}
+          </Box>
+        </Box>
+        {props.variant !== "small" && props.children}
+      </Box>
+    </Paper>
+  ) : null;
+}
+
 export function Price(props) {
   return (
     <Box className="price">

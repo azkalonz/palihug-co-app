@@ -7,6 +7,7 @@ function Spinner(props) {
   const templates = useMemo(
     () => ({
       home: HomeSpinner,
+      notifications: HomeSpinner,
     }),
     []
   );

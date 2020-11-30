@@ -14,6 +14,7 @@ import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
 import Epabili from "./Epabili";
 import Epagakain from "./Epagakain";
+import { Epasuyo, Epalaba, Epasurprise } from "./Epasuyo";
 
 function Services(props) {
   const { service_id } = props.match?.params || { service_id: props.service };
@@ -25,6 +26,9 @@ function Services(props) {
     const s = {
       pagkain: Epagakain,
       pabili: Epabili,
+      palaba: Epalaba,
+      pasurprise: Epasurprise,
+      pasuyo: Epasuyo,
     };
     const Component = s[service?.slug];
     if (Component) {

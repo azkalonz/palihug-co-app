@@ -154,7 +154,7 @@ function ChatComponent(props) {
             }
             setNotificationContext({
               ...notificationContext,
-              notifications: nextNotifi.map((q) => ({ ...q, viewed: 1 })),
+              notifications: nextNotifi,
             });
           }
         },

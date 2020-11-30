@@ -55,7 +55,9 @@ export const DriverRoutes = [
   createRoute("/merchant/:merchant_id/details", true, null, {
     render: (p) => withNavBottom(p, MerchantDetails),
   }),
-  createRoute("/notifications", true, Notifications),
+  createRoute("/notifications", true, null, {
+    render: (p) => withNavBottom(p, Notifications),
+  }),
   createRoute("/profile", true, null, {
     render: (p) => withNavBottom(p, DriverProfile),
   }),
@@ -102,7 +104,9 @@ export const CustomerRoutes = [
   createRoute("/merchant/:merchant_id/details", true, null, {
     render: (p) => withNavBottom(p, MerchantDetails),
   }),
-  createRoute("/notifications", true, Notifications),
+  createRoute("/notifications", true, null, {
+    render: (p) => withNavBottom(p, Notifications),
+  }),
 ];
 
 export const bottomNavRoutes = {

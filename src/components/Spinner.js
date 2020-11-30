@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@material-ui/core";
+import { Box, CircularProgress, Divider } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { motion } from "framer-motion";
 import React, { useMemo } from "react";
@@ -7,7 +7,7 @@ function Spinner(props) {
   const templates = useMemo(
     () => ({
       home: HomeSpinner,
-      notifications: HomeSpinner,
+      notifications: ChatSpinner,
     }),
     []
   );
@@ -40,6 +40,52 @@ function Spinner(props) {
       ) : (
         <SpinnerTemplate />
       )}
+    </Box>
+  );
+}
+function ChatSpinner(props) {
+  return (
+    <Box height="100%" width="100%" maxWidth="810px">
+      <Box paddingTop={0} marginTop={3}>
+        <Box p={3}>
+          <Skeleton width={200} height={30} />
+          <br />
+          <br />
+          <Box className="center-all" justifyContent="flex-start">
+            <Skeleton width={100} height={30} />
+            <Skeleton width={100} height={30} style={{ marginLeft: 20 }} />
+          </Box>
+          <br />
+          <br />
+          <Skeleton width={80} height={30} />
+        </Box>
+        <Box>
+          {new Array(10).fill(1).map((q, i) => (
+            <React.Fragment key={i}>
+              <Box
+                p={3}
+                width={"100%"}
+                style={{ opacity: 1 - i / 6 }}
+                className="center-all"
+                justifyContent="flex-start"
+              >
+                <Skeleton
+                  width={50}
+                  height={50}
+                  style={{ minWidth: 50 }}
+                  variant="circle"
+                />
+                <Box marginLeft={1} width="100%" height="100%">
+                  <Skeleton width="100%" height={20} />
+                  <br />
+                  <Skeleton width="100%" height={50} />
+                </Box>
+              </Box>
+              <Divider style={{ opacity: 1 - i / 6 }} />
+            </React.Fragment>
+          ))}
+        </Box>
+      </Box>
     </Box>
   );
 }

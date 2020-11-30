@@ -63,10 +63,14 @@ function Notifications(props) {
       ...bottomNavContext,
       visible: true,
     });
-    setLoadingScreen({ ...loadingScreen, visible: true });
+    setLoadingScreen({
+      ...loadingScreen,
+      visible: true,
+      variant: "notifications",
+    });
     (async () => {
       await notificationContext.fetchNotifications(setNotificationContext);
-      setLoadingScreen({ ...loadingScreen, visible: false });
+      setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
     })();
   }, []);
   return (

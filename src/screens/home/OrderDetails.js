@@ -101,20 +101,36 @@ function OrderDetails(props) {
         <React.Fragment>
           <List>
             {order.status === "pending" && (
-              <ListItem
-                component={ButtonBase}
-                onClick={() =>
-                  acceptOrder(
-                    {
-                      status: "processing",
-                      status_text: "Purchasing your order",
-                    },
-                    "Accept this order?"
-                  )
-                }
-              >
-                Accept Order
-              </ListItem>
+              <React.Fragment>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() =>
+                    acceptOrder(
+                      {
+                        status: "processing",
+                        status_text: "Purchasing your order",
+                      },
+                      "Accept this order?"
+                    )
+                  }
+                >
+                  Accept Order
+                </ListItem>
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() =>
+                    acceptOrder(
+                      {
+                        status: "cancelled",
+                        status_text: "Order is cancelled",
+                      },
+                      "Cancel this order?"
+                    )
+                  }
+                >
+                  Cancel Order
+                </ListItem>
+              </React.Fragment>
             )}
             {order.status === "receiving" && (
               <ListItem
@@ -147,20 +163,6 @@ function OrderDetails(props) {
                   }
                 >
                   Deliver Order
-                </ListItem>
-                <ListItem
-                  component={ButtonBase}
-                  onClick={() =>
-                    acceptOrder(
-                      {
-                        status: "cancelled",
-                        status_text: "Order is cancelled",
-                      },
-                      "Cancel this order?"
-                    )
-                  }
-                >
-                  Cancel Order
                 </ListItem>
               </React.Fragment>
             )}
@@ -200,10 +202,7 @@ function OrderDetails(props) {
       exit="out"
     >
       <Box p={3} bgcolor={config.palette.primary.pale}>
-        <ScreenHeader
-          title={"Order #" + getOR(order.order_id)}
-          pushTo={() => props.history.replace("/orders")}
-        >
+        <ScreenHeader title={"#" + getOR(order.order_id)}>
           {userContext.user_type.name === "driver" && (
             <IconButton
               style={{ position: "absolute", right: 0 }}

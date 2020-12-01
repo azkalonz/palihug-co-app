@@ -62,9 +62,6 @@ function UserGlobals(props) {
     }
   }, [bottomNavContext]);
   useEffect(() => {
-    if (userContext.user_id) {
-      socket.emit("user:online", userContext.user_id);
-    }
     fetchData({
       send: async () =>
         await Api.get("/notifications?count=true&token=" + Api.getToken()),

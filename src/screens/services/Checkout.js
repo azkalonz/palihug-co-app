@@ -95,6 +95,17 @@ function Checkout(props) {
               displayType={"text"}
               thousandSeparator={true}
             />
+            {!isNaN(estTotal || NaN) && (
+              <React.Fragment>
+                &nbsp;(~
+                <CurrencyFormat
+                  value={estTotal.toFixed(2)}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+                )
+              </React.Fragment>
+            )}
           </Price>
           <br />
           <br />
@@ -104,7 +115,7 @@ function Checkout(props) {
             saving={saving}
             onClick={() => submitOrder(props.checkoutParams)}
           >
-            <Typography>Book</Typography>
+            <Typography>Submit Order</Typography>
           </SavingButton>
         </Block>
       </React.Fragment>
@@ -358,18 +369,20 @@ function Checkout(props) {
                   helperText="Maximum of 200 Characters"
                   fullWidth
                   onChange={(e) => setNote(e.target.value)}
+                  rows={3}
                 />
-                <br />
-                <br />
-                <TextField
-                  variant="outlined"
-                  label="Est. Total"
-                  type="number"
-                  fullWidth
-                  defaultValue={0}
-                  helperText="Enter the estimated cost."
-                  onChange={(e) => setEstTotal(parseFloat(e.target.value))}
-                />
+                {service_name !== undefined && (
+                  <TextField
+                    variant="outlined"
+                    label="Est. Total"
+                    type="number"
+                    fullWidth
+                    placeholder={0}
+                    className="themed-input"
+                    helperText="Enter the estimated cost."
+                    onChange={(e) => setEstTotal(parseFloat(e.target.value))}
+                  />
+                )}
               </Block>
               {Renderer()}
             </motion.div>

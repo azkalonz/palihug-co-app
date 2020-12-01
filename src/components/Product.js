@@ -109,7 +109,7 @@ export function MerchantCard(props) {
 export function Price(props) {
   return (
     <Box className="price">
-      <Typography variant="h6" style={{ fontWeight: 700 }}>
+      <Typography variant="h6" style={{ fontSize: "1em", fontWeight: 700 }}>
         PHP{" "}
         {props.sale ? (
           <a style={{ textDecoration: "line-through", opacity: 0.72 }}>

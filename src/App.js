@@ -26,6 +26,7 @@ import OrderContext, { getOrderContext } from "./context/OrderContext";
 import NotificationContext, {
   getNotificationContext,
 } from "./context/NotificationContext";
+import socket from "./utils/socket";
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
@@ -140,6 +141,7 @@ function App() {
       !cartContext?.isFetched
     ) {
       // only fetch cart items once base on the condition inside if statement to minimize api calls
+      socket.emit("user:online", userContext.user_id);
       fetchData({
         send: async () => Api.get("/cart?token=" + userContext?.user_token),
         after: (data) => {
@@ -155,7 +157,6 @@ function App() {
       });
     }
   }, [userContext?.user_token, cartContext.products]);
-  useEffect(() => console.log(userContext), [userContext]);
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <CartContext.Provider value={{ cartContext, setCartContext }}>

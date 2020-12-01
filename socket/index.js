@@ -52,7 +52,12 @@ function startCountDown(user) {
 
 io.on("connection", (socket) => {
   socket.on("user:online", (user_id) => {
+    console.log("logged in", user_id);
     users[user_id] = { socket };
+  });
+  socket.on("user:offline", (user_id) => {
+    console.log("logged out", user_id);
+    delete users[user_id];
   });
 
   socket.on("otp", (args) => {

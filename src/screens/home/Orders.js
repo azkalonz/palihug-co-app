@@ -133,7 +133,7 @@ function Orders(props) {
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Processing</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>To Receive</AnimateOnTap>} />
-          <Tab label={<AnimateOnTap>Received</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>Done</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Cancelled</AnimateOnTap>} />
         </Tabs>
       </Box>

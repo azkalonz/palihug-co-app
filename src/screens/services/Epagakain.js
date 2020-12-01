@@ -73,7 +73,7 @@ function MerchantCard(props) {
           color="primary"
           style={{
             fontWeight: 700,
-            fontSize: "1.2em",
+            fontSize: "1em",
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}

@@ -260,7 +260,7 @@ function MerchantView(props) {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
-                  variant="h4"
+                  variant="h6"
                 >
                   {merchant.vendor?.vendor_shop_name}
                 </Typography>

@@ -91,7 +91,9 @@ function Notifications(props) {
           onChange={(e, val) => setTabValue(val)}
         >
           <Tab label={<AnimateOnTap>All</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>Chat</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Unread</AnimateOnTap>} />
+          <Tab label={<AnimateOnTap>Updates</AnimateOnTap>} />
         </Tabs>
       </Box>
       <SwipeableViews
@@ -101,6 +103,14 @@ function Notifications(props) {
         style={{ paddingBottom: 50 }}
       >
         <Box height="100%">
+          <Block title="ESGO">
+            <Notification type="update" />
+          </Block>
+          <Block title="Chat">
+            <Notification type="chat" />
+          </Block>
+        </Box>
+        <Box height="100%">
           <Block title="Chat">
             <Notification type="chat" />
           </Block>
@@ -108,6 +118,11 @@ function Notifications(props) {
         <Box height="100%">
           <Block title="Chat">
             <Notification type="chat" status={0} />
+          </Block>
+        </Box>
+        <Box height="100%">
+          <Block title="ESGO">
+            <Notification type="update" />
           </Block>
         </Box>
       </SwipeableViews>

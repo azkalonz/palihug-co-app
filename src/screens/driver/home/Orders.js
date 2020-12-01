@@ -60,10 +60,10 @@ function Orders(props) {
       ...bottomNavContext,
       visible: true,
     });
-    setLoadingScreen({ ...loadingScreen, visible: true });
+    setLoadingScreen({ ...loadingScreen, visible: true, variant: "orders" });
     (async () => {
       await orderContext.fetchOrders(setOrderContext, userContext);
-      setLoadingScreen({ ...loadingScreen, visible: false });
+      setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
     })();
   }, []);
   return (
@@ -200,6 +200,7 @@ function OrderCard(props) {
     order_date,
     order_id,
     total,
+    est_total,
     delivery_info,
     status,
   } = props;
@@ -255,7 +256,17 @@ function OrderCard(props) {
           </Typography>
         </Box>
         <Box className="row-spaced center-align">
-          <Box style={{ maxWidth: "70%" }}>
+          <Box style={{ maxWidth: "100%" }}>
+            <Typography
+              color="primary"
+              variant="h6"
+              style={{ fontWeight: 700 }}
+            >
+              P {total}
+              {est_total && (
+                <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
+              )}
+            </Typography>
             <Typography
               color="primary"
               variant="body2"
@@ -269,9 +280,6 @@ function OrderCard(props) {
               {info.address.place_name}
             </Typography>
           </Box>
-          <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-            P {total}
-          </Typography>
         </Box>
       </Box>
     </AnimateOnTap>

@@ -8,6 +8,7 @@ function Spinner(props) {
     () => ({
       home: HomeSpinner,
       notifications: ChatSpinner,
+      orders: CustomerOrderSpinner,
     }),
     []
   );
@@ -43,6 +44,45 @@ function Spinner(props) {
     </Box>
   );
 }
+function CustomerOrderSpinner(props) {
+  return (
+    <Box height="100%" width="100%" maxWidth="810px">
+      <Box paddingTop={0} marginTop={3}>
+        <Box p={3}>
+          <Skeleton width={200} height={30} />
+          <br />
+          <br />
+          <Box className="center-all" justifyContent="flex-start">
+            <Skeleton width={100} height={30} />
+            <Skeleton width={100} height={30} style={{ marginLeft: 20 }} />
+            <Skeleton width={100} height={30} style={{ marginLeft: 20 }} />
+            <Skeleton width={100} height={30} style={{ marginLeft: 20 }} />
+          </Box>
+        </Box>
+        <Box>
+          {new Array(10).fill(1).map((q, i) => (
+            <React.Fragment key={i}>
+              <Box
+                p={3}
+                width={"100%"}
+                style={{ opacity: 1 - i / 4 }}
+                className="center-all"
+                justifyContent="flex-start"
+              >
+                <Box marginLeft={1} width="100%" height="100%">
+                  <Skeleton width="100%" height={20} />
+                  <br />
+                  <Skeleton width="100%" height={50} />
+                </Box>
+              </Box>
+              <Divider style={{ opacity: 1 - i / 4 }} />
+            </React.Fragment>
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 function ChatSpinner(props) {
   return (
     <Box height="100%" width="100%" maxWidth="810px">
@@ -65,7 +105,7 @@ function ChatSpinner(props) {
               <Box
                 p={3}
                 width={"100%"}
-                style={{ opacity: 1 - i / 6 }}
+                style={{ opacity: 1 - i / 4 }}
                 className="center-all"
                 justifyContent="flex-start"
               >
@@ -81,7 +121,7 @@ function ChatSpinner(props) {
                   <Skeleton width="100%" height={50} />
                 </Box>
               </Box>
-              <Divider style={{ opacity: 1 - i / 6 }} />
+              <Divider style={{ opacity: 1 - i / 4 }} />
             </React.Fragment>
           ))}
         </Box>

@@ -30,6 +30,7 @@ function Checkout(props) {
   const [selecting, setSelecting] = useState(true);
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState(null);
+  const [estTotal, setEstTotal] = useState(null);
   const { service_name } = props.location.state || {};
   const [deliveryInfo, setDeliveryInfo] = useState({
     address,
@@ -52,6 +53,7 @@ function Checkout(props) {
               delivery_info: JSON.stringify(deliveryInfo),
               status_text: "Finding you a rider",
               note,
+              est_total: estTotal,
               ...params,
             },
           }),
@@ -63,7 +65,7 @@ function Checkout(props) {
         },
       });
     },
-    [deliveryInfo, cartContext, userContext, note]
+    [deliveryInfo, cartContext, userContext, note, estTotal]
   );
   const Renderer = useCallback(() => {
     const Template = (props) => (
@@ -102,7 +104,7 @@ function Checkout(props) {
             saving={saving}
             onClick={() => submitOrder(props.checkoutParams)}
           >
-            <Typography>Submit Order</Typography>
+            <Typography>Book</Typography>
           </SavingButton>
         </Block>
       </React.Fragment>
@@ -223,7 +225,7 @@ function Checkout(props) {
       ),
     };
     return render[service_name] || render["e-pagkain"];
-  }, [service_name, address, deliveryInfo, note, saving]);
+  }, [service_name, address, deliveryInfo, note, saving, estTotal]);
   useEffect(() => {
     if (userContext.default_address) {
       setDeliveryInfo({
@@ -356,6 +358,17 @@ function Checkout(props) {
                   helperText="Maximum of 200 Characters"
                   fullWidth
                   onChange={(e) => setNote(e.target.value)}
+                />
+                <br />
+                <br />
+                <TextField
+                  variant="outlined"
+                  label="Est. Total"
+                  type="number"
+                  fullWidth
+                  defaultValue={0}
+                  helperText="Enter the estimated cost."
+                  onChange={(e) => setEstTotal(parseFloat(e.target.value))}
                 />
               </Block>
               {Renderer()}

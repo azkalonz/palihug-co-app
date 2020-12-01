@@ -37,7 +37,7 @@ function Chat(props) {
         send: async () =>
           await Api.get("/order/" + order_id + "?token=" + Api.getToken()),
         after: (data) => {
-          if (data.delivery_info) {
+          if (data?.delivery_info) {
             data.delivery_info = JSON.parse(data.delivery_info);
             setOrder(data);
             setLoadingScreen({ ...loadingScreen, visible: false });

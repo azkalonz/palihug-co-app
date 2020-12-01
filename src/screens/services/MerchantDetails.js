@@ -75,7 +75,12 @@ function MerchantDetails(props) {
           </Box>
         </Block>
       </Box>
-      <Block title="Information">
+      <Block
+        title="Information"
+        style={{
+          fontFamily: "Sans-serif",
+        }}
+      >
         <CartColumn title="Description">
           <span
             dangerouslySetInnerHTML={{ __html: vendor?.vendor_description }}

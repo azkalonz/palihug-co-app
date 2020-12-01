@@ -213,43 +213,19 @@ function OrderDetails(props) {
             </IconButton>
           )}
         </ScreenHeader>
-        <Tabs value={tabValue}>
-          <Tab
-            label="Info"
-            onClick={() =>
-              props.history.push({
-                pathname: props.location.pathname,
-                search: "tab=0",
-              })
-            }
-          />
-          <Tab
-            label="Products"
-            onClick={() =>
-              props.history.push({
-                pathname: props.location.pathname,
-                search: "tab=1",
-              })
-            }
-          />
-          <Tab
-            label="Note"
-            onClick={() =>
-              props.history.push({
-                pathname: props.location.pathname,
-                search: "tab=2",
-              })
-            }
-          />
-          <Tab
-            label="Chat"
-            onClick={() =>
-              props.history.push({
-                pathname: props.location.pathname,
-                search: "tab=3",
-              })
-            }
-          />
+        <Tabs
+          value={tabValue}
+          onChange={(e, val) =>
+            props.history.replace({
+              pathname: props.location.pathname,
+              search: "tab=" + val,
+            })
+          }
+        >
+          <Tab label="Info" />
+          <Tab label="Products" />
+          <Tab label="Note" />
+          <Tab label="Chat" />
         </Tabs>
         <Block
           p={0}
@@ -269,12 +245,23 @@ function OrderDetails(props) {
               displayType={"text"}
               thousandSeparator={true}
             />
+            {order.est_total && (
+              <React.Fragment>
+                &nbsp;(~
+                <CurrencyFormat
+                  value={order.est_total.toFixed(2)}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+                )
+              </React.Fragment>
+            )}
           </Price>
         </Block>
       </Box>
       <SwipeableViews
         onChangeIndex={(val) =>
-          props.history.push({
+          props.history.replace({
             pathname: props.location.pathname,
             search: "tab=" + val,
           })

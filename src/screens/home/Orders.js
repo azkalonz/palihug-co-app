@@ -21,8 +21,10 @@ import { history } from "../../App";
 import EmptyListMessage from "../../components/EmptyListMessage";
 import DialogContext from "../../context/DialogContext";
 import { getOR } from "../services/Checkout";
+const qs = require("query-string");
 
 function Orders(props) {
+  const query = qs.parse(window.location.search);
   const bcontext = useContext(BottomNavContext);
   const { orderContext, setOrderContext } = useContext(OrderContext);
   const [tabValue, setTabValue] = useState(0);
@@ -56,12 +58,28 @@ function Orders(props) {
       ...bottomNavContext,
       visible: true,
     });
-    setLoadingScreen({ ...loadingScreen, visible: true });
+    setLoadingScreen({
+      ...loadingScreen,
+      visible: true,
+      variant: "orders",
+    });
     (async () => {
       await orderContext.fetchOrders(setOrderContext);
-      setLoadingScreen({ ...loadingScreen, visible: false });
+      setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
     })();
   }, []);
+  useEffect(() => {
+    let q = parseInt(query.service);
+    if (!isNaN(q)) {
+      setServiceId(q);
+    }
+  }, [query.service]);
+  useEffect(() => {
+    let q = parseInt(query.tab);
+    if (!isNaN(q)) {
+      setTabValue(q);
+    }
+  }, [query.tab]);
   return (
     <motion.div
       animate="in"
@@ -76,7 +94,12 @@ function Orders(props) {
       <Tabs
         value={serviceId}
         fullWidth
-        onChange={(e, val) => setServiceId(val)}
+        onChange={(e, val) =>
+          props.history.replace({
+            pathname: window.location.pathname,
+            search: `?tab=${tabValue}&service=${val}`,
+          })
+        }
         className="icon-tabs"
       >
         {menu.map((m, index) => (
@@ -99,7 +122,12 @@ function Orders(props) {
         <Tabs
           value={tabValue}
           fullWidth
-          onChange={(e, val) => setTabValue(val)}
+          onChange={(e, val) =>
+            props.history.replace({
+              pathname: window.location.pathname,
+              search: `?tab=${val}&service=${serviceId}`,
+            })
+          }
         >
           <Tab label={<AnimateOnTap>All</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>Pending</AnimateOnTap>} />
@@ -112,7 +140,12 @@ function Orders(props) {
       <SwipeableViews
         resistance
         index={tabValue}
-        onChangeIndex={(index) => setTabValue(index)}
+        onChangeIndex={(index) => {
+          props.history.replace({
+            pathname: window.location.pathname,
+            search: `?tab=${index}&service=${serviceId}`,
+          });
+        }}
         style={{ paddingBottom: 50 }}
       >
         <Box height="100%">
@@ -173,7 +206,7 @@ export function Order(props) {
 }
 
 function OrderCard(props) {
-  const { status_text, order_date, order_id, total, status } = props;
+  const { status_text, order_date, order_id, total, est_total, status } = props;
   const { dialogContext, setDialogContext } = useContext(DialogContext);
   return (
     <AnimateOnTap
@@ -227,6 +260,9 @@ function OrderCard(props) {
           </Typography>
           <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
             P {total}
+            {est_total && (
+              <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
+            )}
           </Typography>
         </Box>
       </Box>

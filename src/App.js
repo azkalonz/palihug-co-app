@@ -15,7 +15,6 @@ import GetStartedContext from "./context/GetStartedContext";
 import LoadingScreenContext from "./context/LoadingScreenContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
-import theme from "./misc/theme";
 import Routes, { AdminRoutes, CustomerRoutes, DriverRoutes } from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
@@ -27,6 +26,8 @@ import NotificationContext, {
   getNotificationContext,
 } from "./context/NotificationContext";
 import socket from "./utils/socket";
+import Layout from "./screens/admin/Layout";
+import getTheme from "./misc/theme";
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
@@ -180,27 +181,27 @@ function App() {
               <ServicesContext.Provider
                 value={{ servicesContext, setServicesContext }}
               >
-                <SnackbarProvider
-                  ref={notistackRef}
-                  maxSnack={3}
-                  preventDuplicate
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                  }}
-                  action={(key) => (
-                    <IconButton onClick={onClickDismiss(key)}>
-                      <Icon>close</Icon>
-                    </IconButton>
-                  )}
-                >
-                  <DialogContext.Provider
-                    value={{ dialogContext, setDialogContext }}
+                <ThemeProvider theme={getTheme("dark")}>
+                  <SnackbarProvider
+                    ref={notistackRef}
+                    maxSnack={3}
+                    preventDuplicate
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    action={(key) => (
+                      <IconButton onClick={onClickDismiss(key)}>
+                        <Icon>close</Icon>
+                      </IconButton>
+                    )}
                   >
-                    <BottomNavContext.Provider
-                      value={{ bottomNavContext, setBottomNavContext }}
+                    <DialogContext.Provider
+                      value={{ dialogContext, setDialogContext }}
                     >
-                      <ThemeProvider theme={theme}>
+                      <BottomNavContext.Provider
+                        value={{ bottomNavContext, setBottomNavContext }}
+                      >
                         <LoadingScreenContext.Provider
                           value={{ loadingScreen, setLoadingScreen }}
                         >
@@ -208,6 +209,13 @@ function App() {
                             <BrowserRouter history={history}>
                               {loadingScreen.visible && (
                                 <Spinner variant={loadingScreen.variant} />
+                              )}
+                              {userContext?.user_type?.name === "admin" && (
+                                <Layout>
+                                  {AdminRoutes.map((route, index) => (
+                                    <Route {...route} />
+                                  ))}
+                                </Layout>
                               )}
                               <Route
                                 render={(r) => {
@@ -224,11 +232,6 @@ function App() {
                                         {userContext?.user_type?.name ===
                                           "driver" &&
                                           DriverRoutes.map((route, index) => (
-                                            <Route key={index} {...route} />
-                                          ))}
-                                        {userContext?.user_type?.name ===
-                                          "admin" &&
-                                          AdminRoutes.map((route, index) => (
                                             <Route key={index} {...route} />
                                           ))}
                                         {userContext?.user_type?.name ===
@@ -251,10 +254,10 @@ function App() {
                           )}
                         </LoadingScreenContext.Provider>
                         {loading && <Spinner image />}
-                      </ThemeProvider>
-                    </BottomNavContext.Provider>
-                  </DialogContext.Provider>
-                </SnackbarProvider>
+                      </BottomNavContext.Provider>
+                    </DialogContext.Provider>
+                  </SnackbarProvider>
+                </ThemeProvider>
               </ServicesContext.Provider>
             </GetStartedContext.Provider>
           </NotificationContext.Provider>

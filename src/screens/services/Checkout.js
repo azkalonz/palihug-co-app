@@ -46,7 +46,7 @@ function Checkout(props) {
       fetchData({
         before: () => setSaving(true),
         send: async () =>
-          await Api.post("/checkout?token=" + userContext.user_token, {
+          await Api.post("/checkout?token=" + Api.getToken(), {
             body: {
               payment_id: 1,
               consumer_user_id: userContext.user_id,

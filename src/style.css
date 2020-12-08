@@ -735,7 +735,7 @@ img {
   background: #fff;
 }
 
-.MuiSnackbar-root {
+.MuiCollapse-container:first-of-type .MuiSnackbar-root {
   margin-bottom: 50px !important;
 }
 

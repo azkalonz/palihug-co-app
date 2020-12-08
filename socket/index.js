@@ -22,6 +22,8 @@ app.get("/otp-status", (req, res) => {
       status: true,
       duration: OTP[index].duration,
       user_email: OTP[index].user_email,
+      start_date: OTP[index].start_date,
+      original_duration: OTP[index].original_duration,
     });
   } else {
     res.json({
@@ -64,11 +66,13 @@ io.on("connection", (socket) => {
     let otpIndex = OTP.findIndex(
       (q) => q.user_email.toLowerCase() === args.user_email.toLowerCase()
     );
+    args["original_duration"] = args["duration"];
     if (otpIndex >= 0) {
       OTP[otpIndex] = args;
     } else {
       OTP.push(args);
     }
+    console.log(args);
     startCountDown(args);
   });
 

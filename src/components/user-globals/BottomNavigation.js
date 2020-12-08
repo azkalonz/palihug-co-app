@@ -22,7 +22,9 @@ function BottomNavigation(props) {
     () =>
       (userContext?.user_type?.name === "driver"
         ? bottomNavRoutes.driver
-        : bottomNavRoutes.customer
+        : userContext?.user_type?.name === "customer"
+        ? bottomNavRoutes.customer
+        : []
       ).map((q) =>
         q.value === selected ? { ...q, icon: q.icon.replace("-alt", "") } : q
       ),
@@ -60,7 +62,7 @@ function BottomNavigation(props) {
       });
     }
   }, [cartContext.products]);
-  return bcontext.bottomNavContext?.visible ? (
+  return bcontext.bottomNavContext?.visible && menu.length ? (
     <motion.div
       initial="initial"
       exit="out"

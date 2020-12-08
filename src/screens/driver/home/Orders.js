@@ -13,7 +13,6 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import { history } from "../../../App";
 import AnimateOnTap from "../../../components/AnimateOnTap";
-import EmptyListMessage from "../../../components/EmptyListMessage";
 import ScreenHeader from "../../../components/ScreenHeader";
 import BottomNavContext from "../../../context/BottomNavContext";
 import DialogContext from "../../../context/DialogContext";
@@ -24,8 +23,10 @@ import config from "../../../misc/config";
 import { slideRight } from "../../../misc/transitions";
 import { Order } from "../../home/Orders";
 import { getOR } from "../../services/Checkout";
+const qs = require("query-string");
 
 function Orders(props) {
+  const query = qs.parse(window.location.search);
   const bcontext = useContext(BottomNavContext);
   const { orderContext, setOrderContext } = useContext(OrderContext);
   const { userContext } = useContext(UserContext);
@@ -66,6 +67,18 @@ function Orders(props) {
       setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
     })();
   }, []);
+  useEffect(() => {
+    let q = parseInt(query.service);
+    if (!isNaN(q)) {
+      setServiceId(q);
+    }
+  }, [query.service]);
+  useEffect(() => {
+    let q = parseInt(query.tab);
+    if (!isNaN(q)) {
+      setTabValue(q);
+    }
+  }, [query.tab]);
   return (
     <motion.div
       animate="in"
@@ -91,7 +104,12 @@ function Orders(props) {
         <Tabs
           value={serviceId}
           fullWidth
-          onChange={(e, val) => setServiceId(val)}
+          onChange={(e, val) =>
+            props.history.replace({
+              pathname: window.location.pathname,
+              search: `?tab=${tabValue}&service=${val}`,
+            })
+          }
           className="icon-tabs"
         >
           {menu.map((m, index) => (
@@ -112,7 +130,12 @@ function Orders(props) {
         <Tabs
           value={tabValue}
           fullWidth
-          onChange={(e, val) => setTabValue(val)}
+          onChange={(e, val) =>
+            props.history.replace({
+              pathname: window.location.pathname,
+              search: `?tab=${val}&service=${serviceId}`,
+            })
+          }
         >
           <Tab label={<AnimateOnTap>Active</AnimateOnTap>} />
           <Tab label={<AnimateOnTap>All</AnimateOnTap>} />
@@ -126,7 +149,12 @@ function Orders(props) {
       <SwipeableViews
         resistance
         index={tabValue}
-        onChangeIndex={(index) => setTabValue(index)}
+        onChangeIndex={(index) =>
+          props.history.replace({
+            pathname: window.location.pathname,
+            search: `?tab=${index}&service=${serviceId}`,
+          })
+        }
         style={{ paddingBottom: 50 }}
       >
         <Box height="100%">
@@ -210,9 +238,8 @@ function OrderCard(props) {
       ? JSON.parse(delivery_info)
       : delivery_info;
   return (
-    <AnimateOnTap
-      whileTap={{ opacity: 0.5 }}
-      style={{ width: "100%" }}
+    <Box
+      className="column-flex-100"
       onClick={() => {
         setDialogContext({
           visible: true,
@@ -245,44 +272,35 @@ function OrderCard(props) {
         });
       }}
     >
-      <Box className="column-flex-100">
-        <Box>
-          <Typography>{moment(order_date).format("llll")}</Typography>
+      <Box>
+        <Typography>{moment(order_date).format("llll")}</Typography>
+        <Typography color="textSecondary" variant="body2">
+          Order no. {getOR(order_id)}
+        </Typography>
+      </Box>
+      <Box className="row-spaced center-align">
+        <Box style={{ maxWidth: "100%" }}>
           <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-            Food Delivery
+            P {total}
+            {est_total && (
+              <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
+            )}
           </Typography>
-          <Typography color="textSecondary" variant="body2">
-            Order no. {getOR(order_id)}
+          <Typography
+            color="primary"
+            variant="body2"
+            style={{ fontWeight: 600 }}
+          >
+            {info.contact.name}
+            <br />
+            {info.contact.contact}
           </Typography>
-        </Box>
-        <Box className="row-spaced center-align">
-          <Box style={{ maxWidth: "100%" }}>
-            <Typography
-              color="primary"
-              variant="h6"
-              style={{ fontWeight: 700 }}
-            >
-              P {total}
-              {est_total && (
-                <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
-              )}
-            </Typography>
-            <Typography
-              color="primary"
-              variant="body2"
-              style={{ fontWeight: 600 }}
-            >
-              {info.contact.name}
-              <br />
-              {info.contact.contact}
-            </Typography>
-            <Typography color="primary" variant="body2">
-              {info.address.place_name}
-            </Typography>
-          </Box>
+          <Typography color="primary" variant="body2">
+            {info.address.place_name}
+          </Typography>
         </Box>
       </Box>
-    </AnimateOnTap>
+    </Box>
   );
 }
 

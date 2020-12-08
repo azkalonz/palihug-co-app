@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Container,
   Icon,
   IconButton,
   List,
@@ -81,69 +82,13 @@ function Address(props) {
       initial="initial"
       variants={slideBottom}
     >
-      <Box p={3}>
-        <ScreenHeader title="Address" />
-        <List>
-          {Object.keys(default_address || {}).length ? (
-            <ListItem className="address-detail default">
-              {(() => {
-                const {
-                  street,
-                  barangay,
-                  city,
-                  province,
-                  zip,
-                  house_number,
-                  country,
-                } = default_address;
-                return (
-                  <Box className="center-all" justifyContent="space-between">
-                    <Box>
-                      <Box className="center-all">
-                        <Icon>home</Icon>
-                        <Typography style={{ fontWeight: 800 }}>
-                          DEFAULT ADDRESS
-                        </Typography>
-                      </Box>
-                      <Typography>
-                        {house_number} {street}, {barangay}
-                      </Typography>
-                      <Typography>
-                        {city}, {zip}
-                      </Typography>
-                      <Typography>
-                        {province}, {country}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <IconButton
-                        onClick={() => {
-                          insertNewAddress(default_address);
-                        }}
-                      >
-                        <Icon>create</Icon>
-                      </IconButton>
-                    </Box>
-                  </Box>
-                );
-              })()}
-            </ListItem>
-          ) : (
-            <Typography variant="h5" color="textSecondary">
-              Select a default address
-            </Typography>
-          )}
-          <br />
-          {address?.length
-            ? address
-                .filter((q) => {
-                  if (default_address?.add_id) {
-                    return q.add_id !== default_address.add_id;
-                  } else {
-                    return true;
-                  }
-                })
-                .map((add, index) => {
+      <Container>
+        <Box p={3}>
+          <ScreenHeader title="Address" />
+          <List>
+            {Object.keys(default_address || {}).length ? (
+              <ListItem className="address-detail default">
+                {(() => {
                   const {
                     street,
                     barangay,
@@ -152,66 +97,124 @@ function Address(props) {
                     zip,
                     house_number,
                     country,
-                  } = add;
+                  } = default_address;
                   return (
-                    <ListItem
-                      selected={add.add_id === selected}
-                      key={index}
-                      className="address-detail"
-                      onClick={() => setSelected(add.add_id)}
-                      divider
-                    >
-                      <Box
-                        className="center-all"
-                        justifyContent="space-between"
-                      >
-                        <Box>
-                          <Typography>
-                            {house_number} {street}, {barangay}
-                          </Typography>
-                          <Typography>
-                            {city}, {zip}
-                          </Typography>
-                          <Typography>
-                            {province}, {country}
+                    <Box className="center-all" justifyContent="space-between">
+                      <Box>
+                        <Box className="center-all">
+                          <Icon>home</Icon>
+                          <Typography style={{ fontWeight: 800 }}>
+                            DEFAULT ADDRESS
                           </Typography>
                         </Box>
-                        {selected === add.add_id && (
-                          <Box>
-                            <IconButton
-                              onClick={() => {
-                                insertNewAddress(add);
-                              }}
-                            >
-                              <Icon>create</Icon>
-                            </IconButton>
-                          </Box>
-                        )}
+                        <Typography>
+                          {house_number} {street}, {barangay}
+                        </Typography>
+                        <Typography>
+                          {city}, {zip}
+                        </Typography>
+                        <Typography>
+                          {province}, {country}
+                        </Typography>
                       </Box>
-                    </ListItem>
+                      <Box>
+                        <IconButton
+                          onClick={() => {
+                            insertNewAddress(default_address);
+                          }}
+                        >
+                          <Icon>create</Icon>
+                        </IconButton>
+                      </Box>
+                    </Box>
                   );
-                })
-            : null}
-        </List>
-        <AnimateOnTap>
-          <Button
-            className="themed-button inverted"
+                })()}
+              </ListItem>
+            ) : (
+              <Typography variant="h5" color="textSecondary">
+                Select a default address
+              </Typography>
+            )}
+            <br />
+            {address?.length
+              ? address
+                  .filter((q) => {
+                    if (default_address?.add_id) {
+                      return q.add_id !== default_address.add_id;
+                    } else {
+                      return true;
+                    }
+                  })
+                  .map((add, index) => {
+                    const {
+                      street,
+                      barangay,
+                      city,
+                      province,
+                      zip,
+                      house_number,
+                      country,
+                    } = add;
+                    return (
+                      <ListItem
+                        selected={add.add_id === selected}
+                        key={index}
+                        className="address-detail"
+                        onClick={() => setSelected(add.add_id)}
+                        divider
+                      >
+                        <Box
+                          className="center-all"
+                          justifyContent="space-between"
+                        >
+                          <Box>
+                            <Typography>
+                              {house_number} {street}, {barangay}
+                            </Typography>
+                            <Typography>
+                              {city}, {zip}
+                            </Typography>
+                            <Typography>
+                              {province}, {country}
+                            </Typography>
+                          </Box>
+                          {selected === add.add_id && (
+                            <Box>
+                              <IconButton
+                                onClick={() => {
+                                  insertNewAddress(add);
+                                }}
+                              >
+                                <Icon>create</Icon>
+                              </IconButton>
+                            </Box>
+                          )}
+                        </Box>
+                      </ListItem>
+                    );
+                  })
+              : null}
+          </List>
+          <AnimateOnTap>
+            <Button
+              className="themed-button inverted"
+              variant="contained"
+              onClick={() => insertNewAddress()}
+            >
+              <Icon>add</Icon>
+            </Button>
+          </AnimateOnTap>
+          <br />
+          <SavingButton
+            saving={saving}
+            className="themed-button "
             variant="contained"
-            onClick={() => insertNewAddress()}
+            onClick={() => onSave()}
           >
-            <Icon>add</Icon>
-          </Button>
-        </AnimateOnTap>
-        <br />
-        <SavingButton
-          saving={saving}
-          className="themed-button "
-          variant="contained"
-          onClick={() => onSave()}
-        >
-          Save
-        </SavingButton>
-      </Box>
+            Save
+          </SavingButton>
+        </Box>
+      </Container>
     </motion.div>
   );
 }

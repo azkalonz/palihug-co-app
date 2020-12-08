@@ -16,7 +16,7 @@ import LoadingScreenContext from "./context/LoadingScreenContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
 import theme from "./misc/theme";
-import Routes, { CustomerRoutes, DriverRoutes } from "./Routes";
+import Routes, { AdminRoutes, CustomerRoutes, DriverRoutes } from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
@@ -32,7 +32,15 @@ export const history = createBrowserHistory();
 history.listen = (callback) => {
   callback(window.location.pathname);
 };
-
+function OTPFormat(otp) {
+  otp = otp + "";
+  if (otp.length < 4) {
+    for (let i = 0; i < 4 - otp.length; i++) {
+      otp = "0" + otp;
+    }
+  }
+  return otp;
+}
 function App() {
   const notistackRef = React.createRef();
   const [loading, setLoading] = useState(true);
@@ -78,7 +86,7 @@ function App() {
         if (user?.user_token) {
           let token =
             (user.user_token + "").length <= 9
-              ? parseInt(user.user_token) / 1234
+              ? OTPFormat(parseInt(user.user_token) / 1234)
               : user.user_token;
           let body = { user_token: token + "" };
           fetchData({
@@ -141,7 +149,6 @@ function App() {
       !cartContext?.isFetched
     ) {
       // only fetch cart items once base on the condition inside if statement to minimize api calls
-      socket.emit("user:online", userContext.user_id);
       fetchData({
         send: async () => Api.get("/cart?token=" + userContext?.user_token),
         after: (data) => {
@@ -157,6 +164,9 @@ function App() {
       });
     }
   }, [userContext?.user_token, cartContext.products]);
+  useEffect(() => {
+    if (userContext.user_id) socket.emit("user:online", userContext.user_id);
+  }, [userContext.user_id]);
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>
       <CartContext.Provider value={{ cartContext, setCartContext }}>
@@ -214,6 +224,11 @@ function App() {
                                         {userContext?.user_type?.name ===
                                           "driver" &&
                                           DriverRoutes.map((route, index) => (
+                                            <Route key={index} {...route} />
+                                          ))}
+                                        {userContext?.user_type?.name ===
+                                          "admin" &&
+                                          AdminRoutes.map((route, index) => (
                                             <Route key={index} {...route} />
                                           ))}
                                         {userContext?.user_type?.name ===

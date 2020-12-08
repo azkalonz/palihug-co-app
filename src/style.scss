@@ -539,8 +539,10 @@ img {
     }
   }
 }
-.MuiSnackbar-root {
-  margin-bottom: 50px !important;
+.MuiCollapse-container:first-of-type {
+  .MuiSnackbar-root {
+    margin-bottom: 50px !important;
+  }
 }
 .MuiIcon-colorPrimary {
   color: #d92e45 !important;

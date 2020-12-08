@@ -3,6 +3,7 @@ import React from "react";
 import RegisterForm from "./components/RegisterForm";
 import VerifyOTP from "./components/VerifyOTP";
 import NotFound from "./screens/404";
+import Dashboard from "./screens/admin/Dashboard";
 import { default as DriverOrders } from "./screens/driver/home/Orders";
 import { default as DriverProfile } from "./screens/driver/home/Profile";
 import { GetStartedScreen } from "./screens/get-started";
@@ -41,6 +42,11 @@ export default [
   createRoute("/register", true, RegisterForm),
   createRoute("/login", true, Login),
   createRoute("*", false, NotFound),
+];
+export const AdminRoutes = [
+  createRoute("/", true, null, {
+    render: (p) => withNavBottom(p, Dashboard, "", 0),
+  }),
 ];
 
 export const DriverRoutes = [

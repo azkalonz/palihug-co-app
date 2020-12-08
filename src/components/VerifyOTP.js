@@ -37,7 +37,10 @@ function VerifyOTP(props) {
         await SocketApi.get("/otp-status?email=" + userContext.user_email),
       after: (data) => {
         if (data?.status) {
-          setUserContext({ ...userContext, otpDuration: data.duration });
+          setUserContext({
+            ...userContext,
+            otp: data,
+          });
           setOTPStatus(true);
         } else {
           setOTPStatus(false);
@@ -208,7 +211,7 @@ function SendOTP(props) {
                   await props.resetOTP();
                   if (res?.user?.user_token) {
                     window.localStorage["user"] = JSON.stringify({
-                      user_token: res.user.user_token * 1234,
+                      user_token: res.user.user_token,
                     });
                   }
                   setGetStartedContext({
@@ -233,11 +236,13 @@ function CountDown(props) {
   const ucontext = useContext(UserContext);
   const { getStartedContext, setGetStartedContext } = props.context;
   const { userContext } = ucontext;
-  const [duration, setDuration] = useState(userContext?.otpDuration || 0);
+  const { otp } = userContext;
+  const [duration, setDuration] = useState(otp?.duration || 0);
   useEffect(() => {
     window.otpCountDown = setTimeout(() => {
-      setDuration(duration - 1000);
-      if (duration - 1000 <= 0) {
+      let d = otp?.original_duration - moment().diff(moment(otp?.start_date));
+      setDuration(d);
+      if (d <= 0) {
         window.clearTimeout(window.otpCountDown);
       }
     }, 1000);
@@ -245,7 +250,13 @@ function CountDown(props) {
   return (
     <Box textAlign="center" p={2}>
       {duration > 0 && (
-        <Typography>{moment.utc(duration).format("mm:ss")}</Typography>
+        <Typography>
+          {moment
+            .utc(
+              otp?.original_duration - moment().diff(moment(otp?.start_date))
+            )
+            .format("mm:ss")}
+        </Typography>
       )}
       {duration <= 0 && (
         <Typography>

@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   ButtonBase,
+  Container,
   Icon,
   List,
   ListItem,
@@ -108,30 +109,32 @@ function Profile(props) {
       className="profile-screen"
       style={{ padding: theme.spacing(3) }}
     >
-      <ScreenHeader
-        title={
-          <Box className="center-align">
-            <Box marginRight={2}>
-              <Avatar
-                src={user_avatar}
-                alt={user_fname}
-                style={{ width: 50, height: 50 }}
-              />
+      <Container>
+        <ScreenHeader
+          title={
+            <Box className="center-align">
+              <Box marginRight={2}>
+                <Avatar
+                  src={user_avatar}
+                  alt={user_fname}
+                  style={{ width: 50, height: 50 }}
+                />
+              </Box>
+              <Box>
+                <Typography color="primary" className="name">
+                  {user_fname} {user_lname}
+                </Typography>
+                <Typography className="email">{user_email}</Typography>
+              </Box>
             </Box>
-            <Box>
-              <Typography color="primary" className="name">
-                {user_fname} {user_lname}
-              </Typography>
-              <Typography className="email">{user_email}</Typography>
-            </Box>
-          </Box>
-        }
-      />
-      <Box>
-        <List className="themed-list">
-          {menu.map((m, i) => ListMenu(m, i))}
-        </List>
-      </Box>
+          }
+        />
+        <Box>
+          <List className="themed-list">
+            {menu.map((m, i) => ListMenu(m, i))}
+          </List>
+        </Box>
+      </Container>
     </motion.div>
   );
 }

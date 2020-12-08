@@ -137,7 +137,9 @@ function Notification(props) {
       notificationContext?.notifications
         .filter((q) => q.notif_type === props.type)
         .filter((q) =>
-          props.status !== undefined ? q.viewed === props.status : true
+          props.status !== undefined
+            ? parseInt(q.viewed) === props.status
+            : true
         )
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
     [notificationContext]

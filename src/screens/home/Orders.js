@@ -8,18 +8,18 @@ import {
   Typography,
 } from "@material-ui/core";
 import { motion } from "framer-motion";
+import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
+import { history } from "../../App";
 import AnimateOnTap from "../../components/AnimateOnTap";
+import EmptyListMessage from "../../components/EmptyListMessage";
 import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
+import DialogContext from "../../context/DialogContext";
 import LoadingScreenContext from "../../context/LoadingScreenContext";
 import OrderContext from "../../context/OrderContext";
 import { slideRight } from "../../misc/transitions";
-import moment from "moment";
-import { history } from "../../App";
-import EmptyListMessage from "../../components/EmptyListMessage";
-import DialogContext from "../../context/DialogContext";
 import { getOR } from "../services/Checkout";
 const qs = require("query-string");
 
@@ -188,17 +188,15 @@ export function Order(props) {
       {!orders.length ? <EmptyListMessage>Empty</EmptyListMessage> : null}
       <List>
         {orders.map((order, index) => (
-          <ListItem
-            divider
-            key={index}
-            className={"order-item " + order.status}
-          >
-            {props.OrderCard ? (
-              <props.OrderCard {...order} />
-            ) : (
-              <OrderCard {...order} />
-            )}
-          </ListItem>
+          <AnimateOnTap key={index}>
+            <ListItem divider className={"order-item " + order.status}>
+              {props.OrderCard ? (
+                <props.OrderCard {...order} />
+              ) : (
+                <OrderCard {...order} />
+              )}
+            </ListItem>
+          </AnimateOnTap>
         ))}
       </List>
     </Box>
@@ -209,9 +207,8 @@ function OrderCard(props) {
   const { status_text, order_date, order_id, total, est_total, status } = props;
   const { dialogContext, setDialogContext } = useContext(DialogContext);
   return (
-    <AnimateOnTap
-      whileTap={{ opacity: 0.5 }}
-      style={{ width: "100%" }}
+    <Box
+      className="column-flex-100"
       onClick={() => {
         setDialogContext({
           visible: true,
@@ -244,29 +241,24 @@ function OrderCard(props) {
         });
       }}
     >
-      <Box className="column-flex-100">
-        <Box>
-          <Typography>{moment(order_date).format("llll")}</Typography>
-          <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-            Food Delivery
-          </Typography>
-          <Typography color="textSecondary" variant="body2">
-            Order no. {getOR(order_id)}
-          </Typography>
-        </Box>
-        <Box className="row-spaced center-align">
-          <Typography color="primary" variant="body2">
-            {status_text}
-          </Typography>
-          <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-            P {total}
-            {est_total && (
-              <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
-            )}
-          </Typography>
-        </Box>
+      <Box>
+        <Typography>{moment(order_date).format("llll")}</Typography>
+        <Typography color="textSecondary" variant="body2">
+          Order no. {getOR(order_id)}
+        </Typography>
       </Box>
-    </AnimateOnTap>
+      <Box>
+        <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
+          P {total}
+          {est_total && (
+            <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
+          )}
+        </Typography>
+        <Typography color="primary" variant="body2">
+          {status_text}
+        </Typography>
+      </Box>
+    </Box>
   );
 }
 

@@ -45,7 +45,7 @@ function ServicesSlider(props) {
     fetchData({
       before: () => setSaving(true),
       send: async () =>
-        await Api.post("/first-login", {
+        await Api.post("/first-login?token=" + Api.getToken(), {
           body: {
             user_email: userContext?.user_email,
             user_token: userContext?.user_token,

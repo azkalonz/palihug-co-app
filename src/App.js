@@ -15,7 +15,14 @@ import GetStartedContext from "./context/GetStartedContext";
 import LoadingScreenContext from "./context/LoadingScreenContext";
 import ServicesContext from "./context/ServicesContext";
 import UserContext from "./context/UserContext";
-import Routes, { AdminRoutes, CustomerRoutes, DriverRoutes } from "./Routes";
+import Routes, {
+  AdminDrawerRoutes,
+  AdminRoutes,
+  CustomerRoutes,
+  MerchantDrawerRoutes,
+  DriverRoutes,
+  MerchantRoutes,
+} from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
 import fetchData from "./utils/fetchData";
@@ -26,7 +33,7 @@ import NotificationContext, {
   getNotificationContext,
 } from "./context/NotificationContext";
 import socket from "./utils/socket";
-import Layout from "./screens/admin/Layout";
+import Layout from "./screens/Layout";
 import getTheme from "./misc/theme";
 
 export const history = createBrowserHistory();
@@ -211,8 +218,15 @@ function App() {
                                 <Spinner variant={loadingScreen.variant} />
                               )}
                               {userContext?.user_type?.name === "admin" && (
-                                <Layout>
+                                <Layout drawerRoutes={AdminDrawerRoutes}>
                                   {AdminRoutes.map((route, index) => (
+                                    <Route {...route} />
+                                  ))}
+                                </Layout>
+                              )}
+                              {userContext?.user_type?.name === "merchant" && (
+                                <Layout drawerRoutes={MerchantDrawerRoutes}>
+                                  {MerchantRoutes.map((route, index) => (
                                     <Route {...route} />
                                   ))}
                                 </Layout>

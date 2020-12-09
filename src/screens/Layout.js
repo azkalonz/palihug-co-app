@@ -17,7 +17,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import clsx from "clsx";
 import React, { useCallback, useContext, useEffect } from "react";
-import { history } from "../../App";
+import { history } from "../App";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import Popover from "@material-ui/core/Popover";
 import {
@@ -28,11 +28,11 @@ import {
   Icon,
   ListItemAvatar,
 } from "@material-ui/core";
-import UserContext from "../../context/UserContext";
-import logout from "../../utils/logout";
-import NotificationContext from "../../context/NotificationContext";
-import CartContext from "../../context/CartContext";
-import OrderContext from "../../context/OrderContext";
+import UserContext from "../context/UserContext";
+import logout from "../utils/logout";
+import NotificationContext from "../context/NotificationContext";
+import CartContext from "../context/CartContext";
+import OrderContext from "../context/OrderContext";
 
 export default function Layout(props) {
   const { userContext, setUserContext } = useContext(UserContext);
@@ -168,28 +168,19 @@ export default function Layout(props) {
         </div>
         <Divider />
         <List>
-          <ListItem button onClick={() => history.push("/")}>
-            <ListItemIcon>
-              <Icon>home</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-        </List>
-        <List>
-          <ListItem button onClick={() => history.push("/users")}>
-            <ListItemIcon>
-              <Icon>people</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Users" />
-          </ListItem>
-        </List>
-        <List>
-          <ListItem button onClick={() => history.push("/transactions")}>
-            <ListItemIcon>
-              <Icon>receipt_long</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Transactions" />
-          </ListItem>
+          {props.drawerRoutes?.map((route, index) => (
+            <ListItem
+              button
+              onClick={() => history.push(route.url)}
+              key={index}
+              selected={route.url === window.location.pathname}
+            >
+              <ListItemIcon>
+                <Icon>{route.icon}</Icon>
+              </ListItemIcon>
+              <ListItemText primary={route.label} />
+            </ListItem>
+          ))}
         </List>
       </Drawer>
       <main className={classes.content}>

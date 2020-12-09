@@ -16,6 +16,7 @@ import OrderDetails from "./screens/home/OrderDetails";
 import Orders from "./screens/home/Orders";
 import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
+import MerchantHome from "./screens/merchant/MerchantHome";
 import Services from "./screens/services";
 import Cart, { AddToCart } from "./screens/services/Cart";
 import Checkout from "./screens/services/Checkout";
@@ -46,6 +47,13 @@ export default [
 export const AdminRoutes = [
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, AdminHome, "", 0),
+  }),
+  createRoute("*", false, NotFound),
+];
+
+export const MerchantRoutes = [
+  createRoute("/", true, null, {
+    render: (p) => withNavBottom(p, MerchantHome, "", 0),
   }),
   createRoute("*", false, NotFound),
 ];
@@ -176,3 +184,33 @@ export const bottomNavRoutes = {
     },
   ],
 };
+
+export const AdminDrawerRoutes = [
+  {
+    url: "/",
+    label: "Home",
+    icon: "home",
+  },
+  {
+    url: "/users",
+    label: "Users",
+    icon: "people",
+  },
+  {
+    url: "/transactions",
+    label: "Transactions",
+    icon: "receipt_long",
+  },
+];
+export const MerchantDrawerRoutes = [
+  {
+    url: "/",
+    label: "Home",
+    icon: "home",
+  },
+  {
+    url: "/transactions",
+    label: "Transactions",
+    icon: "receipt_long",
+  },
+];

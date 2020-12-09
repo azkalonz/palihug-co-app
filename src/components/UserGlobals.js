@@ -8,7 +8,7 @@ import BottomNavContext from "../context/BottomNavContext";
 import fetchData from "../utils/fetchData";
 import Api from "../utils/api";
 import NotificationContext from "../context/NotificationContext";
-import Layout from "../screens/admin/Layout";
+import Layout from "../screens/Layout";
 function UserGlobals(props) {
   const { orderContext, setOrderContext } = useContext(OrderContext);
   const { notificationContext, setNotificationContext } = useContext(

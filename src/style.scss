@@ -804,6 +804,46 @@ img {
 .MuiBackdrop-root {
   backdrop-filter: blur(3px);  
 }
+
+.sales-card {
+  flex-wrap: wrap;
+  margin-top: 20px;
+  & > div {
+    margin: 20px 10px;
+    flex: 1 1 300px;
+    position: relative;
+  }
+  .chart-reload {
+    position: absolute;
+    top: 0;
+    right:0;
+  }
+}
+.chart-icon {
+  display: flex;
+  width: 80px;
+  height: 90px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  margin-top: -40px;
+  margin-right: 14px;
+  &.blue {
+    background-color: $success;
+  }
+  &.primary {
+    background-color: $primary;
+  }
+  &.orange {
+    background-color: $warning;
+  }
+  span {
+    font-size: 2.5rem;
+    color: #fff;
+  }
+}
+
+
 @keyframes slideup {
   from {
     transform: translateY(75px);

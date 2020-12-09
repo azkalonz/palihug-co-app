@@ -1062,6 +1062,60 @@ img {
           backdrop-filter: blur(3px);
 }
 
+.sales-card {
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.sales-card > div {
+  margin: 20px 10px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 300px;
+          flex: 1 1 300px;
+  position: relative;
+}
+
+.sales-card .chart-reload {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.chart-icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 80px;
+  height: 90px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 6px;
+  margin-top: -40px;
+  margin-right: 14px;
+}
+
+.chart-icon.blue {
+  background-color: #37b137;
+}
+
+.chart-icon.primary {
+  background-color: #d92e45;
+}
+
+.chart-icon.orange {
+  background-color: #ffb300;
+}
+
+.chart-icon span {
+  font-size: 2.5rem;
+  color: #fff;
+}
+
 @-webkit-keyframes slideup {
   from {
     -webkit-transform: translateY(75px);

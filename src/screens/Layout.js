@@ -175,7 +175,7 @@ export default function Layout(props) {
               key={index}
               selected={route.url === window.location.pathname}
             >
-              <ListItemIcon>
+              <ListItemIcon style={{ marginLeft: 8 }}>
                 <Icon>{route.icon}</Icon>
               </ListItemIcon>
               <ListItemText primary={route.label} />

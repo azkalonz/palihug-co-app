@@ -12,6 +12,7 @@ import {
   GrossSales,
   ItemsSold,
   SalesByProduct,
+  SalesMonthly,
   TotalOrders,
 } from "./SalesConsumer";
 
@@ -43,6 +44,14 @@ export function TotalOrdersChart(props) {
     </SalesProvider>
   );
 }
+export function SalesMonthlyLineChart(props) {
+  return (
+    <SalesProvider type="gross_sales_monthly" {...props}>
+      <SalesMonthly />
+    </SalesProvider>
+  );
+}
+
 export function SalesProvider(props) {
   const [sales, setSales] = useState({});
   const getData = useCallback(
@@ -63,7 +72,7 @@ export function SalesProvider(props) {
   );
   useEffect(() => {
     getData();
-  }, [props.params]);
+  }, []);
 
   return (
     <React.Fragment>

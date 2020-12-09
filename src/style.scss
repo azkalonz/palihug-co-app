@@ -821,6 +821,7 @@ img {
 }
 .chart-icon {
   display: flex;
+  z-index: 1;
   width: 80px;
   height: 90px;
   justify-content: center;
@@ -829,6 +830,9 @@ img {
   margin-top: -40px;
   margin-right: 14px;
   &.blue {
+    background-color: $neutral;
+  }
+  &.green {
     background-color: $success;
   }
   &.primary {
@@ -843,7 +847,9 @@ img {
   }
 }
 
-
+.canvasjs-chart-credit{
+  display: none;
+}
 @keyframes slideup {
   from {
     transform: translateY(75px);

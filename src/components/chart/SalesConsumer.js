@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import CurrencyFormat from "react-currency-format";
 import { CanvasJSChart } from "canvasjs-react-charts";
 import EmptyListMessage from "../EmptyListMessage";
+import moment from "moment";
 
 export function GrossSales(props) {
   const [loading, setLoading] = useState(true);
@@ -134,6 +135,7 @@ export function SalesByProduct(props) {
         {!loading && Object.keys(data).length ? (
           <CanvasJSChart
             options={{
+              theme: "light2",
               animationEnabled: true,
               exportFileName: "Sales By Product",
               exportEnabled: true,
@@ -153,6 +155,85 @@ export function SalesByProduct(props) {
         ) : null}
         {!loading && !Object.keys(data).length ? (
           <EmptyListMessage>No Data</EmptyListMessage>
+        ) : null}
+      </Box>
+    </SalesCardLayout>
+  );
+}
+
+export function SalesMonthly(props) {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    if (props.data != null) {
+      if (Object.keys(props.data).length) {
+        setData(
+          props.data
+            ?.map(({ date, gross_sales }) => {
+              return {
+                x: new Date(date),
+                y: parseFloat(gross_sales),
+              };
+            })
+            .sort((a, b) => new Date(b.x) - new Date(a.x))
+        );
+      } else {
+        setData([]);
+      }
+      setLoading(false);
+    }
+  }, [props.data]);
+  return (
+    <SalesCardLayout
+      title="Sales Report by date"
+      icon="payments"
+      color="green"
+      loading={loading}
+      reload={() => {
+        setLoading(true);
+        props.reload(() => {
+          setLoading(false);
+        });
+      }}
+    >
+      <Box position="absolute" left={0} right={0} component={Paper}>
+        {!loading && Object.keys(data).length ? (
+          <CanvasJSChart
+            options={{
+              animationEnabled: true,
+              theme: "light2",
+              title: {
+                text: `${moment(data[data.length - 1].x.toString()).format(
+                  "MMM D,YYYY"
+                )} - ${moment(data[0].x.toString()).format("MMM D,YYYY")}`,
+              },
+              axisX: {
+                valueFormatString: "DD MMM",
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                },
+              },
+              axisY: {
+                title: "Sales in PHP",
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  labelFormatter: function (e) {
+                    return "PHP" + e.value.toFixed(2);
+                  },
+                },
+              },
+              data: [
+                {
+                  type: "area",
+                  xValueFormatString: "DD MMM",
+                  yValueFormatString: "PHP##0.00",
+                  dataPoints: data,
+                },
+              ],
+            }}
+          />
         ) : null}
       </Box>
     </SalesCardLayout>

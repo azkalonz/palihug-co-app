@@ -174,7 +174,7 @@ function App() {
     }
   }, [userContext?.user_token, cartContext.products]);
   useEffect(() => {
-    if (userContext.user_id) socket.emit("user:online", userContext.user_id);
+    if (userContext.user_id) socket.emit("user:online", userContext);
   }, [userContext.user_id]);
   return (
     <UserContext.Provider value={{ userContext, setUserContext }}>

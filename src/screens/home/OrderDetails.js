@@ -33,6 +33,7 @@ import config from "../../misc/config";
 import { slideBottom } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import { goBackOrPush } from "../../utils/goBackOrPush";
 import { isAllowed, isEither } from "../../utils/isAllowed";
 import { CartColumn } from "../services/Cart";
 import { getOR } from "../services/Checkout";
@@ -47,53 +48,85 @@ function OrderDetails(props) {
   const { setDialogContext } = useContext(DialogContext);
   const { setOrderContext, orderContext } = useContext(OrderContext);
   const { userContext } = useContext(UserContext);
-  const acceptOrder = useCallback((meta, title) => {
-    setDialogContext({
-      visible: true,
-      title,
-      message: (
-        <Box width="100%" className="center-all">
-          {/* <LinearProgress style={{ width: "100%" }} /> */}
-        </Box>
-      ),
-      actions: [
-        {
-          name: "Continue",
-          callback: ({ closeDialog, setLoading }) => {
-            fetchData({
-              before: () => setLoading(true),
-              send: async () =>
-                await Api.post("/order?token=" + Api.getToken(), {
-                  body: {
-                    order_id,
-                    ...meta,
-                  },
-                }),
-              after: (data) => {
-                if (data) {
-                  closeDialog();
-                  setLoading(false);
-                  orderContext.updateOrder(data, setOrderContext);
-                  setDialogContext({ visible: false });
-                  data.delivery_info = JSON.parse(data.delivery_info);
-                  setOrder(data);
-                  props.history.replace("/orders/" + data.order_id + "?tab=1");
-                }
-              },
-            });
+  const acceptOrder = useCallback(
+    (meta, title) => {
+      setDialogContext({
+        visible: true,
+        title,
+        message: (
+          <Box width="100%" className="center-all">
+            {/* <LinearProgress style={{ width: "100%" }} /> */}
+          </Box>
+        ),
+        actions: [
+          {
+            name: "Continue",
+            callback: ({ closeDialog, setLoading }) => {
+              fetchData({
+                before: () => setLoading(true),
+                send: async () =>
+                  await Api.post("/order?token=" + Api.getToken(), {
+                    body: {
+                      order_id,
+                      ...meta,
+                    },
+                  }),
+                after: (data) => {
+                  if (data) {
+                    closeDialog();
+                    setLoading(false);
+                    if (data.error) {
+                      setDialogContext({
+                        visible: true,
+                        title: "Error",
+                        message: (
+                          <Box width="100%" className="center-all">
+                            <Typography>{data.message}</Typography>
+                          </Box>
+                        ),
+                        actions: [
+                          {
+                            name: "OK",
+                            callback: ({ closeDialog, setLoading }) => {
+                              orderContext.removeOrder(order, setOrderContext);
+                              closeDialog();
+                              goBackOrPush("/orders");
+                            },
+                            props: {
+                              variant: "contained",
+                              color: "primary",
+                            },
+                          },
+                        ],
+                      });
+                    }
+                    if (!data.error) {
+                      orderContext.updateOrder(data, setOrderContext);
+                      setDialogContext({ visible: false });
+                      data.delivery_info = JSON.parse(data.delivery_info);
+                      setOrder(data);
+                      props.history.replace(
+                        "/orders/" + data.order_id + "?tab=1"
+                      );
+                    }
+                  }
+                },
+              });
+            },
+            props: {
+              variant: "contained",
+              color: "primary",
+            },
           },
-          props: {
-            variant: "contained",
-            color: "primary",
+          {
+            name: "Cancel",
+            callback: ({ closeDialog }) => closeDialog(),
           },
-        },
-        {
-          name: "Cancel",
-          callback: ({ closeDialog }) => closeDialog(),
-        },
-      ],
-    });
-  }, []);
+        ],
+      });
+    },
+    [order]
+  );
   const showDriverOptions = useCallback(() => {
     setDialogContext({
       title: "Action",

@@ -28,12 +28,11 @@ function UserGlobals(props) {
     if (userContext?.user_type.name === "driver") {
       socket.off("order:new");
       socket.on("order:new", newOrder);
-    } else if (userContext?.user_type.name === "customer") {
-      socket.off("order:update");
-      socket.on("order:update", function (order) {
-        orderContext.updateOrder(order, setOrderContext);
-      });
     }
+    socket.off("order:update");
+    socket.on("order:update", function (order) {
+      orderContext.updateOrder(order, setOrderContext);
+    });
     socket.off("notifications:new");
     socket.on("notifications:new", function (notification) {
       notificationContext.newNotification(notification, setNotificationContext);

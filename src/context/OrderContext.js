@@ -16,6 +16,14 @@ export const getOrderContext = (setOrderContext) => ({
     }
     setOrderContext({ ...this, orders });
   },
+  removeOrder: function (order, setOrderContext) {
+    let orders = [...this.orders];
+    let orderIndex = orders.findIndex((q) => q.order_id === order.order_id);
+    if (orderIndex >= 0) {
+      orders.splice(orderIndex, 1);
+    }
+    setOrderContext({ ...this, orders });
+  },
   fetchOrders: async function (setOrderContext, userContext = null) {
     if (!userContext) {
       if (!this.isFetched) {

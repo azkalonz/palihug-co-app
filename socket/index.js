@@ -53,9 +53,9 @@ function startCountDown(user) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("user:online", (user_id) => {
+  socket.on("user:online", ({ user_id, user_type }) => {
     console.log("logged in", user_id);
-    users[user_id] = { socket };
+    users[user_id] = { socket, user_type };
   });
   socket.on("user:offline", (user_id) => {
     console.log("logged out", user_id);
@@ -83,6 +83,15 @@ io.on("connection", (socket) => {
   socket.on("order:update", (args) => {
     if (users[args.consumer_user_id])
       io.to(users[args.consumer_user_id].socket.id).emit("order:update", args);
+    Object.keys(users).forEach(function (user) {
+      if (
+        user != args.consumer_user_id &&
+        socket.id != users[user].socket.id &&
+        users[user].user_type.name == "driver"
+      ) {
+        io.to(users[user].socket.id).emit("order:update", args);
+      }
+    });
   });
 
   socket.on("join:room:orders", ({ order_id }) => {

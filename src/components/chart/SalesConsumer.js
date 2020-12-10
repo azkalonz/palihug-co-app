@@ -79,7 +79,7 @@ export function TotalOrders(props) {
   }, [props.data]);
   return (
     <SalesCardLayout
-      title="Received Orders"
+      title="Total Orders"
       icon="shopping_cart"
       color="orange"
       loading={loading}
@@ -90,9 +90,36 @@ export function TotalOrders(props) {
         });
       }}
     >
-      <Typography variant="h5">
-        <b>{props.data || 0}</b> orders
-      </Typography>
+      <table width="100%">
+        <tr>
+          <td colSpan="2">
+            <Typography variant="h5" color="primary">
+              <b>{props.data && props.data["all"]}</b> orders
+            </Typography>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Typography>
+              DELIVERED <b>{props.data && props.data["received"]}</b>
+            </Typography>
+            <Typography>
+              PENDING <b>{props.data && props.data["pending"]}</b>
+            </Typography>
+            <Typography>
+              TO DELIVER <b>{props.data && props.data["receiving"]}</b>
+            </Typography>
+          </td>
+          <td>
+            <Typography>
+              PROCESSING <b>{props.data && props.data["processing"]}</b>
+            </Typography>
+            <Typography>
+              CANCELLED <b>{props.data && props.data["cancelled"]}</b>
+            </Typography>
+          </td>
+        </tr>
+      </table>
     </SalesCardLayout>
   );
 }

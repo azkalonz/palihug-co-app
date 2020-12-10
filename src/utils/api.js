@@ -151,3 +151,7 @@ export const SocketApi = {
   },
 };
 export default Api;
+
+String.prototype.ucfirst = function () {
+  return this.valueOf()[0].toUpperCase() + this.valueOf().slice(1);
+};

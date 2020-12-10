@@ -48,7 +48,7 @@ function MerchantTransactions(props) {
           {
             title: "Order Num",
             field: "order_id",
-            render: (row) => "#" + getOR(row.order_id),
+            render: (row) => <b>{"#" + getOR(row.order_id)}</b>,
           },
           {
             title: "Date",
@@ -59,6 +59,8 @@ function MerchantTransactions(props) {
           {
             title: "Provider",
             field: "provider_name",
+            render: (row) =>
+              row.provider_name || <i style={{ opacity: 0.5 }}>Pending</i>,
           },
           {
             title: "Customer",
@@ -67,6 +69,8 @@ function MerchantTransactions(props) {
           {
             title: "Note",
             field: "note",
+            render: (row) =>
+              row.note || <i style={{ opacity: 0.5 }}>Note is empty</i>,
           },
           {
             title: "Total",
@@ -81,12 +85,15 @@ function MerchantTransactions(props) {
             title: "Status",
             field: "status",
             lookup: {
-              pending: <b className="pending">Pending</b>,
-              processing: <b className="processing">Processing</b>,
-              receiving: <b className="receiving">Receiving</b>,
-              received: <b className="received">Received</b>,
-              cancelled: <b className="cancelled">Cancelled</b>,
+              pending: "Pending",
+              processing: "Processing",
+              receiving: "Receiving",
+              received: "Received",
+              cancelled: "Cancelled",
             },
+            render: (row) => (
+              <b className={row.status}>{row.status.ucfirst()}</b>
+            ),
           },
           {
             title: "Delivery Info",

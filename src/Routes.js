@@ -50,7 +50,6 @@ export const AdminRoutes = [
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, AdminHome, "", 0),
   }),
-  notFoundRouteProps,
 ];
 
 export const MerchantRoutes = [
@@ -64,7 +63,18 @@ export const MerchantRoutes = [
     render: (p) => withNavBottom(p, FramedOrderDetails, "column-flex-100"),
   }),
   createRoute("/chat", true, Chat),
-  createRoute("/chat/:order_id", true, Chat),
+  createRoute("/chat/:order_id", true, null, {
+    render: (p) => {
+      return (
+        <Chat
+          {...p}
+          style={{
+            height: "100%",
+          }}
+        />
+      );
+    },
+  }),
   createRoute("/notifications", true, null, {
     render: (p) => withNavBottom(p, Notifications),
   }),
@@ -202,16 +212,19 @@ export const AdminDrawerRoutes = [
     url: "/",
     label: "Home",
     icon: "home",
+    value: "home",
   },
   {
     url: "/users",
     label: "Users",
     icon: "people",
+    value: "users",
   },
   {
     url: "/transactions",
     label: "Transactions",
     icon: "receipt_long",
+    value: "transactions",
   },
 ];
 export const MerchantDrawerRoutes = [

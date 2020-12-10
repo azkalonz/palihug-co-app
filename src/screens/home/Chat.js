@@ -55,6 +55,7 @@ function Chat(props) {
       initial="initial"
       variants={slideBottom}
       className="chat-container"
+      style={props.style}
     >
       <Box p={2} paddingBottom={0}>
         <ScreenHeader

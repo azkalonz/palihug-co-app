@@ -16,7 +16,9 @@ import OrderDetails from "./screens/home/OrderDetails";
 import Orders from "./screens/home/Orders";
 import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
+import { FramedOrderDetails } from "./screens/merchant/MerchantFramedScreens";
 import MerchantHome from "./screens/merchant/MerchantHome";
+import MerchantTransactions from "./screens/merchant/MerchantTransactions";
 import Services from "./screens/services";
 import Cart, { AddToCart } from "./screens/services/Cart";
 import Checkout from "./screens/services/Checkout";
@@ -42,20 +44,30 @@ export default [
   createRoute("/verify-otp", true, VerifyOTP),
   createRoute("/register", true, RegisterForm),
   createRoute("/login", true, Login),
-  createRoute("*", false, NotFound),
 ];
+export const notFoundRouteProps = createRoute("*", false, NotFound);
 export const AdminRoutes = [
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, AdminHome, "", 0),
   }),
-  createRoute("*", false, NotFound),
+  notFoundRouteProps,
 ];
 
 export const MerchantRoutes = [
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, MerchantHome, "", 0),
   }),
-  createRoute("*", false, NotFound),
+  createRoute("/transactions", true, null, {
+    render: (p) => withNavBottom(p, MerchantTransactions, "", 0),
+  }),
+  createRoute("/orders/:order_id", true, null, {
+    render: (p) => withNavBottom(p, FramedOrderDetails, "column-flex-100"),
+  }),
+  createRoute("/chat", true, Chat),
+  createRoute("/chat/:order_id", true, Chat),
+  createRoute("/notifications", true, null, {
+    render: (p) => withNavBottom(p, Notifications),
+  }),
 ];
 
 export const DriverRoutes = [
@@ -207,10 +219,18 @@ export const MerchantDrawerRoutes = [
     url: "/",
     label: "Home",
     icon: "home",
+    value: "home",
   },
   {
     url: "/transactions",
     label: "Transactions",
     icon: "receipt_long",
+    value: "transactions",
+  },
+  {
+    url: "/notifications",
+    label: "Notifications",
+    icon: "notifications",
+    value: "notifications",
   },
 ];

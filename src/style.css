@@ -1033,6 +1033,26 @@ img {
   border-color: transparent;
 }
 
+b.processing {
+  color: #37b137 !important;
+}
+
+b.cancelled {
+  color: #a1a1a1;
+}
+
+b.received {
+  color: #d92e45 !important;
+}
+
+b.pending {
+  color: #2283f1 !important;
+}
+
+b.receiving {
+  color: #ffb300 !important;
+}
+
 .order-item {
   border-left: 5px solid;
 }

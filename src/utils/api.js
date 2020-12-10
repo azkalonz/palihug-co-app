@@ -85,6 +85,7 @@ const Api = {
       }
     } catch (e) {}
   },
+  getUrl: (path = "") => DOMAIN + path,
 };
 
 export const SocketApi = {

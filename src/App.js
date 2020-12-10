@@ -22,6 +22,7 @@ import Routes, {
   MerchantDrawerRoutes,
   DriverRoutes,
   MerchantRoutes,
+  notFoundRouteProps,
 } from "./Routes";
 import "./style.css";
 import Api from "./utils/api";
@@ -256,6 +257,12 @@ function App() {
                                         {Routes.map((route, index) => (
                                           <Route key={index} {...route} />
                                         ))}
+                                        {(userContext?.user_type?.name ===
+                                          "customer" ||
+                                          userContext?.user_type?.name ===
+                                            "driver") && (
+                                          <Route {...notFoundRouteProps} />
+                                        )}
                                       </Switch>
                                     </AnimatePresence>
                                   );

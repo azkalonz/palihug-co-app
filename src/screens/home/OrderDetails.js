@@ -33,6 +33,7 @@ import config from "../../misc/config";
 import { slideBottom } from "../../misc/transitions";
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
+import { isAllowed, isEither } from "../../utils/isAllowed";
 import { CartColumn } from "../services/Cart";
 import { getOR } from "../services/Checkout";
 const qs = require("query-string");
@@ -203,7 +204,7 @@ function OrderDetails(props) {
     >
       <Box p={3} bgcolor={config.palette.primary.pale}>
         <ScreenHeader title={"#" + getOR(order.order_id)}>
-          {userContext.user_type.name === "driver" && (
+          {isAllowed(userContext, ["driver", "merchant", "admin"]) && (
             <IconButton
               style={{ position: "absolute", right: 0 }}
               onClick={showDriverOptions}
@@ -347,7 +348,7 @@ function OrderDetails(props) {
             <EmptyListMessage>
               You may use the chat feature once this order is accepted.
               <br />
-              {userContext.user_type.name === "driver" && (
+              {isAllowed(userContext, ["driver"]) && (
                 <SavingButton
                   onClick={() =>
                     acceptOrder(
@@ -364,10 +365,17 @@ function OrderDetails(props) {
                 </SavingButton>
               )}
             </EmptyListMessage>
-          ) : (
+          ) : isEither(userContext.user_id, [
+              order.provider_user_id,
+              order.consumer_user_id,
+            ]) ? (
             <Button className="themed-button" onClick={() => openChat()}>
               Open Chat
             </Button>
+          ) : (
+            <EmptyListMessage>
+              Only the customer and the provider can use this feature.
+            </EmptyListMessage>
           )}
         </Box>
       </SwipeableViews>
@@ -450,7 +458,7 @@ function Products(props) {
     return (
       <AnimateOnTap
         onClick={() =>
-          userContext?.user_type.name === "customer" &&
+          isAllowed(userContext, ["customer"]) &&
           setDialogContext({
             visible: true,
             title: "Action",

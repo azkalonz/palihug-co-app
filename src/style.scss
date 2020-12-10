@@ -782,7 +782,23 @@ img {
     }
   }
 }
-
+b {
+  &.processing {
+    color: $success!important;
+  }
+  &.cancelled {
+    color: rgb(161, 161, 161);
+  }
+  &.received {
+    color: $primary!important;
+  }
+  &.pending {
+    color: $neutral!important;
+  }
+  &.receiving {
+    color: $warning!important;
+  }
+}
 .order-item {
   border-left: 5px solid;
   &.processing {

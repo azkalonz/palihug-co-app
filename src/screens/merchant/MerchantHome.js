@@ -16,7 +16,7 @@ function MerchantHome(props) {
   const to = useMemo(() => moment().add(30, "days").format("YYYY-MM-01"));
   const [params, setParams] = useState({ from, to });
   return (
-    <Box paddingTop={2}>
+    <Box p={3}>
       <ScreenHeader title="Dashboard" noGoBack>
         <Box
           className="center-all"
@@ -25,7 +25,7 @@ function MerchantHome(props) {
           right={30}
         >
           <Typography style={{ marginRight: 14 }}>Range</Typography>
-          <Box>
+          <Box paddingTop={6}>
             <TextField
               label="From"
               type="date"

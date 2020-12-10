@@ -273,10 +273,10 @@ function RenderMessage(props) {
           <Typography>{moment(message.created_at).format("llll")}</Typography>
         </Box>
         <Box display="flex" className={"chat-entry " + position}>
-          {position === "left" && <Avatar alt={user.user_fname[0]} src="/" />}
+          {position === "left" && <Avatar alt={user?.user_fname[0]} src="/" />}
           <TextMessage
             chat_meta={JSON.stringify({
-              message: user.user_fname + " sent a location",
+              message: user?.user_fname + " sent a location",
             })}
             position={position}
           >
@@ -324,10 +324,10 @@ function RenderMessage(props) {
           <Typography>{moment(message.created_at).format("llll")}</Typography>
         </Box>
         <Box display="flex" className={"chat-entry " + position}>
-          {position === "left" && <Avatar alt={user.user_fname[0]} src="/" />}
+          {position === "left" && <Avatar alt={user?.user_fname[0]} src="/" />}
           <TextMessage {...message} position={position} />
           {/* {position === "right" && (
-              <Avatar alt={user.user_fname[0]} src="/" />
+              <Avatar alt={user?.user_fname[0]} src="/" />
             )} */}
         </Box>
       </Box>

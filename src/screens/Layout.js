@@ -16,12 +16,13 @@ import MailIcon from "@material-ui/icons/Mail";
 import MenuIcon from "@material-ui/icons/Menu";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import clsx from "clsx";
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { history } from "../App";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import Popover from "@material-ui/core/Popover";
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   ButtonBase,
@@ -33,18 +34,20 @@ import logout from "../utils/logout";
 import NotificationContext from "../context/NotificationContext";
 import CartContext from "../context/CartContext";
 import OrderContext from "../context/OrderContext";
+import BottomNavContext from "../context/BottomNavContext";
 
 export default function Layout(props) {
   const { userContext, setUserContext } = useContext(UserContext);
   const { notificationContext, setNotificationContext } = useContext(
     NotificationContext
   );
+  const [pathname, setPathname] = useState("/");
   const { cartContext, setCartContext } = useContext(CartContext);
   const { orderContext, setOrderContext } = useContext(OrderContext);
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
+  const { bottomNavContext } = useContext(BottomNavContext);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -67,11 +70,15 @@ export default function Layout(props) {
         ...orderContext,
         isFetched: false,
       });
+      window.location.reload();
     }, userContext);
   }, [userContext, notificationContext, cartContext, orderContext]);
   useEffect(() => {
     theme.palette.type = "dark";
   }, []);
+  useEffect(() => {
+    setPathname(window.location.pathname);
+  }, [window.location.pathname]);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -168,24 +175,43 @@ export default function Layout(props) {
         </div>
         <Divider />
         <List>
-          {props.drawerRoutes?.map((route, index) => (
-            <ListItem
-              button
-              onClick={() => history.push(route.url)}
-              key={index}
-              selected={route.url === window.location.pathname}
-            >
-              <ListItemIcon style={{ marginLeft: 8 }}>
-                <Icon>{route.icon}</Icon>
-              </ListItemIcon>
-              <ListItemText primary={route.label} />
-            </ListItem>
-          ))}
+          {props.drawerRoutes?.map((route, index) => {
+            return (
+              <ListItem
+                button
+                onClick={() => {
+                  setPathname(route.url);
+                  history.push(route.url);
+                }}
+                key={index}
+                selected={route.url === pathname}
+              >
+                <ListItemIcon style={{ marginLeft: 8 }}>
+                  <Icon>{route.icon}</Icon>
+                  {bottomNavContext.notifications[route.value] &&
+                  bottomNavContext.notifications[route.value] > 0 ? (
+                    <Badge
+                      badgeContent={bottomNavContext.notifications[route.value]}
+                      color="error"
+                    />
+                  ) : null}
+                </ListItemIcon>
+                <ListItemText primary={route.label} />
+              </ListItem>
+            );
+          })}
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {props.children}
+        <Box
+          display="flex"
+          flexDirection="column"
+          height="100vh"
+          overflow="auto"
+        >
+          <div className={classes.toolbar} />
+          {props.children}
+        </Box>
       </main>
     </div>
   );
@@ -251,6 +277,5 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
   },
 }));

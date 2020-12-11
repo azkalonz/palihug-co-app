@@ -193,9 +193,6 @@ export function WithDeliveryPrice(props) {
       }
     }
   }, [deliveryInfo, finalTotal]);
-  useEffect(() => {
-    alert();
-  }, []);
   return (
     <React.Fragment>
       {loading && <CircularProgress color="#fff" size={14} />}

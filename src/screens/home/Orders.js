@@ -204,7 +204,15 @@ export function Order(props) {
 }
 
 function OrderCard(props) {
-  const { status_text, order_date, order_id, total, est_total, status } = props;
+  const {
+    status_text,
+    order_date,
+    order_id,
+    total,
+    est_total,
+    status,
+    delivery_fee,
+  } = props;
   const { dialogContext, setDialogContext } = useContext(DialogContext);
   return (
     <Box
@@ -249,7 +257,7 @@ function OrderCard(props) {
       </Box>
       <Box>
         <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-          P {total}
+          P {(parseFloat(total) + parseFloat(delivery_fee)).toFixed(2)}
           {est_total && (
             <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
           )}

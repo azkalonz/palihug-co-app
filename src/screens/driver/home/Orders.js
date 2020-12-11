@@ -229,6 +229,7 @@ function OrderCard(props) {
     order_id,
     total,
     est_total,
+    delivery_fee,
     delivery_info,
     status,
   } = props;
@@ -281,7 +282,7 @@ function OrderCard(props) {
       <Box className="row-spaced center-align">
         <Box style={{ maxWidth: "100%" }}>
           <Typography color="primary" variant="h6" style={{ fontWeight: 700 }}>
-            P {total}
+            P {(parseFloat(total) + parseFloat(delivery_fee)).toFixed(2)}
             {est_total && (
               <React.Fragment> (~ {est_total.toFixed(2)})</React.Fragment>
             )}

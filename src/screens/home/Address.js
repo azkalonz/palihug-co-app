@@ -50,7 +50,7 @@ function Address(props) {
         await Api.post("/add-address/default", {
           body: {
             add_id: selected,
-            user_token: userContext.user_token,
+            user_token: Api.getToken(),
           },
         }),
       after: (data) => {

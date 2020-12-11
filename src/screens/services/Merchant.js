@@ -2,6 +2,9 @@ import {
   Box,
   Button,
   ButtonBase,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Icon,
   IconButton,
   Tab,
@@ -36,14 +39,34 @@ import {
 import Api from "../../utils/api";
 import fetchData from "../../utils/fetchData";
 import { goBackOrPush } from "../../utils/goBackOrPush";
+import { AddToCart } from "./Cart";
+
+const SelectedProduct = React.createContext();
 
 function Merchant(props) {
+  const [selectedProduct, setSelectedProduct] = useState(null);
   return (
-    <React.Fragment>
+    <SelectedProduct.Provider value={{ selectedProduct, setSelectedProduct }}>
+      <Dialog
+        open={selectedProduct !== null}
+        onClose={() => setSelectedProduct(null)}
+        fullScreen
+        style={{
+          padding: 0,
+        }}
+      >
+        <DialogContent>
+          <AddToCart
+            product={selectedProduct}
+            {...props}
+            onClose={() => setSelectedProduct(null)}
+          />
+        </DialogContent>
+      </Dialog>
       <MerchantView {...props}>
         <CartIcon />
       </MerchantView>
-    </React.Fragment>
+    </SelectedProduct.Provider>
   );
 }
 
@@ -66,7 +89,6 @@ function MerchantView(props) {
   const imgScale = useTransform(contentY, [-175, 0], [1, 1.5]);
   const iconColor = useTransform(contentY, [-175, 0], ["#757575", "#ffffff"]);
   const borderRadius = useTransform(contentY, [-175, 0], [0, 30]);
-
   const search = useCallback(
     (element) => {
       if (!element) {
@@ -319,6 +341,8 @@ function Products(props) {
   const [tabValue, setTabValue] = useState(0);
   const { cartContext, setCartContext } = useContext(CartContext);
   const { bottomNavContext } = useContext(BottomNavContext);
+  const { setSelectedProduct } = useContext(SelectedProduct);
+
   useEffect(() => setTabValue(props.searching ? 0 : tabValue), [
     props.searching,
   ]);
@@ -341,12 +365,7 @@ function Products(props) {
                 display="flex"
                 justifyContent="flex-start"
                 component={ButtonBase}
-                onClick={() =>
-                  history.push({
-                    pathname: "/add-to-cart",
-                    state: product,
-                  })
-                }
+                onClick={() => setSelectedProduct(product)}
               >
                 <Box
                   minWidth={100}

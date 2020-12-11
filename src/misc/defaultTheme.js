@@ -78,13 +78,17 @@ export const overridesTheme = {
           overflow: "hidden",
           padding: defaultTheme.spacing(2),
           width: "100%",
-          "&:not(.inverted):hover,&.inverted": {
+          "&:not(.inverted):not(.Mui-disabled):hover,&.inverted": {
             backgroundColor: config.palette.primary.pale,
             color: config.palette.primary.main,
           },
-          "&.inverted:hover,&:not(.inverted)": {
+          "&.inverted:not(.Mui-disabled):hover,&:not(.Mui-disabled):not(.inverted)": {
             color: config.palette.primary.pale,
             backgroundColor: config.palette.primary.main,
+          },
+          "&.Mui-disabled": {
+            color: "#6b6b6b",
+            backgroundColor: "#cccccc",
           },
         },
       },

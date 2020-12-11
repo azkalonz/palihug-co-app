@@ -38,7 +38,7 @@ export const getCartContext = (setCartContext) => ({
     console.log(updatedContext);
     fetchData({
       send: async () =>
-        Api.post("/cart?token=" + userContext.user_token, {
+        Api.post("/cart?token=" + Api.getToken(), {
           body: {
             meta: JSON.stringify(updatedContext),
             total_items: updatedContext.products.length,
@@ -55,6 +55,35 @@ export const getCartContext = (setCartContext) => ({
   emptyCart: function (setCartContext) {
     setCartContext({ ...this, total: 0, products: [] });
   },
+  fetchCart: async function (setCartContext) {
+    if (!this.isFetched) {
+      await fetchData({
+        send: async () => Api.get("/cart?token=" + Api.getToken()),
+        after: (data) => {
+          try {
+            // meta is a json string of the cartContext from the Api
+            let meta = JSON.parse(data?.meta);
+            if (meta) {
+              // if there is a meta available, replace the current cartContext and set fetched to true
+              setCartContext({ ...this, ...meta, isFetched: true });
+            }
+          } catch (e) {}
+        },
+      });
+    }
+  },
+  getMerchantCoordinates: function () {
+    let p = this.products.map((q) => q.product);
+    return p
+      .filter(function (item, pos) {
+        return (
+          p.findIndex(
+            (q) => q.merchant.merch_wp_id === item.merchant.merch_wp_id
+          ) === pos
+        );
+      })
+      .map(({ merchant }) => [merchant.merch_long, merchant.merch_lat]);
+  },
   removeFromCart: function (order, userContext, callback = () => {}) {
     const orders = [...this.products];
     let orderIndex = this.products.findIndex(({ id }) => {
@@ -70,7 +99,7 @@ export const getCartContext = (setCartContext) => ({
     };
     fetchData({
       send: async () =>
-        Api.post("/cart?token=" + userContext.user_token, {
+        Api.post("/cart?token=" + Api.getToken(), {
           body: {
             meta: JSON.stringify(updatedContext),
             total_items: updatedContext.products.length,

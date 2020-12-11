@@ -155,3 +155,22 @@ export default Api;
 String.prototype.ucfirst = function () {
   return this.valueOf()[0].toUpperCase() + this.valueOf().slice(1);
 };
+
+export const MapBoxApi = {
+  getDirections: async (coordinates = []) => {
+    if (!Object.keys(coordinates).length) return;
+    let coord = "";
+    coordinates.forEach((c) => {
+      coord += c.toString() + ";";
+    });
+    coord = coord.slice(0, coord.length - 1);
+    return await axios
+      .get(
+        "https://api.mapbox.com/directions/v5/mapbox/driving/" +
+          coord +
+          "?access_token=" +
+          process.env.REACT_APP_MAPBOX_TOKEN
+      )
+      .then((resp) => resp.data);
+  },
+};

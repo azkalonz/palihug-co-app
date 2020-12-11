@@ -184,7 +184,7 @@ function NotificationCard(props) {
       chat: (
         <AnimateOnTap
           whileTap={{ opacity: 0.5 }}
-          style={{ width: "100%" }}
+          style={{ width: "100%", cursor: "pointer" }}
           onClick={() => history.push(JSON.parse(notif_action))}
         >
           <Box justifyContent="flex-start" className="center-all">

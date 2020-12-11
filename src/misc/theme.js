@@ -15,6 +15,7 @@ const lightTheme = {
     ...config.palette,
     type: "light",
   },
+  ...overridesTheme,
 };
 const darkTheme = {
   palette: {

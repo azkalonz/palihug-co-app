@@ -4,10 +4,11 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import CurrencyFormat from "react-currency-format";
 import { Marker, StaticMap } from "react-map-gl";
 import PinMap from "../../components/PinMap";
-import { Price } from "../../components/Product";
+import { Price, WithDeliveryPrice } from "../../components/Product";
 import SavingButton from "../../components/SavingButton";
 import ScreenHeader from "../../components/ScreenHeader";
 import CartContext from "../../context/CartContext";
+import LoadingScreenContext from "../../context/LoadingScreenContext";
 import OrderContext from "../../context/OrderContext";
 import UserContext from "../../context/UserContext";
 import { fadeInOut, slideBottom, slideRight } from "../../misc/transitions";
@@ -27,11 +28,13 @@ function Checkout(props) {
   const { userContext } = useContext(UserContext);
   const { cartContext, setCartContext } = useContext(CartContext);
   const { orderContext, setOrderContext } = useContext(OrderContext);
+  const { loadingScreen, setLoadingScreen } = useContext(LoadingScreenContext);
   const [selecting, setSelecting] = useState(true);
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState(null);
   const [estTotal, setEstTotal] = useState(null);
   const { service_name } = props.location.state || {};
+  const [finalTotal, setFinalTotal] = useState(null);
   const [deliveryInfo, setDeliveryInfo] = useState({
     address,
     contact: userContext.default_address
@@ -54,6 +57,7 @@ function Checkout(props) {
               status_text: "Finding you a rider",
               note,
               est_total: estTotal,
+              delivery_fee: cartContext.deliveryFee,
               ...params,
             },
           }),
@@ -77,7 +81,18 @@ function Checkout(props) {
               Cash on delivery
             </Typography>
           </CartColumn>
+          <CartColumn title="Delivery Fee">
+            <Typography style={{ fontWeight: 700 }} color="primary">
+              <CurrencyFormat
+                value={cartContext?.deliveryFee?.toFixed(2) || 0}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix="PHP "
+              />
+            </Typography>
+          </CartColumn>
         </Block>
+
         <Block
           title={
             <React.Fragment>
@@ -90,11 +105,18 @@ function Checkout(props) {
           p={0}
         >
           <Price>
-            <CurrencyFormat
-              value={props.checkoutParams.params.total}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
+            <WithDeliveryPrice
+              deliveryInfo={deliveryInfo}
+              finalTotal={finalTotal}
+              setFinalTotal={(t) => setFinalTotal(t)}
+              service_name={service_name}
+            >
+              <CurrencyFormat
+                value={props.checkoutParams.params.total}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </WithDeliveryPrice>
             {!isNaN(estTotal || NaN) && (
               <React.Fragment>
                 &nbsp;(~
@@ -113,6 +135,7 @@ function Checkout(props) {
             className="themed-button"
             startIcon={<Icon>https</Icon>}
             saving={saving}
+            disabled={finalTotal === null}
             onClick={() => submitOrder(props.checkoutParams)}
           >
             <Typography>Submit Order</Typography>
@@ -149,8 +172,7 @@ function Checkout(props) {
             hooks: {
               afterCheckout: (order) =>
                 fetchData({
-                  send: async () =>
-                    Api.delete("/cart?token=" + userContext.user_token),
+                  send: async () => Api.delete("/cart?token=" + Api.getToken()),
                   after: () => {
                     cartContext.emptyCart(setCartContext);
                     setOrderContext({
@@ -236,7 +258,16 @@ function Checkout(props) {
       ),
     };
     return render[service_name] || render["e-pagkain"];
-  }, [service_name, address, deliveryInfo, note, saving, estTotal]);
+  }, [
+    service_name,
+    address,
+    deliveryInfo,
+    note,
+    saving,
+    estTotal,
+    finalTotal,
+    cartContext,
+  ]);
   useEffect(() => {
     if (userContext.default_address) {
       setDeliveryInfo({
@@ -264,6 +295,19 @@ function Checkout(props) {
   useEffect(() => {
     setDeliveryInfo({ ...deliveryInfo, address });
   }, [address]);
+  useEffect(() => {
+    if (!cartContext.isFetched) {
+      setLoadingScreen({
+        ...loadingScreen,
+        visible: true,
+        variant: null,
+      });
+      (async () => {
+        await cartContext.fetchCart(setCartContext);
+        setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
+      })();
+    }
+  }, [cartContext]);
   return (
     <motion.div variants={fadeInOut} initial="initial" exit="out" animate="in">
       {selecting && (
@@ -276,6 +320,7 @@ function Checkout(props) {
           <PinMap
             onChange={(address) => {
               setSelecting(false);
+              setFinalTotal(null);
               setAddress(address);
             }}
             address={address}
@@ -371,7 +416,7 @@ function Checkout(props) {
                   onChange={(e) => setNote(e.target.value)}
                   rows={3}
                 />
-                {service_name !== undefined && (
+                {service_name !== "e-pagkain" && (
                   <TextField
                     variant="outlined"
                     label="Est. Total"

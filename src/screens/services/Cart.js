@@ -17,6 +17,7 @@ import ScreenHeader from "../../components/ScreenHeader";
 import BottomNavContext from "../../context/BottomNavContext";
 import CartContext from "../../context/CartContext";
 import DialogContext from "../../context/DialogContext";
+import LoadingScreenContext from "../../context/LoadingScreenContext";
 import UserContext from "../../context/UserContext";
 import { slideRight } from "../../misc/transitions";
 import { goBackOrPush } from "../../utils/goBackOrPush";
@@ -24,10 +25,20 @@ import { Block } from "../home";
 
 function Cart(props) {
   const bcontext = useContext(BottomNavContext);
-  const { cartContext } = useContext(CartContext);
+  const { cartContext, setCartContext } = useContext(CartContext);
+  const { loadingScreen, setLoadingScreen } = useContext(LoadingScreenContext);
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: true });
+    setLoadingScreen({
+      ...loadingScreen,
+      visible: true,
+      variant: null,
+    });
+    (async () => {
+      await cartContext.fetchCart(setCartContext);
+      setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
+    })();
   }, []);
   return (
     <motion.div animate="in" exit="out" initial="initial" variants={slideRight}>
@@ -63,7 +74,7 @@ function Cart(props) {
                   props.history.push({
                     pathname: "/checkout",
                     state: {
-                      service_name: "test",
+                      service_name: "e-pagkain",
                     },
                   })
                 }
@@ -154,15 +165,40 @@ export function OrdersBlock(props) {
 export function AddToCart(props) {
   const bcontext = useContext(BottomNavContext);
   const { userContext } = useContext(UserContext);
-  const [product, setProduct] = useState(props.location?.state || {});
+  const [product, setProduct] = useState(
+    props.location?.state || props.product || {}
+  );
   const [quantity, setQuantity] = useState(1);
   const [saving, setSaving] = useState(false);
   const { cartContext } = useContext(CartContext);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const closeOrGoback = useCallback(() => {
+    if (props.onClose) {
+      props.onClose();
+    } else {
+      goBackOrPush("/");
+    }
+  }, [props.onClose]);
   const addToCart = useCallback((order) => {
     setSaving(true);
     cartContext.addToCart(order, userContext, () => {
       setSaving(false);
-      props.history.replace("/cart");
+      closeOrGoback();
+      enqueueSnackbar(
+        <React.Fragment>
+          <Typography>Added to cart</Typography>
+          <Button
+            onClick={() => props.history.replace("/cart")}
+            style={{ color: "#fff" }}
+          >
+            View Cart
+          </Button>
+        </React.Fragment>,
+        {
+          variant: "info",
+        }
+      );
     });
   }, []);
   useEffect(() => {
@@ -175,6 +211,7 @@ export function AddToCart(props) {
         <ScreenHeader
           title={!product.edit ? "Add To Cart" : "Edit Order"}
           disabled={saving}
+          pushTo={() => closeOrGoback()}
         />
         <Container>
           <ProductCard product={product}>
@@ -212,7 +249,7 @@ export function AddToCart(props) {
           <br />
           <Button
             className="themed-button inverted"
-            onClick={() => goBackOrPush("/")}
+            onClick={() => closeOrGoback()}
             disabled={saving}
           >
             Cancel

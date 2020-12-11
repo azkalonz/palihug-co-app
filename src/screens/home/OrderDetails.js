@@ -274,7 +274,9 @@ function OrderDetails(props) {
         >
           <Price>
             <CurrencyFormat
-              value={order.total}
+              value={(
+                parseFloat(order.total) + parseFloat(order.delivery_fee)
+              ).toFixed(2)}
               displayType={"text"}
               thousandSeparator={true}
             />
@@ -324,6 +326,16 @@ function OrderDetails(props) {
             <CartColumn title="Address">
               <Typography style={{ fontWeight: 700 }} color="primary">
                 {order.delivery_info.address.place_name}
+              </Typography>
+            </CartColumn>
+            <CartColumn title="Delivery Fee">
+              <Typography style={{ fontWeight: 700 }} color="primary">
+                <CurrencyFormat
+                  value={order.delivery_fee.toFixed(2)}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix="PHP "
+                />
               </Typography>
             </CartColumn>
             <Box
@@ -505,7 +517,7 @@ function Products(props) {
                         ...dialogContext,
                         visible: false,
                       });
-                      props.history.push({
+                      history.push({
                         pathname: "/add-to-cart",
                         state: p,
                       });
@@ -520,7 +532,7 @@ function Products(props) {
                         ...dialogContext,
                         visible: false,
                       });
-                      props.history.push("/merchant/" + p.store.vendor_id);
+                      history.push("/merchant/" + p.store.vendor_id);
                     }}
                   >
                     Visit Shop

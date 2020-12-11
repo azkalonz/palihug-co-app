@@ -54,7 +54,7 @@ function AddressForm(props) {
         await Api.post("/add-address", {
           body: {
             ...form,
-            user_token: userContext.user_token,
+            user_token: Api.getToken(),
             user_id: userContext.user_id,
           },
         }),

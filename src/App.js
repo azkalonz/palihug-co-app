@@ -25,7 +25,7 @@ import Routes, {
   notFoundRouteProps,
 } from "./Routes";
 import "./style.css";
-import Api from "./utils/api";
+import Api, { MapBoxApi } from "./utils/api";
 import fetchData from "./utils/fetchData";
 import { updatePastLocations } from "./utils/goBackOrPush";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -36,6 +36,15 @@ import NotificationContext, {
 import socket from "./utils/socket";
 import Layout from "./screens/Layout";
 import getTheme from "./misc/theme";
+
+(async () => {
+  let s = await MapBoxApi.getDirections([
+    [124.01506455547253, 10.605875521616465],
+    [123.98405814721905, 10.356965932149206],
+    [123.95526136068816, 10.541342724756628],
+  ]);
+  console.log(s);
+})();
 
 export const history = createBrowserHistory();
 history.listen = (callback) => {
@@ -152,28 +161,6 @@ function App() {
     notificationContext.build,
   ]);
   useEffect(() => {
-    if (
-      userContext?.user_token &&
-      cartContext?.products &&
-      !cartContext?.isFetched
-    ) {
-      // only fetch cart items once base on the condition inside if statement to minimize api calls
-      fetchData({
-        send: async () => Api.get("/cart?token=" + userContext?.user_token),
-        after: (data) => {
-          try {
-            // meta is a json string of the cartContext from the Api
-            let meta = JSON.parse(data?.meta);
-            if (meta) {
-              // if there is a meta available, replace the current cartContext and set fetched to true
-              setCartContext({ ...cartContext, ...meta, isFetched: true });
-            }
-          } catch (e) {}
-        },
-      });
-    }
-  }, [userContext?.user_token, cartContext.products]);
-  useEffect(() => {
     if (userContext.user_id) socket.emit("user:online", userContext);
   }, [userContext.user_id]);
   return (
@@ -189,7 +176,7 @@ function App() {
               <ServicesContext.Provider
                 value={{ servicesContext, setServicesContext }}
               >
-                <ThemeProvider theme={getTheme("dark")}>
+                <ThemeProvider theme={getTheme("light")}>
                   <SnackbarProvider
                     ref={notistackRef}
                     maxSnack={3}

@@ -2,13 +2,26 @@ import {
   Box,
   Button,
   ButtonGroup,
+  CircularProgress,
   Icon,
   Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useCallback, useState } from "react";
+import React, {
+  Children,
+  cloneElement,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import CurrencyFormat from "react-currency-format";
+import Api, { MapBoxApi } from "../utils/api";
+import fetchData from "../utils/fetchData";
+import CartContext from "../context/CartContext";
+import DialogContext from "../context/DialogContext";
 
 export function ProductCard(props) {
   const { product } = props;
@@ -119,6 +132,84 @@ export function Price(props) {
         {props.children}
       </Typography>
     </Box>
+  );
+}
+
+export function WithDeliveryPrice(props) {
+  const { deliveryInfo, finalTotal, setFinalTotal, service_name } = props;
+  const [loading, setLoading] = useState(true);
+  const { cartContext, setCartContext } = useContext(CartContext);
+  const getFee = useCallback(() => {
+    (async () => {
+      await fetchData({
+        before: () => {
+          setLoading(true);
+          setFinalTotal(null);
+        },
+        send: async () => await Api.get("/fee?token=" + Api.getToken()),
+        after: (data) => {
+          calculateFee(data);
+        },
+      });
+    })();
+  }, [deliveryInfo, setFinalTotal]);
+  const calculateFee = useCallback(
+    ({ fee, per_km }) => {
+      (async () => {
+        let total = 0;
+        let customerCoordinates = deliveryInfo?.address?.center;
+        let res;
+        if (customerCoordinates) {
+          res = await MapBoxApi.getDirections([
+            ...cartContext.getMerchantCoordinates(),
+            customerCoordinates,
+          ]);
+        }
+        if (service_name === "e-pagkain" || service_name === null) {
+          let routes = res?.routes;
+          if (Object.keys(routes || {}).length) {
+            const { distance, duration } = routes[0];
+            let deliveryFee = fee + per_km * (distance * 0.001);
+            let total = (cartContext.total + deliveryFee).toFixed(2);
+            setFinalTotal({ deliveryFee, total });
+            setCartContext({ ...cartContext, deliveryFee });
+            console.log("final", { deliveryFee, total });
+          }
+        } else {
+          setFinalTotal({ deliveryFee: fee, total: 0 });
+          setCartContext({ ...cartContext, deliveryFee: fee });
+        }
+        setLoading(false);
+      })();
+    },
+    [service_name, cartContext, deliveryInfo]
+  );
+  useEffect(() => {
+    if (deliveryInfo !== null) {
+      if (finalTotal === null) {
+        getFee();
+      } else {
+        setLoading(false);
+      }
+    }
+  }, [deliveryInfo, finalTotal]);
+  useEffect(() => {
+    alert();
+  }, []);
+  return (
+    <React.Fragment>
+      {loading && <CircularProgress color="#fff" size={14} />}
+      {!loading &&
+        Children.map(props.children, (child) => {
+          if (isValidElement(child)) {
+            return cloneElement(child, {
+              ...props,
+              ...(finalTotal !== null ? { value: finalTotal.total } : {}),
+            });
+          }
+          return child;
+        })}
+    </React.Fragment>
   );
 }
 

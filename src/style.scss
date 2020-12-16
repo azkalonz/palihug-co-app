@@ -707,7 +707,7 @@ img {
   .chat-details {
     transition: height 0.2s ease-out;
     height:0;
-    margin-bottom: 13px;
+    margin: 7px 0;
     p {
     font-size: 12px;
   }
@@ -728,16 +728,20 @@ img {
     display: flex;
     align-items: center;
     width: 100%;
+    p {
+      font-family: "Roboto", "Helvetica", "Arial", sans-serif!important;
+      letter-spacing: 0px;
+    }
     .time {
       position: absolute;
-      bottom: -30px;
+      bottom: -20px;
       font-size: 10px;
     }
     &.left {
       margin-left: 14px;
       justify-content: flex-start;
       .message {
-        background: rgba(0,0,0,0.09);
+        background: rgba(0,0,0,0.03);
         border-radius: 17px 17px 17px 0px;
       }
     }
@@ -866,6 +870,30 @@ b {
 .canvasjs-chart-credit{
   display: none;
 }
+.receipt {
+  border-collapse: collapse;
+  width: 100%;
+  th {
+    background-color: $primary;
+    color: #fff;
+    font-weight: bold;
+  }
+  th,td {
+    padding: 10px;
+    border: 1px solid $pale;
+  }
+  td {
+    &:first-of-type {
+      width: 65%;    
+    }
+    &:last-of-type {
+      p {
+        white-space: pre;
+      }
+    }
+  }
+}
+
 @keyframes slideup {
   from {
     transform: translateY(75px);

@@ -63,7 +63,7 @@ function Orders(props) {
     });
     setLoadingScreen({ ...loadingScreen, visible: true, variant: "orders" });
     (async () => {
-      await orderContext.fetchOrders(setOrderContext, userContext);
+      await orderContext.fetchOrders(setOrderContext, "driver");
       setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
     })();
   }, []);
@@ -240,6 +240,7 @@ function OrderCard(props) {
       : delivery_info;
   return (
     <Box
+      width="100%"
       className="column-flex-100"
       onClick={() => {
         setDialogContext({

@@ -54,7 +54,6 @@ function Checkout(props) {
               payment_id: 1,
               consumer_user_id: userContext.user_id,
               delivery_info: JSON.stringify(deliveryInfo),
-              status_text: "Finding you a rider",
               note,
               est_total: estTotal,
               delivery_fee: cartContext.deliveryFee,

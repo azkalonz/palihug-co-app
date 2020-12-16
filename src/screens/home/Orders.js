@@ -64,7 +64,7 @@ function Orders(props) {
       variant: "orders",
     });
     (async () => {
-      await orderContext.fetchOrders(setOrderContext);
+      await orderContext.fetchOrders(setOrderContext, "customer");
       setLoadingScreen({ ...loadingScreen, visible: false, variant: null });
     })();
   }, []);
@@ -216,6 +216,7 @@ function OrderCard(props) {
   const { dialogContext, setDialogContext } = useContext(DialogContext);
   return (
     <Box
+      width="100%"
       className="column-flex-100"
       onClick={() => {
         setDialogContext({

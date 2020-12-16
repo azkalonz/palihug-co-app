@@ -36,6 +36,7 @@ import NotificationContext, {
 import socket from "./utils/socket";
 import Layout from "./screens/Layout";
 import getTheme from "./misc/theme";
+const qs = require("query-string");
 
 (async () => {
   let s = await MapBoxApi.getDirections([
@@ -60,7 +61,9 @@ function OTPFormat(otp) {
   return otp;
 }
 function App() {
+  const query = qs.parse(window.location.search);
   const notistackRef = React.createRef();
+  const [tempUser, setTempUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [getStartedContext, setGetStartedContext] = useState({
     page: 1,
@@ -97,7 +100,25 @@ function App() {
     notistackRef.current.closeSnackbar(key);
   };
   useEffect(() => {
+    if (tempUser != null) {
+      Api.getToken = function () {
+        try {
+          let user = JSON.parse(tempUser);
+          if (user.user_token) {
+            return user.user_token;
+          }
+        } catch (e) {}
+      };
+    }
+  }, [tempUser]);
+  useEffect(() => {
     let user = window.localStorage["user"];
+    if (query.token) {
+      user = JSON.stringify({
+        user_token: query.token,
+      });
+      setTempUser(user);
+    }
     if (user) {
       try {
         user = JSON.parse(user);

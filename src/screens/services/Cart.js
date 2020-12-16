@@ -180,8 +180,31 @@ export function AddToCart(props) {
       goBackOrPush("/");
     }
   }, [props.onClose]);
-  const addToCart = useCallback((order) => {
+  const addToCart = useCallback(({ product, quantity }) => {
     setSaving(true);
+    const {
+      merchant,
+      id,
+      store,
+      categories,
+      images,
+      price,
+      sale_price,
+      name,
+      regular_price,
+    } = product;
+    const order = { quantity };
+    order.product = {
+      id,
+      store,
+      categories,
+      images,
+      price,
+      regular_price,
+      sale_price,
+      name,
+      merchant,
+    };
     cartContext.addToCart(order, userContext, () => {
       setSaving(false);
       closeOrGoback();

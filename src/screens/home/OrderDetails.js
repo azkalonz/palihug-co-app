@@ -11,6 +11,7 @@ import {
   Paper,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@material-ui/core";
 import { motion } from "framer-motion";
@@ -23,6 +24,7 @@ import { history } from "../../App";
 import AnimateOnTap from "../../components/AnimateOnTap";
 import EmptyListMessage from "../../components/EmptyListMessage";
 import { Price, ProductCard } from "../../components/Product";
+import Receipt from "../../components/Receipt";
 import SavingButton from "../../components/SavingButton";
 import ScreenHeader from "../../components/ScreenHeader";
 import DialogContext from "../../context/DialogContext";
@@ -88,9 +90,14 @@ function OrderDetails(props) {
                           {
                             name: "OK",
                             callback: ({ closeDialog, setLoading }) => {
-                              orderContext.removeOrder(order, setOrderContext);
                               closeDialog();
-                              goBackOrPush("/orders");
+                              if (data.message !== "Invalid Amount") {
+                                orderContext.removeOrder(
+                                  order,
+                                  setOrderContext
+                                );
+                                goBackOrPush("/orders");
+                              }
                             },
                             props: {
                               variant: "contained",
@@ -105,9 +112,16 @@ function OrderDetails(props) {
                       setDialogContext({ visible: false });
                       data.delivery_info = JSON.parse(data.delivery_info);
                       setOrder(data);
-                      props.history.replace(
-                        "/orders/" + data.order_id + "?tab=1"
-                      );
+                      if (data.status === "received")
+                        props.history.push("/chat/" + data.order_id);
+                      else if (data.status === "processing")
+                        props.history.replace(
+                          "/orders/" + data.order_id + "?tab=1"
+                        );
+                      else
+                        props.history.replace(
+                          "/orders/" + data.order_id + "?tab=0"
+                        );
                     }
                   }
                 },
@@ -142,7 +156,6 @@ function OrderDetails(props) {
                     acceptOrder(
                       {
                         status: "processing",
-                        status_text: "Purchasing your order",
                       },
                       "Accept this order?"
                     )
@@ -156,7 +169,6 @@ function OrderDetails(props) {
                     acceptOrder(
                       {
                         status: "cancelled",
-                        status_text: "Order is cancelled",
                       },
                       "Cancel this order?"
                     )
@@ -167,20 +179,33 @@ function OrderDetails(props) {
               </React.Fragment>
             )}
             {order.status === "receiving" && (
-              <ListItem
-                component={ButtonBase}
-                onClick={() =>
-                  acceptOrder(
-                    {
-                      status: "received",
-                      status_text: "Order Complete",
-                    },
-                    "Complete this order?"
-                  )
-                }
-              >
-                Finish Order
-              </ListItem>
+              <React.Fragment>
+                <TextField
+                  inputProps={{
+                    id: "amount_paid",
+                  }}
+                  type="number"
+                  label="Tendered Amount"
+                  placeholder="0"
+                />
+                <ListItem
+                  component={ButtonBase}
+                  onClick={() =>
+                    acceptOrder(
+                      {
+                        status: "received",
+                        amount_paid:
+                          parseFloat(
+                            document.querySelector("#amount_paid").value
+                          ) || null,
+                      },
+                      "Complete this order?"
+                    )
+                  }
+                >
+                  Finish Order
+                </ListItem>
+              </React.Fragment>
             )}
             {order.status === "processing" && (
               <React.Fragment>
@@ -190,7 +215,6 @@ function OrderDetails(props) {
                     acceptOrder(
                       {
                         status: "receiving",
-                        status_text: "Delivering your order",
                       },
                       "Deliver this order?"
                     )
@@ -259,6 +283,7 @@ function OrderDetails(props) {
           <Tab label="Products" />
           <Tab label="Note" />
           <Tab label="Chat" />
+          <Tab label="Receipt" disabled={order.status !== "received"} />
         </Tabs>
         <Block
           p={0}
@@ -399,7 +424,6 @@ function OrderDetails(props) {
                     acceptOrder(
                       {
                         status: "processing",
-                        status_text: "Purchasing your order",
                       },
                       "Accept this order?"
                     )
@@ -423,6 +447,7 @@ function OrderDetails(props) {
             </EmptyListMessage>
           )}
         </Box>
+        <Box>{order?.status === "received" && <Receipt order={order} />}</Box>
       </SwipeableViews>
     </motion.div>
   ) : null;

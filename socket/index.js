@@ -87,7 +87,8 @@ io.on("connection", (socket) => {
       if (
         user != args.consumer_user_id &&
         socket.id != users[user].socket.id &&
-        users[user].user_type.name == "driver"
+        (users[user].user_type.name == "driver" ||
+          users[user].user_type.name == "admin")
       ) {
         io.to(users[user].socket.id).emit("order:update", args);
       }

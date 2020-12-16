@@ -936,7 +936,7 @@ img {
   -webkit-transition: height 0.2s ease-out;
   transition: height 0.2s ease-out;
   height: 0;
-  margin-bottom: 13px;
+  margin: 7px 0;
   overflow: hidden;
 }
 
@@ -972,9 +972,14 @@ img {
   width: 100%;
 }
 
+.chat-container .text-message p {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  letter-spacing: 0px;
+}
+
 .chat-container .text-message .time {
   position: absolute;
-  bottom: -30px;
+  bottom: -20px;
   font-size: 10px;
 }
 
@@ -986,7 +991,7 @@ img {
 }
 
 .chat-container .text-message.left .message {
-  background: rgba(0, 0, 0, 0.09);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 17px 17px 17px 0px;
 }
 
@@ -1143,6 +1148,30 @@ b.receiving {
 
 .canvasjs-chart-credit {
   display: none;
+}
+
+.receipt {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.receipt th {
+  background-color: #d92e45;
+  color: #fff;
+  font-weight: bold;
+}
+
+.receipt th, .receipt td {
+  padding: 10px;
+  border: 1px solid #f9dce0;
+}
+
+.receipt td:first-of-type {
+  width: 65%;
+}
+
+.receipt td:last-of-type p {
+  white-space: pre;
 }
 
 @-webkit-keyframes slideup {

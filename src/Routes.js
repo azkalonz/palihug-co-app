@@ -4,6 +4,7 @@ import RegisterForm from "./components/RegisterForm";
 import VerifyOTP from "./components/VerifyOTP";
 import NotFound from "./screens/404";
 import AdminHome from "./screens/admin/AdminHome";
+import AdminUsers from "./screens/admin/AdminUsers";
 import { default as DriverOrders } from "./screens/driver/home/Orders";
 import { default as DriverProfile } from "./screens/driver/home/Profile";
 import { GetStartedScreen } from "./screens/get-started";
@@ -49,6 +50,28 @@ export const notFoundRouteProps = createRoute("*", false, NotFound);
 export const AdminRoutes = [
   createRoute("/", true, null, {
     render: (p) => withNavBottom(p, AdminHome, "", 0),
+  }),
+  createRoute("/orders/:order_id", true, null, {
+    render: (p) => withNavBottom(p, FramedOrderDetails, "column-flex-100"),
+  }),
+  createRoute("/chat", true, Chat),
+  createRoute("/chat/:order_id", true, null, {
+    render: (p) => {
+      return (
+        <Chat
+          {...p}
+          style={{
+            height: "100%",
+          }}
+        />
+      );
+    },
+  }),
+  createRoute("/notifications", true, null, {
+    render: (p) => withNavBottom(p, Notifications),
+  }),
+  createRoute("/users", true, null, {
+    render: (p) => withNavBottom(p, AdminUsers, "", 0),
   }),
 ];
 
@@ -221,10 +244,10 @@ export const AdminDrawerRoutes = [
     value: "users",
   },
   {
-    url: "/transactions",
-    label: "Transactions",
-    icon: "receipt_long",
-    value: "transactions",
+    url: "/notifications",
+    label: "Notifications",
+    icon: "notifications",
+    value: "notifications",
   },
 ];
 export const MerchantDrawerRoutes = [

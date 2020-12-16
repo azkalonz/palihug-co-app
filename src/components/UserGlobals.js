@@ -9,6 +9,7 @@ import fetchData from "../utils/fetchData";
 import Api from "../utils/api";
 import NotificationContext from "../context/NotificationContext";
 import Layout from "../screens/Layout";
+import { isAllowed } from "../utils/isAllowed";
 function UserGlobals(props) {
   const { orderContext, setOrderContext } = useContext(OrderContext);
   const { notificationContext, setNotificationContext } = useContext(
@@ -25,7 +26,7 @@ function UserGlobals(props) {
     [orderContext]
   );
   useEffect(() => {
-    if (userContext?.user_type.name === "driver") {
+    if (isAllowed(userContext, ["admin", "driver"])) {
       socket.off("order:new");
       socket.on("order:new", newOrder);
     }

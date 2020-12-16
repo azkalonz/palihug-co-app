@@ -1,77 +1,84 @@
-import { Box, Button, Link } from "@material-ui/core";
 import MaterialTable from "material-table";
-import React, { useEffect, useState } from "react";
-import ScreenHeader from "../../components/ScreenHeader";
-import Api from "../../utils/api";
-import fetchData from "../../utils/fetchData";
-import { getOR } from "../services/Checkout";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import OrderContext from "../context/OrderContext";
+import { getOR } from "../screens/services/Checkout";
 import moment from "moment";
+import { Link } from "@material-ui/core";
+import { history } from "../App";
+import Api from "../utils/api";
 import CurrencyFormat from "react-currency-format";
-
-function MerchantTransactions(props) {
-  const [transactions, setTransactions] = useState();
+const qs = require("query-string");
+function OrderTracking(props) {
+  const query = qs.parse(window.location.search);
+  const [loading, setLoading] = useState(true);
+  const { orderContext, setOrderContext } = useContext(OrderContext);
+  const fetchOrders = useCallback(() => {
+    (async () => {
+      setLoading(true);
+      await orderContext.fetchOrders(setOrderContext, "admin");
+      setLoading(false);
+    })();
+  }, []);
   useEffect(() => {
-    fetchData({
-      send: async () =>
-        await Api.get("/orders/merchant?token=" + Api.getToken()),
-      after: (data) => {
-        setTransactions(data);
-      },
-    });
+    fetchOrders();
   }, []);
   return (
-    <Box p={3}>
+    <div>
       <MaterialTable
-        data={transactions}
-        isLoading={typeof transactions !== "object"}
+        title="Orders"
+        data={orderContext.orders}
+        isLoading={loading}
+        onRowClick={(e, row) => history.push("/orders/" + row.order_id)}
         options={{
           filtering: true,
+          initialPage: query.page || 0,
+          pageSize: 10,
+          pageSizeOptions: [10, 20, 30, 40, 50, 100],
         }}
-        onRowClick={(e, row) => props.history.push("/orders/" + row.order_id)}
-        title={
-          <Box className="center-all" justifyContent="flex-start">
-            <ScreenHeader noGoBack title="Transactions" />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() =>
-                window.open(
-                  Api.getUrl("/export/orders?token=" + Api.getToken()),
-                  "_blank"
-                )
-              }
-            >
-              Export
-            </Button>
-          </Box>
-        }
+        editable={{
+          onRowUpdate: (newData) =>
+            new Promise(async (resolve, reject) => {
+              delete newData.provider_name;
+              delete newData.consumer_name;
+              await Api.post("/order?token=" + Api.getToken(), {
+                body: newData,
+              });
+              resolve();
+            }),
+        }}
+        onChangePage={(page) => history.replace("?page=" + page)}
         columns={[
           {
             title: "Order Num",
             field: "order_id",
             render: (row) => <b>{"#" + getOR(row.order_id)}</b>,
+            editable: "never",
           },
           {
             title: "Date",
             type: "date",
             field: "created_at",
             render: (row) => moment(row.created_at).format("llll"),
+            editable: "never",
           },
           {
             title: "Provider",
             field: "provider_name",
             render: (row) =>
               row.provider_name || <i style={{ opacity: 0.5 }}>Pending</i>,
+            editable: "never",
           },
           {
             title: "Customer",
             field: "consumer_name",
+            editable: "never",
           },
           {
             title: "Note",
             field: "note",
             render: (row) =>
               row.note || <i style={{ opacity: 0.5 }}>Note is empty</i>,
+            editable: "onUpdate",
           },
           {
             title: "Total",
@@ -120,6 +127,7 @@ function MerchantTransactions(props) {
             render: (row) => (
               <b className={row.status}>{row.status.ucfirst()}</b>
             ),
+            editable: "onUpdate",
           },
           {
             title: "Delivery Info",
@@ -144,11 +152,12 @@ function MerchantTransactions(props) {
                 </React.Fragment>
               );
             },
+            editable: "never",
           },
         ]}
       />
-    </Box>
+    </div>
   );
 }
 
-export default MerchantTransactions;
+export default OrderTracking;

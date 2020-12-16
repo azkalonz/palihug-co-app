@@ -103,11 +103,11 @@ function Notifications(props) {
         style={{ paddingBottom: 50 }}
       >
         <Box height="100%">
-          <Block title="ESGO">
-            <Notification type="update" />
-          </Block>
           <Block title="Chat">
             <Notification type="chat" />
+          </Block>
+          <Block title="ESGO">
+            <Notification type="update" />
           </Block>
         </Box>
         <Box height="100%">
@@ -180,7 +180,6 @@ function NotificationCard(props) {
   const meta = JSON.parse(notif_meta);
   const Renderer = useCallback(() => {
     const render = {
-      map: <div>tet</div>,
       chat: (
         <AnimateOnTap
           whileTap={{ opacity: 0.5 }}
@@ -217,6 +216,44 @@ function NotificationCard(props) {
             </Box>
           </Box>
         </AnimateOnTap>
+      ),
+      update: (
+        <Box
+          style={{ width: "100%", cursor: "pointer" }}
+          onClick={() => history.push(JSON.parse(notif_action))}
+        >
+          <Box justifyContent="flex-start" className="center-all">
+            <Box marginRight={1}>
+              <Avatar
+                variant="square"
+                src="/static/images/logo.png"
+                style={{ marginRight: 16 }}
+                alt="ESGO"
+              />
+            </Box>
+            <Box>
+              <Typography
+                variant="h6"
+                style={{ fontWeight: 700 }}
+                color="primary"
+              >
+                {meta.title}
+              </Typography>
+              <Typography
+                variant="body2"
+                style={{ fontWeight: viewed ? "normal" : 700 }}
+              >
+                {meta.body}
+              </Typography>
+              <Box className="center-all" justifyContent="flex-start">
+                {!viewed && <div className="unread-sign"></div>}
+                <Typography style={{ fontSize: "0.8em" }}>
+                  {moment(created_at).fromNow()}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       ),
     };
     return render[notif_type] || null;

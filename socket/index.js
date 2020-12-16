@@ -119,6 +119,23 @@ io.on("connection", (socket) => {
       }
     }
   });
+  socket.on("notifications:update", (args) => {
+    if (args.consumer_user_id > 0) {
+      if (users[args.consumer_user_id]) {
+        io.to(users[args.consumer_user_id].socket.id).emit(
+          "notifications:update",
+          args
+        );
+        io.to(users[args.consumer_user_id].socket.id).emit(
+          "notifications:new",
+          args
+        );
+      }
+    } else {
+      socket.broadcast.emit("notifications:update", args);
+      socket.broadcast.emit("notifications:new", args);
+    }
+  });
   socket.on("notifications:chat", (args) => {
     if (users[args.consumer_user_id]) {
       io.to(users[args.consumer_user_id].socket.id).emit(

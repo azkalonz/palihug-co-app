@@ -1,7 +1,16 @@
-import { Box, Button, ButtonBase, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  ButtonBase,
+  Dialog,
+  DialogContent,
+  Typography,
+} from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { history } from "../App";
+import BottomNavContext from "../context/BottomNavContext";
+import { AddToCart } from "../screens/services/Cart";
 import Api from "../utils/api";
 import fetchData from "../utils/fetchData";
 import AnimateOnTap from "./AnimateOnTap";
@@ -12,7 +21,14 @@ function ProductArchive(props) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastPage, setLastPage] = useState(false);
-
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { bottomNavContext, setBottomNavContext } = useContext(
+    BottomNavContext
+  );
+  const unSelectProduct = useCallback(() => {
+    setBottomNavContext({ ...bottomNavContext, visible: true });
+    setSelectedProduct(null);
+  }, [bottomNavContext, setSelectedProduct]);
   const getProducts = useCallback(() => {
     fetchData({
       before: async () => setLoading(true),
@@ -37,6 +53,22 @@ function ProductArchive(props) {
   }, []);
   return (
     <React.Fragment>
+      <Dialog
+        open={selectedProduct !== null}
+        onClose={() => unSelectProduct()}
+        fullScreen
+        style={{
+          padding: 0,
+        }}
+      >
+        <DialogContent>
+          <AddToCart
+            product={selectedProduct}
+            {...props}
+            onClose={() => unSelectProduct()}
+          />
+        </DialogContent>
+      </Dialog>
       <Box className="product-archive">
         {products &&
           products.map((product) => (
@@ -44,12 +76,7 @@ function ProductArchive(props) {
               key={product.id}
               className="product"
               component={ButtonBase}
-              onClick={() =>
-                history.push({
-                  pathname: "/add-to-cart",
-                  state: product,
-                })
-              }
+              onClick={() => setSelectedProduct(product)}
             >
               <div className="image">
                 <img src={product.images[0].src} alt={product.name} />

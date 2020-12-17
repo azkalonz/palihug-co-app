@@ -30,6 +30,7 @@ function AdminUsers(props) {
         options={{
           pageSize: 10,
           pageSizeOptions: [10, 20, 50, 100],
+          filtering: true,
         }}
         onRowClick={(e, row) => {
           window.open(
@@ -58,6 +59,10 @@ function AdminUsers(props) {
           {
             title: "Status",
             field: "user_status",
+            lookup: {
+              Verified: "Verified",
+              Unverified: "Unverified",
+            },
           },
           {
             title: "User Type",
@@ -93,7 +98,6 @@ function AdminUsers(props) {
                     alert(errors);
                     reject();
                   } else {
-                    console.log([...users, data.user]);
                     setUsers([...users, data.user]);
                     resolve();
                   }
@@ -102,7 +106,6 @@ function AdminUsers(props) {
             }),
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
-              console.log(oldData);
               fetchData({
                 send: async () =>
                   await Api.post(

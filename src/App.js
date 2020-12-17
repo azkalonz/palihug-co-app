@@ -2,7 +2,7 @@ import { Button, Icon, IconButton, ThemeProvider } from "@material-ui/core";
 import { AnimatePresence } from "framer-motion";
 import { createBrowserHistory } from "history";
 import { SnackbarProvider } from "notistack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Spinner from "./components/Spinner";
 import UserGlobals from "./components/UserGlobals";
@@ -44,7 +44,6 @@ const qs = require("query-string");
     [123.98405814721905, 10.356965932149206],
     [123.95526136068816, 10.541342724756628],
   ]);
-  console.log(s);
 })();
 
 export const history = createBrowserHistory();
@@ -94,11 +93,12 @@ function App() {
   const [userContext, setUserContext] = useState({});
   const pushHistory = (name) => {
     setLoading(false);
-    if (window.location.pathname !== name) history.push(name);
+    if (window.location.pathname !== name) window.location = name;
   };
   const onClickDismiss = (key) => () => {
     notistackRef.current.closeSnackbar(key);
   };
+  const theme = useMemo(() => getTheme("light"), []);
   useEffect(() => {
     if (tempUser != null) {
       Api.getToken = function () {
@@ -197,7 +197,7 @@ function App() {
               <ServicesContext.Provider
                 value={{ servicesContext, setServicesContext }}
               >
-                <ThemeProvider theme={getTheme("light")}>
+                <ThemeProvider theme={theme}>
                   <SnackbarProvider
                     ref={notistackRef}
                     maxSnack={3}

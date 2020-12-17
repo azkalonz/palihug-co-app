@@ -47,7 +47,6 @@ function UserGlobals(props) {
         bottomNavContext.add("notifications", setBottomNavContext);
       });
       socket.on("notifications:chat:remove", function (notifications) {
-        console.log(notifications, "aaa");
         if (notifications?.length) {
           bottomNavContext.remove(
             "notifications",

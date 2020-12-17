@@ -395,7 +395,7 @@ function OrderDetails(props) {
             </Box>
           </Block>
         </Box>
-        {userContext?.user_type.name === "customer" ? (
+        {isAllowed(userContext, ["customer"]) ? (
           <Box p={3}>
             <Products order={order} />
           </Box>
@@ -467,8 +467,6 @@ function ProductsByVendor(props) {
       order.products.map((item) => {
         const p = JSON.parse(item.product_meta);
         const storeName = p.store.vendor_display_name;
-        delete p.store;
-        delete item.product_meta;
         v[storeName].orders.push({ product: p, ...item });
       });
     }

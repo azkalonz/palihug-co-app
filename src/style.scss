@@ -539,10 +539,8 @@ img {
     }
   }
 }
-.MuiCollapse-container:first-of-type {
-  .MuiSnackbar-root {
-    margin-bottom: 50px !important;
-  }
+.bottom-navigation+div {
+  margin-bottom: 50px !important;
 }
 .MuiIcon-colorPrimary {
   color: #d92e45 !important;
@@ -881,6 +879,9 @@ b {
   th,td {
     padding: 10px;
     border: 1px solid $pale;
+    border-radius: 46px;
+    border-right: 0;
+    border-left: 0;
   }
   td {
     &:first-of-type {
@@ -889,6 +890,17 @@ b {
     &:last-of-type {
       p {
         white-space: pre;
+        font-weight: 700;
+      }
+      border-left: 1px solid $pale;
+    }
+  }
+  tr {
+    &:last-of-type {
+      background: $primary;
+      color: #fff;
+      td {
+        border-radius: 0px!important;
       }
     }
   }

@@ -54,7 +54,6 @@ function PlaceSearch(props) {
   }, [setVal, setResult]);
   useEffect(() => {
     if (props.value) {
-      console.log(props.value);
       setVal(props.value);
     }
   }, [props.value]);

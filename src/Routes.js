@@ -17,7 +17,10 @@ import OrderDetails from "./screens/home/OrderDetails";
 import Orders from "./screens/home/Orders";
 import Profile from "./screens/home/Profile";
 import { Login } from "./screens/login";
-import { FramedOrderDetails } from "./screens/merchant/MerchantFramedScreens";
+import {
+  FramedNotifications,
+  FramedOrderDetails,
+} from "./screens/merchant/MerchantFramedScreens";
 import MerchantHome from "./screens/merchant/MerchantHome";
 import MerchantTransactions from "./screens/merchant/MerchantTransactions";
 import Services from "./screens/services";
@@ -68,7 +71,7 @@ export const AdminRoutes = [
     },
   }),
   createRoute("/notifications", true, null, {
-    render: (p) => withNavBottom(p, Notifications),
+    render: (p) => withNavBottom(p, FramedNotifications),
   }),
   createRoute("/users", true, null, {
     render: (p) => withNavBottom(p, AdminUsers, "", 0),

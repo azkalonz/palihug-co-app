@@ -44,7 +44,7 @@ function RegisterForm(props) {
       if (formRef.current && !saving) {
         (async () => {
           setSaving(true);
-          const t = await Api.post("/register", {
+          const t = await Api.post("/register?return_token=true", {
             body: form,
           }).catch((e) => {});
           if (!t?.user && !userContext?.user_id) {
@@ -58,7 +58,7 @@ function RegisterForm(props) {
             }
           } else {
             window.localStorage["user"] = JSON.stringify({
-              user_token: t.user.user_token * 1234,
+              user_token: (t.user.user_token / 4567) * 1234,
             });
             callback();
             setGetStartedContext({
@@ -67,7 +67,7 @@ function RegisterForm(props) {
               isRegistered: true,
             });
             setUserContext(t.user);
-            props.history.push("/verify-otp");
+            props.history.replace("/verify-otp");
           }
           setSaving(false);
         })();

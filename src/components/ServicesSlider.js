@@ -52,9 +52,7 @@ function ServicesSlider(props) {
           },
         }),
       after: (userData) => {
-        setUserInfo(userData);
-        setSaving(false);
-        setOpen(false);
+        window.location = "/";
       },
     });
   }, [saving, open, userContext]);

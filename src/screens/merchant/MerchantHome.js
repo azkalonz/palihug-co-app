@@ -15,7 +15,6 @@ function MerchantHome(props) {
   const from = useMemo(() => moment().format("YYYY-MM-01"));
   const to = useMemo(() => moment().add(30, "days").format("YYYY-MM-01"));
   const [params, setParams] = useState({ from, to });
-  console.log(props);
   return (
     <Box p={3}>
       <ScreenHeader title="Dashboard" noGoBack />

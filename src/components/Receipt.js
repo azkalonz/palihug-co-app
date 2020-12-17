@@ -1,16 +1,23 @@
 import { Box, Typography } from "@material-ui/core";
 import React from "react";
 import CurrencyFormat from "react-currency-format";
-import { getOR } from "../screens/services/Checkout";
+import moment from "moment";
 
 function Receipt(props) {
   const { order } = props;
   return (
     <Box p={3}>
+      <Typography>
+        Date issued: <b>{moment(order.order_date).format("llll")}</b>
+      </Typography>
+      <Typography>
+        Date completed: <b>{moment(order.updated_at).format("llll")}</b>
+      </Typography>
+      <br />
       <table className="receipt">
         <tr>
           <th align="left">
-            <Typography>Product</Typography>
+            <Typography>Description</Typography>
           </th>
           <th align="left">
             <Typography>Quantity</Typography>

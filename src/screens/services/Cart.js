@@ -180,50 +180,57 @@ export function AddToCart(props) {
       goBackOrPush("/");
     }
   }, [props.onClose]);
-  const addToCart = useCallback(({ product, quantity }) => {
-    setSaving(true);
-    const {
-      merchant,
-      id,
-      store,
-      categories,
-      images,
-      price,
-      sale_price,
-      name,
-      regular_price,
-    } = product;
-    const order = { quantity };
-    order.product = {
-      id,
-      store,
-      categories,
-      images,
-      price,
-      regular_price,
-      sale_price,
-      name,
-      merchant,
-    };
-    cartContext.addToCart(order, userContext, () => {
-      setSaving(false);
-      closeOrGoback();
-      enqueueSnackbar(
-        <React.Fragment>
-          <Typography>Added to cart</Typography>
-          <Button
-            onClick={() => props.history.replace("/cart")}
-            style={{ color: "#fff" }}
-          >
-            View Cart
-          </Button>
-        </React.Fragment>,
-        {
-          variant: "info",
-        }
-      );
-    });
-  }, []);
+  const addToCart = useCallback(
+    ({ product, quantity }) => {
+      setSaving(true);
+      const {
+        merchant,
+        id,
+        store,
+        categories,
+        images,
+        price,
+        sale_price,
+        name,
+        regular_price,
+      } = product;
+      const order = { quantity };
+      order.product = {
+        id,
+        store,
+        categories,
+        images,
+        price,
+        regular_price,
+        sale_price,
+        name,
+        merchant,
+      };
+      cartContext.addToCart(order, userContext, () => {
+        setSaving(false);
+        closeOrGoback();
+        enqueueSnackbar(
+          <React.Fragment>
+            <Typography>Added to cart</Typography>
+            <Button
+              onClick={() =>
+                props.history
+                  ? props.history.replace("/cart")
+                  : (window.location = "/cart")
+              }
+              style={{ color: "#fff" }}
+            >
+              View Cart
+            </Button>
+          </React.Fragment>,
+          {
+            variant: "info",
+          }
+        );
+      });
+    },
+    [props.history]
+  );
   useEffect(() => {
     const { setBottomNavContext, bottomNavContext } = bcontext;
     setBottomNavContext({ ...bottomNavContext, visible: false });

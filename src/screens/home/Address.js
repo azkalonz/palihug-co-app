@@ -73,7 +73,6 @@ function Address(props) {
         pathname: "/new-address",
         state: address,
       });
-    console.log(address);
   };
   return (
     <motion.div

@@ -735,7 +735,7 @@ img {
   background: #fff;
 }
 
-.MuiCollapse-container:first-of-type .MuiSnackbar-root {
+.bottom-navigation + div {
   margin-bottom: 50px !important;
 }
 
@@ -1164,14 +1164,31 @@ b.receiving {
 .receipt th, .receipt td {
   padding: 10px;
   border: 1px solid #f9dce0;
+  border-radius: 46px;
+  border-right: 0;
+  border-left: 0;
 }
 
 .receipt td:first-of-type {
   width: 65%;
 }
 
+.receipt td:last-of-type {
+  border-left: 1px solid #f9dce0;
+}
+
 .receipt td:last-of-type p {
   white-space: pre;
+  font-weight: 700;
+}
+
+.receipt tr:last-of-type {
+  background: #d92e45;
+  color: #fff;
+}
+
+.receipt tr:last-of-type td {
+  border-radius: 0px !important;
 }
 
 @-webkit-keyframes slideup {

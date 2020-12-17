@@ -33,7 +33,10 @@ function Epagakain(props) {
       )}
       {!props.hidden?.blocks["products"] && (
         <Block title="Popular Pagkain">
-          <ProductArchive params={props.blocks?.params["products"] || {}} />
+          <ProductArchive
+            params={props.blocks?.params["products"] || {}}
+            history={props.history}
+          />
         </Block>
       )}
     </Box>

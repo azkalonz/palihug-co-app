@@ -27,6 +27,7 @@ import NotificationContext from "../../context/NotificationContext";
 import { slideRight } from "../../misc/transitions";
 import { Block } from ".";
 import { getOR } from "../services/Checkout";
+import UserContext from "../../context/UserContext";
 
 function Notifications(props) {
   const bcontext = useContext(BottomNavContext);
@@ -167,7 +168,8 @@ function Notification(props) {
   );
 }
 
-function NotificationCard(props) {
+export function NotificationCard(props) {
+  const { userContext } = useContext(UserContext);
   const {
     notif_meta,
     notif_action,
@@ -220,7 +222,17 @@ function NotificationCard(props) {
       update: (
         <Box
           style={{ width: "100%", cursor: "pointer" }}
-          onClick={() => history.push(JSON.parse(notif_action))}
+          onClick={() => {
+            if (notif_action) {
+              let m = JSON.parse(notif_action);
+              if (m?.externalUrl) {
+                window.open(m.pathname, "_blank");
+              } else {
+                delete m.externalUrl;
+                if (m.pathname) history.push(JSON.parse(notif_action));
+              }
+            }
+          }}
         >
           <Box justifyContent="flex-start" className="center-all">
             <Box marginRight={1}>

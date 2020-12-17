@@ -38,7 +38,7 @@ function GetStarted(props) {
             flexDirection="column"
           >
             <Box textAlign="center">
-              <Typography variant="h5">ESGO</Typography>
+              <img src="/static/images/logo/horizontal.png" width={100} />
               <Typography>Errand Service On The Go!</Typography>
             </Box>
             <Box width="100%" textAlign="center" paddingBottom={4}>

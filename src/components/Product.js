@@ -173,7 +173,6 @@ export function WithDeliveryPrice(props) {
             let total = (cartContext.total + deliveryFee).toFixed(2);
             setFinalTotal({ deliveryFee, total });
             setCartContext({ ...cartContext, deliveryFee });
-            console.log("final", { deliveryFee, total });
           }
         } else {
           setFinalTotal({ deliveryFee: fee, total: 0 });

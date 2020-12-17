@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
+import { history } from "../../App";
 import Address from "../../components/Address";
 import ServicesSlider from "../../components/ServicesSlider";
 import BottomNavContext from "../../context/BottomNavContext";
@@ -86,14 +87,14 @@ function HomePage(props) {
           resistance
           onChangeIndex={(index) => setPage(index + 1)}
         >
-          <Box display="flex">
+          <Box display="flex" onClick={() => history.push("/merchant/2")}>
             <img
               src="/static/images/carousel/jollibee.jpg"
               width="100%"
               alt="Jollibee"
             />
           </Box>
-          <Box display="flex">
+          <Box display="flex" onClick={() => history.push("/merchant/3")}>
             <img
               src="/static/images/carousel/mcdo.jpg"
               width="100%"
@@ -107,14 +108,14 @@ function HomePage(props) {
               alt="McDonalds"
             />
           </Box>
-          <Box display="flex">
+          <Box display="flex" onClick={() => history.push("/merchant/2")}>
             <img
               src="/static/images/carousel/jollibee.jpg"
               width="100%"
               alt="Jollibee"
             />
           </Box>
-          <Box display="flex">
+          <Box display="flex" onClick={() => history.push("/merchant/3")}>
             <img
               src="/static/images/carousel/mcdo.jpg"
               width="100%"

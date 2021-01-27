@@ -62,8 +62,10 @@ function Checkout(props) {
           }),
         after: (order) => {
           setSaving(false);
-          if (hooks?.afterCheckout) {
-            hooks.afterCheckout(order);
+          if (order?.order_id) {
+            if (hooks?.afterCheckout) {
+              hooks.afterCheckout(order);
+            }
           }
         },
       });
